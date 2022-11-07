@@ -4,12 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.duan1_mananger.databinding.ActivityMainBinding;
+import com.example.duan1_mananger.ui.LoginFragment;
+
 public class MainActivity extends AppCompatActivity {
+    private ActivityMainBinding activityMainBinding = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // hee
+        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(activityMainBinding.getRoot());
+
+        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, LoginFragment.newInstance()).commit();
+
     }
 }
