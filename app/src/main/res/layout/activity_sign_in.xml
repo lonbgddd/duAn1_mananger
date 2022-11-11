@@ -9,12 +9,14 @@
     android:background="#DBC7A7">
 
     <ImageView
+        android:id="@+id/imgLogin"
         android:layout_width="match_parent"
         android:layout_height="360dp"
         android:src="@drawable/img_sign_in"
         android:scaleType="fitXY"
         />
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Đăng nhập"
@@ -64,6 +66,7 @@
             />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cavButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -91,6 +94,7 @@
         android:layout_marginTop="30dp"
         android:gravity="center">
         <TextView
+            android:id="@+id/tvContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nếu bạn chưa có tài khoản ?"
