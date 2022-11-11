@@ -11,6 +11,8 @@ android {
         applicationId "com.example.duan1_mananger"
         minSdk 31
         targetSdk 32
+        minSdkVersion 28
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
 
