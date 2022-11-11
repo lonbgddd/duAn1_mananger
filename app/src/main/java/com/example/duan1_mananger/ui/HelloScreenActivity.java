@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.duan1_mananger.MainActivity;
 import com.example.duan1_mananger.R;
 
 public class HelloScreenActivity extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class HelloScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(HelloScreenActivity.this,LoginActivity.class);
+                Intent intent = new Intent(HelloScreenActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

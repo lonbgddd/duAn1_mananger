@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.duan1_mananger.databinding.ActivityMainBinding;
-import com.example.duan1_mananger.ui.LoginFragment;
+import com.example.duan1_mananger.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding activityMainBinding = null;
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(activityMainBinding.getRoot());
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, LoginFragment.newInstance()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, HomeFragment.newInstance()).commit();
 
     }
 }
