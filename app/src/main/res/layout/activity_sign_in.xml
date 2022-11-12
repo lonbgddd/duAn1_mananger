@@ -32,7 +32,7 @@
         android:layout_marginHorizontal="30dp"
         android:drawableStart="@drawable/ic_email"
         android:paddingLeft="10dp"
-        android:inputType="phone"
+        android:inputType="textEmailAddress"
         android:paddingVertical="13dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"
