@@ -30,8 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     private void setBindingAnimation(ActivitySignInBinding binding ){
         viewAnimation(binding.imgLogin,"translationY", -400f, 0f);
         viewAnimation(binding.tvTitle,"translationY", -400f, 0f);
-        viewAnimation(binding.numberPhone,"translationX", -300f, 0f);
-        viewAnimation(binding.passwword,"translationX", 300f, 0f);
+        viewAnimation(binding.email,"translationX", -300f, 0f);
+        viewAnimation(binding.password,"translationX", 300f, 0f);
+        viewAnimation(binding.tvForgotPass,"translationY", -400f, 0f);
         viewAnimation(binding.cavButton,"translationY", 400f, 0f);
         viewAnimation(binding.tvContent,"translationX", -200f, 0f);
         viewAnimation(binding.tvSignUp,"translationX", 200f, 0f);
