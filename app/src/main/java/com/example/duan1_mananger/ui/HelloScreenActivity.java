@@ -25,11 +25,14 @@ public class HelloScreenActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         layoutMain = findViewById(R.id.activityHelloScreen);
         ImageView img = findViewById(R.id.img_1);
+        ImageView icLogo = findViewById(R.id.icLogo);
         TextView text1 = findViewById(R.id.tex1);
         TextView text2 = findViewById(R.id.text2);
         objAni(img,"translationY", -300f, 0f);
+        objAni(icLogo,"translationY", -350f, 0f);
         objAni(text1,"translationY", 300f, 0f);
         objAni(text2,"translationY", 300f, 0f);
+
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

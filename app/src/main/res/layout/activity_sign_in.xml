@@ -26,36 +26,36 @@
         android:textSize="25dp"/>
 
     <EditText
-        android:id="@+id/number_phone"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:drawableStart="@drawable/ic_phone"
+        android:drawableStart="@drawable/ic_email"
         android:paddingLeft="10dp"
         android:inputType="phone"
-        android:paddingVertical="15dp"
+        android:paddingVertical="13dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"
         android:drawablePadding="8dp"
         android:textColorHint="#4B1E00"
         android:background="@drawable/custom_edit_text_login"
-        android:hint="Số điện thoại"
+        android:hint="Email"
         android:fontFamily="@font/poppins_medium"
         android:textSize="18dp"
         android:elevation="10dp"
         />
 
         <EditText
-            android:id="@+id/passwword"
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
             android:drawableStart="@drawable/ic_pass"
             android:paddingLeft="10dp"
             android:inputType="textPassword"
-            android:paddingVertical="15dp"
+            android:paddingVertical="13dp"
             android:drawablePadding="8dp"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textColorHint="#4B1E00"
             android:background="@drawable/custom_edit_text_login"
             android:hint="Mật khẩu"
@@ -64,6 +64,16 @@
             android:textSize="18dp"
             android:elevation="10dp"
             />
+        <TextView
+            android:id="@+id/tvForgotPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_forgot_pass"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:textSize="16dp"
+            android:fontFamily="@font/poppins_mediumltalic"
+            android:textColor="#8C3F0A"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cavButton"
@@ -71,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:cardCornerRadius="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             app:cardBackgroundColor="#8C3F0A"
             app:cardElevation="8dp">
             <Button
@@ -91,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:gravity="center">
         <TextView
             android:id="@+id/tvContent"
