@@ -1,5 +1,45 @@
 <resources>
     <string name="app_name">PolyOder</string>
     <string name="hello_blank_fragment">Hello</string>
+
+    <string name="hello_screen_title_1">Chào mừng bạn đến với</string>
+    <string name="hello_screen_title_2">PolyOder</string>
+    <string name="hello_screen_text_footer">Copy right ©2022. All rights reserved.</string>
+
+    <string name="sign_up_text_title">Đăng kí tài khoản</string>
+    <string name="sign_up_text_hint_email">Email của bạn</string>
+    <string name="sign_up_text_hint_pass">Mật khẩu</string>
+    <string name="sign_up_text_hint_re_pass">Nhập lại mật khẩu</string>
+    <string name="sign_up_text_button">Đăng kí</string>
+
+    <string name="sign_in_text_title">Đăng nhập</string>
+    <string name="sign_in_text_hint_email">Email</string>
+    <string name="sign_in_text_hint_pass">Mật khẩu</string>
     <string name="text_forgot_pass"><u>Quên mật khẩu ?</u></string>
+
+
+    <string name="sign_in_text_button">Đăng nhập</string>
+    <string name="sign_in_text_content_1">Nếu bạn chưa có tài khoản ?</string>
+    <string name="sign_in_text_content_2">Đăng kí ngay</string>
+
+
+    <string name="forgot_pass_title">Quên mật khẩu </string>
+    <string name="forgot_pass_hint">Email của bạn</string>
+    <string name="forgot_pass_content">Hãy nhập tài khoản email bạn đã \n đăng kí để khôi phục mật khẩu.</string>
+    <string name="forgot_pass_text_button">Gửi</string>
+
+    <string name="notifi_login_success">Đăng nhập thành công!</string>
+    <string name="notifi_login_fail">Đăng nhập thất bại! Kiểm tra tên email hoặc password!</string>
+    <string name="notifi_sign_up_success">Đăng ký thành công! Hãy đăng nhập!</string>
+    <string name="notifi_sign_up_fail">Bạn đã nhập sai mật khẩu hoặc email!</string>
+    <string name="notifi_forgot_pass_success">Đã gửi! Hãy kiểm tra email của bạn và đăng nhập lại!</string>
+    <string name="notifi_forgot_pass_fail">Không gửi được! Hãy kiểm tra lại email!</string>
+
+
+    <string name="error_email_1">Hãy nhập email của bạn!</string>
+    <string name="error_email_2">Nhập emai đúng định dạng \'abc@gmail.com\'.</string>
+    <string name="error_pass_1">Hãy nhập password!</string>
+    <string name="error_pass_2">Password chưa trùng khớp!</string>
+
+
 </resources>
