@@ -12,7 +12,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.duan1_mananger.MainActivity;
 import com.example.duan1_mananger.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HelloScreenActivity extends AppCompatActivity {
     ConstraintLayout layoutMain;
@@ -36,8 +39,15 @@ public class HelloScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(HelloScreenActivity.this, SignInActivity.class);
-                startActivity(intent);
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user == null){
+                    Intent intent = new Intent(HelloScreenActivity.this, SignInActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(HelloScreenActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+
                 overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                 finish();
             }
