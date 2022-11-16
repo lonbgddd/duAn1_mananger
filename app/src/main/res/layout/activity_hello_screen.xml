@@ -26,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_screen_title_1"
-        android:fontFamily="@font/poppins_semiboldltalic"
+        android:fontFamily="@font/poppins_regular"
+        android:textStyle="bold"
         android:textColor="@color/brown_200"
         android:textSize="@dimen/dimen_26dp"
         android:gravity="center"
@@ -42,9 +43,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_screen_title_2"
-        android:fontFamily="@font/poppins_extraboldltalic"
+        android:fontFamily="@font/leoscar_serif"
         android:textColor="@color/brown_250"
-        android:textSize="@dimen/dimen_30dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/dimen_35dp"
         android:gravity="center"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,8 +58,8 @@
 
     <ImageView
         android:id="@+id/icLogo"
-        android:layout_width="110dp"
-        android:layout_height="100dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_logo"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,7 +67,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text2"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.05" />
 
     <TextView
         android:id="@+id/textFooter"
