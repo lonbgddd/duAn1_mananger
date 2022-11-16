@@ -1,13 +1,21 @@
 package com.example.duan1_mananger.ui;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
@@ -16,14 +24,25 @@ import com.example.duan1_mananger.MainActivity;
 import com.example.duan1_mananger.R;
 
 import com.example.duan1_mananger.databinding.ActivitySignInBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 
 public class SignInActivity extends AppCompatActivity {
     private ActivitySignInBinding binding = null;
+    GoogleSignInClient googleSignInClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,22 +64,55 @@ public class SignInActivity extends AppCompatActivity {
                 onClickSignIn();
             }
         });
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient= GoogleSignIn.getClient(SignInActivity.this,gso);
+        binding.cavGoogle.setOnClickListener(btn ->{
+            Intent intent = googleSignInClient.getSignInIntent();
+            someActivityResultLauncher.launch(intent);
+
+        });
+
     }
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Log.e("zzzz","ResultCode "+result.getResultCode());
+                    Log.e("zzzz","ResultOk "+ Activity.RESULT_OK);
+                    Log.e("zzzz","Data "+ result.getData());
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        try {
+                            GoogleSignInAccount account = accountTask.getResult(ApiException.class);
+                            fireBaseAuthWithGoogle(account);
+                        }catch (Exception e){
+                            Toast.makeText(SignInActivity.this, "Lỗi!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+
 
     private void onClickSignIn() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        binding.email.setText(mAuth.getCurrentUser().getEmail().toString());
         String strEmail = binding.email.getText().toString().trim();
         String strPass = binding.password.getText().toString().trim();
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.layoutLogin.setAlpha(0.2f);
+
         mAuth.signInWithEmailAndPassword(strEmail, strPass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @SuppressLint("ResourceAsColor")
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             Toast.makeText(SignInActivity.this, getString(R.string.notifi_login_success), Toast.LENGTH_SHORT).show();
                             binding.progressBar.setVisibility(View.VISIBLE);
@@ -72,14 +124,29 @@ public class SignInActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
     }
 
+
+
+    private void  fireBaseAuthWithGoogle(GoogleSignInAccount account){
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Toast.makeText(SignInActivity.this, "Thành công!", Toast.LENGTH_SHORT).show();
+                //Tạo code ngầm đăng đăng kí tài khoản
+                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SignInActivity.this, "Thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private boolean validate(){
         String strEmail = binding.email.getText().toString().trim();
@@ -102,21 +169,26 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public  void setBindingAnimation(){
-        viewAnimation(binding.imgLogin,"translationY", -400f, 0f);
-        viewAnimation(binding.tvTitle,"translationY", -400f, 0f);
+        viewAnimation(binding.icLogo,"translationY", -400f, 0f);
+        viewAnimation(binding.tvIcon,"translationY", -400f, 0f);
         viewAnimation(binding.email,"translationX", -300f, 0f);
         viewAnimation(binding.tilPassword,"translationX", 300f, 0f);
         viewAnimation(binding.tvForgotPass,"translationY", -400f, 0f);
         viewAnimation(binding.cavButton,"translationY", 400f, 0f);
         viewAnimation(binding.tvContent,"translationX", -200f, 0f);
         viewAnimation(binding.tvSignUp,"translationX", 200f, 0f);
+        viewAnimation(binding.line1,"translationX", -200f, 0f);
+        viewAnimation(binding.line2,"translationX", 200f, 0f);
+        viewAnimation(binding.tvContent2,"translationY", 300f, 0f);
+        viewAnimation(binding.cavGoogle,"translationY", 300f, 0f);
+
     }
 
 
 
     public  void viewAnimation(View view, String ani, float... values){
         ObjectAnimator animator = ObjectAnimator.ofFloat(view,ani,values);
-        animator.setDuration(1500);
+        animator.setDuration(1800);
         animator.start();
     }
 

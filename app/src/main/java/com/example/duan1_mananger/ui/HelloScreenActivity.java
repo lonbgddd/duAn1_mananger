@@ -43,12 +43,14 @@ public class HelloScreenActivity extends AppCompatActivity {
                 if(user == null){
                     Intent intent = new Intent(HelloScreenActivity.this, SignInActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                 } else {
                     Intent intent = new Intent(HelloScreenActivity.this, MainActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                 }
 
-                overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+
                 finish();
             }
         },4000);
