@@ -2,7 +2,7 @@ package com.example.duan1_mananger.model;
 
 
 public class User {
-    private int id;
+    private String id;
     private String name_user;
     private String avatar;
     private Boolean sex = true;
@@ -12,11 +12,11 @@ public class User {
     private String password;
     private String email;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -84,7 +84,8 @@ public class User {
         this.email = email;
     }
 
-    public User(String name_user, String avatar, Boolean sex, String phone_number, String birthday, String address, String password, String email) {
+    public User(String id, String name_user, String avatar, Boolean sex, String phone_number, String birthday, String address, String password, String email) {
+        this.id = id;
         this.name_user = name_user;
         this.avatar = avatar;
         this.sex = sex;

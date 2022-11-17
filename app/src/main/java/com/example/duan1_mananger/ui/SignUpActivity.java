@@ -50,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            User user = new User(binding.name.getText().toString(), "", null, "", "", "",
+                            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), binding.name.getText().toString(), "", null, "", "", "",
                                     binding.pass.getText().toString(),
                                     binding.email.getText().toString());
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
