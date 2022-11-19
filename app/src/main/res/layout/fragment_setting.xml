@@ -115,7 +115,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/dimen_40dp"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="Lục Anh Tài"
+                            android:text=""
                             android:textColor="@color/black"
                             android:textSize="@dimen/dimen_26dp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -411,6 +411,4 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
