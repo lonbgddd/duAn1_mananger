@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.example.duan1_mananger.MainActivity;
@@ -49,6 +50,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Window window = getWindow();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getColor(R.color.brown_120));
 
         setBindingAnimation();
         binding.tvForgotPass.setOnClickListener(v -> {
@@ -129,7 +133,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
 
-    private void  fireBaseAuthWithGoogle(GoogleSignInAccount account){
+    private void fireBaseAuthWithGoogle(GoogleSignInAccount account){
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
