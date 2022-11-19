@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-    public String text = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
         mActivityResultLauncher.launch(Intent.createChooser(intent, "Choose Picture"));
     }
 
-    public String getText() {
-        return text;
-    }
+
 
     @Override
     protected void onResume() {
