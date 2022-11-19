@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.example.duan1_mananger.R;
@@ -29,7 +30,14 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        Window window = getWindow();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getColor(R.color.brown_120));
         setBindingAnimation(binding);
+
+        binding.icBack.setOnClickListener(ic ->{
+            onBackPressed();
+        });
 
         binding.btnSignup.setOnClickListener(v -> {
             if(validateInput()){
@@ -122,7 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void viewAnimation(View view, String ani, float... values){
         ObjectAnimator animator = ObjectAnimator.ofFloat(view,ani,values);
-        animator.setDuration(1500);
+        animator.setDuration(1800);
         animator.start();
     }
 }

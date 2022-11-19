@@ -30,7 +30,7 @@
     <string name="forgot_pass_text_button">Gửi</string>
 
     <string name="notifi_login_success">Đăng nhập thành công!</string>
-    <string name="notifi_login_fail">Đăng nhập thất bại! Kiểm tra tên email hoặc password!</string>
+    <string name="notifi_login_fail">Đăng nhập thất bại! Kiểm tra tên email,password hoặc đăng kí tài khoản!</string>
     <string name="notifi_login_fail_2">Hãy đăng kí tài khoản để sử dụng dịch vụ!</string>
     <string name="notifi_sign_up_success">Đăng ký thành công! Hãy đăng nhập!</string>
     <string name="notifi_sign_up_fail">Bạn đã nhập sai mật khẩu hoặc email!</string>
@@ -44,7 +44,7 @@
     <string name="error_pass_2">Password chưa trùng khớp!</string>
 
     <string name="text_menu_nav_home">Trang chủ</string>
-    <string name="text_menu_nav_cart">Giỏ hàng</string>
+    <string name="text_menu_nav_cart">Đơn hàng</string>
     <string name="text_menu_nav_product">Sản phẩm</string>
     <string name="text_menu_nav_setting">Cài đặt</string>
     <string name="content_setting_user">(<font color='red'>*</font>Hoàn thiện thông tin cá nhân của bạn )</string>
@@ -66,6 +66,17 @@
     <string name="text_add_type_product">Thêm loại sản phẩm</string>
     <string name="text_type_product_1">Tất cả các loại sản phẩm</string>
 
+    <string name="text_header_home_1">Xin chào</string>
+    <string name="text_header_home_name">Lục Anh Tài</string>
+    <string name="text_header_home_2">Chào mừng quay trở lại !</string>
+    <string name="text_button_function_home_cart">Đơn hàng</string>
+    <string name="text_button_function_home_product">Sản phẩm</string>
+    <string name="text_button_function_home_turnover">Doanh thu</string>
+    <string name="text_button_function_home_chat">PolyChat</string>
+
+    <string name="text_button_table_home_all">Tất cả bàn</string>
+    <string name="text_button_table_home_empty">Bàn trống</string>
+    <string name="text_button_table_home_open">Bàn đang mở</string>
 
 
 
