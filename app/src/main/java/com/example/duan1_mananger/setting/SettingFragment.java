@@ -125,11 +125,7 @@ public class SettingFragment extends BaseFragment {
         changeColorIcCheck(edEmail, icSave);
         changeColorIcCheck(edAddress, icSave);
         changeColorIcCheck(edBirth, icSave);
-
         //Lưu ý: ngày tháng năm sinh phải dùng DatePickerDialog dể chọn, k được nhập tay
-
-
-
         dialog.show();
 
     }
