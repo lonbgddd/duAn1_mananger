@@ -1,6 +1,11 @@
 package com.example.duan1_mananger.model;
 
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String id;
     private String name_user;
@@ -94,5 +99,29 @@ public class User {
         this.address = address;
         this.password = password;
         this.email = email;
+    }
+
+    public User(String name_user, Boolean sex, String phone_number, String birthday, String address, String email) {
+        this.name_user = name_user;
+        this.sex = sex;
+        this.phone_number = phone_number;
+        this.birthday = birthday;
+        this.address = address;
+        this.email = email;
+    }
+
+    public User() {
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name_user", name_user);
+        result.put("phone_number", phone_number);
+        result.put("sex", sex);
+        result.put("birthday", birthday);
+        result.put("address", address);
+        result.put("email", email);
+        return result;
     }
 }
