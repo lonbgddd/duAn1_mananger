@@ -7,8 +7,14 @@
     tools:context=".product.ProductFragment"
     android:background="@color/grey_40"
     android:orientation="vertical">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_control"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
@@ -114,21 +120,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swiperRefreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-             >
+                android:layout_height="match_parent">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listProduct"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="2"
                     android:paddingHorizontal="@dimen/dimen_5dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="vertical"
                     />
+
+
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </androidx.core.widget.NestedScrollView>
+
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddProduct"
             android:layout_width="wrap_content"

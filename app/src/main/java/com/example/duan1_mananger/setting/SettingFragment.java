@@ -134,6 +134,41 @@ public class SettingFragment extends BaseFragment {
     public void initView() {
     }
 
+
+    private void dialogChangeProfile(Context context){
+        final Dialog dialog = new Dialog(context,android.R.style.Theme_Material_Light_NoActionBar);
+        dialog.setContentView(R.layout.layout_change_profile);
+        Window window = dialog.getWindow();
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(context.getColor(R.color.white));
+        dialog.setCancelable(false);
+        dialog.findViewById(R.id.icBack).setOnClickListener(ic ->{
+            dialog.dismiss();
+        });
+        ImageView icSave = dialog.findViewById(R.id.icSave);
+        CircleImageView imgAvatar = dialog.findViewById(R.id.imgAvatar);
+        ImageButton btnCamera = dialog.findViewById(R.id.ic_add_img);
+
+        TextInputEditText edName = dialog.findViewById(R.id.edName);
+        TextInputEditText edPhone = dialog.findViewById(R.id.edPhone);
+        TextInputEditText edEmail = dialog.findViewById(R.id.edEmail);
+        TextInputEditText edAddress = dialog.findViewById(R.id.edAddress);
+        TextInputEditText edBirth = dialog.findViewById(R.id.edBirth);
+        icSave.setColorFilter(R.color.red);
+        changeColorIcCheck(edName, icSave);
+        changeColorIcCheck(edPhone,icSave);
+        changeColorIcCheck(edEmail, icSave);
+        changeColorIcCheck(edAddress, icSave);
+        changeColorIcCheck(edBirth, icSave);
+        //Lưu ý: ngày tháng năm sinh phải dùng DatePickerDialog dể chọn, k được nhập tay
+        dialog.show();
+
+    }
+
+
+
+    //cái này chưa dùng đến, nghiên cứu sau
+
     private void changeColorIcCheck(EditText editText, ImageView icCheck){
         editText.addTextChangedListener(new TextWatcher() {
             @Override

@@ -9,6 +9,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+
+
+
+
+import android.os.Bundle;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.security.identity.CipherSuiteNotSupportedException;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +35,9 @@ import android.widget.Toast;
 import com.example.duan1_mananger.databinding.ActivityMainBinding;
 import com.example.duan1_mananger.home.HomeFragment;
 import com.example.duan1_mananger.maket.MaketFragment;
+import com.example.duan1_mananger.model.TypePoduct;
 import com.example.duan1_mananger.product.ProductFragment;
+import com.example.duan1_mananger.product.TypeProductFragment;
 import com.example.duan1_mananger.setting.SettingFragment;
 import com.example.duan1_mananger.setting.UpdateUserFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -72,19 +81,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Window window = getWindow();
+        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, HomeFragment.newInstance()).commit();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         window.setStatusBarColor(getColor(R.color.white));
-
         binding.bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.home_fragment:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fade_control, HomeFragment.newInstance()).commit();
                         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -128,11 +139,43 @@ public class MainActivity extends AppCompatActivity {
         mActivityResultLauncher.launch(Intent.createChooser(intent, "Choose Picture"));
     }
 
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         binding = null;
     }
+
+
+    public void ReplaceProductFragment(TypePoduct typePoduct) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        ProductFragment productFragment = new ProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("objType", typePoduct);
+        productFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.fade_control, productFragment);
+        fragmentTransaction.addToBackStack(ProductFragment.TAG);
+        fragmentTransaction.commit();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        Window window = getWindow();
+        window.setStatusBarColor(getColor(R.color.white));
+
+    }
+
+    public void ReplaceTypeFragment() {
+        Window window = getWindow();
+        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, TypeProductFragment.newInstance()).commit();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getColor(R.color.white));
+
+    }
+
 
 
 }
