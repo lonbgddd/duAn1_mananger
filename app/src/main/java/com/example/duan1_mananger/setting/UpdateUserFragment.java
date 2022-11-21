@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -53,7 +54,6 @@ public class UpdateUserFragment extends BaseFragment {
     private UpdateUserViewModel mViewModel;
     private FirebaseAuth firebaseAuth;
     private Uri avatar;
-    private String str = null;
     private static final int PICL_IMAGES_CODE = 1000;
     FirebaseUser firebaseUser;
     Calendar calendar;
@@ -75,6 +75,10 @@ public class UpdateUserFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Window window = getActivity().getWindow();
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getActivity().getColor(R.color.white));
+
         firebaseAuth = FirebaseAuth.getInstance();
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
         reference.listAll().addOnSuccessListener(listResult -> {
@@ -130,23 +134,6 @@ public class UpdateUserFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
-        reference.listAll().addOnSuccessListener(listResult -> {
-            for (StorageReference files: listResult.getItems()
-            ) {
-                if (files.getName().equals(userData.getId())){
-                    files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Log.d("TAG", "initView: "+uri);
-                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
-                    });
-                } else {
-                    Glide.with(getContext()).load(R.drawable.img_avatar).into(binding.imgAvatar);
-                }
-
-            }
-        }).addOnFailureListener(e -> {
-
-        });
 
     }
 
@@ -185,26 +172,26 @@ public class UpdateUserFragment extends BaseFragment {
         });
     }
 
-    // chọn ngày từ DatePickerDiaLog / oke
+    // chọn ngày từ DatePickerDiaLog/oke
     private void dialogChooseBirth(){
         calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        String ngay = "";
-                        String thang = "";
+                        String strDay = "";
+                        String strMonths = "";
                         if(dayOfMonth < 10){
-                            ngay = "0" + dayOfMonth;
+                            strDay = "0" + dayOfMonth;
                         }else{
-                            ngay = String.valueOf(dayOfMonth);
+                            strDay = String.valueOf(dayOfMonth);
                         }
                         if((month + 1) < 10){
-                            thang = "0" + (month + 1);
+                            strMonths = "0" + (month + 1);
                         }else{
-                            thang = String.valueOf(month + 1);
+                            strMonths = String.valueOf(month + 1);
                         }
-                        binding.edBirth.setText(ngay + "/" + thang + "/" + year);
+                        binding.edBirth.setText(strDay + "/" + strMonths + "/" + year);
                     }
                 },
                 calendar.get(Calendar.YEAR),
@@ -225,8 +212,6 @@ public class UpdateUserFragment extends BaseFragment {
                 Toast.makeText(requireContext(), "Cập nhật ảnh đại diện thất bại", Toast.LENGTH_SHORT).show();
             });
         }
-
-
 
 
         boolean gender;

@@ -56,7 +56,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingFragment extends BaseFragment {
 
     private FragmentSettingBinding binding = null;
-    User user;
+   private User user;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     private static final int PICK_PDF_FILE = 2;
@@ -90,12 +90,17 @@ public class SettingFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Window window = getActivity().getWindow();
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getActivity().getColor(R.color.brown_120));
+
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
         reference.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference files : listResult.getItems()
             ) {
-                if (files.getName().equals(user.getId())) {
+                if (files.getName().equals(firebaseUser.getUid())) {
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
                         Log.d("TAG", "initView: " + uri);
                         Glide.with(getContext()).load(uri).into(binding.imgAvatar);
