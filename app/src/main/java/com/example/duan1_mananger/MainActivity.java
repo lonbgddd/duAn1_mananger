@@ -53,35 +53,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding = null;
-    final private UpdateUserFragment updateUserFragment = new UpdateUserFragment();
-
-    // lỗi ở đây
-    final private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
-             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == RESULT_OK){
-                        Log.d("TAG", "onActivityResultMAIN: "+result.getResultCode());
-                        Intent intent = result.getData();
-                        if(intent == null){
-                            return;
-                        }
-                        Uri uri = intent.getData();
-                        Log.d("TAG", "onActivityResult: "+uri);
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            Log.d("TAG", "onActivityResult: "+bitmap);
-                            Log.d("TAG", "updateUserFragment: "+updateUserFragment);
-                            // đây này
-                            updateUserFragment.setBitMap(bitmap);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,24 +92,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 100){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                openGallery();
-            }
-        }
-    }
-
-    public void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Choose Picture"));
-    }
-
 
 
     @Override

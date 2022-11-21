@@ -1,19 +1,19 @@
 package com.example.duan1_mananger.setting;
 
+import static android.app.Activity.RESULT_OK;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.duan1_mananger.MainActivity;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.LayoutChangeProfileBinding;
@@ -43,18 +42,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.Calendar;
-import java.util.List;
-
 public class UpdateUserFragment extends BaseFragment {
     private LayoutChangeProfileBinding binding = null;
     private User userData = null;
     private UpdateUserViewModel mViewModel;
     private FirebaseAuth firebaseAuth;
+    private Uri avatar;
+    private String str = null;
+    private static final int PICL_IMAGES_CODE = 1000;
     FirebaseUser firebaseUser;
     Calendar calendar;
-    ImageView imgAva;
 
 
     public UpdateUserFragment newInstance(User user) {
@@ -74,8 +76,23 @@ public class UpdateUserFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files: listResult.getItems()
+            ) {
+                if (files.getName().equals(userData.getId())){
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Log.d("TAG", "initView: "+uri);
+                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                    });
+                }
+
+            }
+        }).addOnFailureListener(e -> {
+
+        });
+
         listening();
-        loadData();
         initObSever();
 
 
@@ -89,7 +106,7 @@ public class UpdateUserFragment extends BaseFragment {
     @Override
     public void listening() {
         binding.icBack.setOnClickListener(v -> {
-            replaceFragment(new SettingFragment().newInstance());
+            backStack();
         });
 
         binding.icChooserBirth.setOnClickListener(v -> {
@@ -113,6 +130,21 @@ public class UpdateUserFragment extends BaseFragment {
 
     @Override
     public void initView() {
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files: listResult.getItems()
+            ) {
+                if (files.getName().equals(userData.getId())){
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Log.d("TAG", "initView: "+uri);
+                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                    });
+                }
+
+            }
+        }).addOnFailureListener(e -> {
+
+        });
 
     }
 
@@ -133,7 +165,7 @@ public class UpdateUserFragment extends BaseFragment {
                     binding.edEmail.setText(firebaseUser.getEmail());
                     binding.edAddress.setText(userData.getAddress());
                     binding.edBirth.setText(userData.getBirthday());
-                    Glide.with(getActivity()).load(userData.getAvatar()).error(R.drawable.img_avatar).into(binding.imgAvatar);
+//                    Glide.with(requireContext()).load(userData.getAvatar()).error(R.drawable.img_avatar).into(binding.imgAvatar);
                     if(userData.getSex()){
                         binding.rdoMale.setSelected(true);
                     }else {
@@ -184,6 +216,18 @@ public class UpdateUserFragment extends BaseFragment {
     private void updateUserProfile(){
         firebaseUser = firebaseAuth.getCurrentUser();
         String userID = firebaseUser.getUid();
+        if (avatar != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference("avatars/"+userID);
+            reference.putFile(avatar).addOnSuccessListener(taskSnapshot -> {
+                Toast.makeText(requireContext(), "Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(command -> {
+                Toast.makeText(requireContext(), "Cập nhật ảnh đại diện thất bại", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+
+
+
         boolean gender;
             if(binding.rdoMale.isSelected()){
                 gender = true;
@@ -191,16 +235,18 @@ public class UpdateUserFragment extends BaseFragment {
                 gender = false;
             }
 
-        userData = new User(binding.edName.getText().toString().trim()
-                , gender, binding.edPhone.getText().toString().trim(), binding.edBirth.getText().toString().trim()
-                , binding.edAddress.getText().toString().trim(), binding.edEmail.getText().toString().trim());
+        userData = new User(binding.edName.getText().toString().trim(),
+                gender,
+                binding.edPhone.getText().toString().trim(),
+                binding.edBirth.getText().toString().trim(),
+                binding.edAddress.getText().toString().trim(),
+                binding.edEmail.getText().toString().trim());
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
             databaseReference.child("users").child(userID).updateChildren(userData.toMap(),
                     new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                     if (firebaseUser != null) {
-                        Log.d("TAG", "onCompleteUPDATE USER: "+gender);
                         Toast.makeText(getContext(), "Sửa thông tin thành công", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -254,26 +300,41 @@ public class UpdateUserFragment extends BaseFragment {
     }
 
     private void requestPermission(){
-        MainActivity mainActivity = (MainActivity) getActivity();
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
-        if(getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
-            mainActivity.openGallery();
+            } else {
+                ActivityCompat.requestPermissions(requireActivity(),
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1);
+            }
+
+        } else {
+            addImage();
         }
-        String [] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-        getActivity().requestPermissions(permission, 100);
     }
-//&&getActivity().checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED
 
-    //Lỗi ở đây
-    public void setBitMap(Bitmap bitmap){
-        binding.imgAvatar.setImageBitmap(bitmap);
+    private void addImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICL_IMAGES_CODE);
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(UpdateUserViewModel.class);
-        // TODO: Use the ViewModel
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICL_IMAGES_CODE) {
+                avatar = data.getData();
+                binding.imgAvatar.setImageURI(avatar);
+                Log.d("TAG", "onActivityResult: "+data.getData());
+
+            }
+        }
     }
+
 
 }
