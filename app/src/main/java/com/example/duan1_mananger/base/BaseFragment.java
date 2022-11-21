@@ -37,8 +37,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void replaceFragment(Fragment fragment) {
-        getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_left, R.anim.slide_in_right,
-                R.anim.slide_out_left).replace(R.id.fade_control, fragment).addToBackStack(null).commit();
+        getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+                R.anim.slide_out_right).replace(R.id.fade_control, fragment).addToBackStack(null).commit();
     }
     abstract public void loadData();
 
