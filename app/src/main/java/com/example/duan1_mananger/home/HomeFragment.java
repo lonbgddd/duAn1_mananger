@@ -1,35 +1,27 @@
 package com.example.duan1_mananger.home;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentHomeBinding;
-import com.example.duan1_mananger.databinding.FragmentMaketBinding;
-import com.example.duan1_mananger.home.fragments.FragmentListAllTables;
+import com.example.duan1_mananger.table.FragmentListAllTables;
 import com.example.duan1_mananger.home.fragments.FragmentListEmptyTables;
 import com.example.duan1_mananger.home.fragments.FragmentListOpenTables;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.util.ArrayList;
 
 public class HomeFragment extends BaseFragment {
    private  FragmentHomeBinding binding;
@@ -74,12 +66,12 @@ public class HomeFragment extends BaseFragment {
                         Glide.with(getContext()).load(uri).into(binding.icUserSetting);
                     });
                 }
-
             }
         }).addOnFailureListener(e -> {
 
         });
         listening();
+        initObSever();
     }
 
     @Override

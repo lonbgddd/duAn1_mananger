@@ -167,7 +167,6 @@ public class UpdateUserFragment extends BaseFragment {
                     binding.edEmail.setText(firebaseUser.getEmail());
                     binding.edAddress.setText(userData.getAddress());
                     binding.edBirth.setText(userData.getBirthday());
-//                    Glide.with(requireContext()).load(userData.getAvatar()).error(R.drawable.img_avatar).into(binding.imgAvatar);
                     if(userData.getSex()){
                         binding.rdoMale.setSelected(true);
                     }else {
@@ -255,21 +254,6 @@ public class UpdateUserFragment extends BaseFragment {
             });
     }
 
-    private void updateEmail(String stremail){
-        firebaseUser = firebaseAuth.getCurrentUser();
-//        Log.d("TAG", "updateEmail: "+ userData.getEmail());
-        firebaseUser.updateEmail(stremail)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Đã cập nhật email", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(getContext(), "Hãy thử đăng xuất và thử lại", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
     private void dialogConfirmUpdate(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -281,7 +265,6 @@ public class UpdateUserFragment extends BaseFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(firebaseUser.getEmail() != binding.edEmail.getText().toString()){
-                    updateEmail(binding.edEmail.getText().toString().trim());
                     updateUserProfile();
                 }else {
                     updateUserProfile();

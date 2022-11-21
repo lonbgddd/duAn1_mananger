@@ -84,7 +84,6 @@ public class TypeProductFragment extends Fragment {
         // đã thêm cứng dữ liệu nên dào lại
         getProduct_type();
         listType = new ArrayList<>();
-        Log.e("TAG", "onViewCreated: 4" );
         typeAdapter = new TypeProductAdapter(listType, new TypeProductAdapter.IClickItemListener() {
             @Override
             public void onClickItemType(TypePoduct typePoduct) {
