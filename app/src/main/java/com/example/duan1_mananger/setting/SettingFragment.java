@@ -32,6 +32,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentSettingBinding;
@@ -47,6 +48,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -80,7 +83,7 @@ public class SettingFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentSettingBinding.inflate(inflater,container,false);
+        binding = FragmentSettingBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -88,6 +91,21 @@ public class SettingFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files : listResult.getItems()
+            ) {
+                if (files.getName().equals(user.getId())) {
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Log.d("TAG", "initView: " + uri);
+                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                    });
+                }
+
+            }
+        }).addOnFailureListener(e -> {
+
+        });
         listening();
         initObSever();
         loadData();
@@ -95,9 +113,8 @@ public class SettingFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        user= new User();
+        user = new User();
         firebaseUser = firebaseAuth.getCurrentUser();
-
         String userID = firebaseUser.getUid();
         Log.d("zzzz", "onViewCreated: " + userID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -105,23 +122,40 @@ public class SettingFragment extends BaseFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 user = snapshot.getValue(User.class);
-                if(firebaseUser!= null){
+                if (firebaseUser != null) {
                     binding.tvName.setText(user.getName_user());
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files : listResult.getItems()
+            ) {
+                if (files.getName().equals(user.getId())) {
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Log.d("TAG", "initView: " + uri);
+                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                    });
+                }
+
+            }
+        }).addOnFailureListener(e -> {
+
+        });
+
     }
 
     @Override
     public void listening() {
-        binding.icEditUser.setOnClickListener(ic ->{
+        binding.icEditUser.setOnClickListener(ic -> {
             replaceFragment(new UpdateUserFragment().newInstance(user));
         });
 
-        binding.btnLogout.setOnClickListener(btn ->{
+        binding.btnLogout.setOnClickListener(btn -> {
             signOut(getContext());
         });
     }
@@ -132,17 +166,33 @@ public class SettingFragment extends BaseFragment {
 
     @Override
     public void initView() {
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files : listResult.getItems()
+            ) {
+                if (files.getName().equals(user.getId())) {
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Log.d("TAG", "initView: " + uri);
+                        binding.imgAvatar.setImageURI(uri);
+                    });
+                }
+
+            }
+        }).addOnFailureListener(e -> {
+
+        });
+
     }
 
 
-    private void dialogChangeProfile(Context context){
-        final Dialog dialog = new Dialog(context,android.R.style.Theme_Material_Light_NoActionBar);
+    private void dialogChangeProfile(Context context) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_Light_NoActionBar);
         dialog.setContentView(R.layout.layout_change_profile);
         Window window = dialog.getWindow();
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         window.setStatusBarColor(context.getColor(R.color.white));
         dialog.setCancelable(false);
-        dialog.findViewById(R.id.icBack).setOnClickListener(ic ->{
+        dialog.findViewById(R.id.icBack).setOnClickListener(ic -> {
             dialog.dismiss();
         });
         ImageView icSave = dialog.findViewById(R.id.icSave);
@@ -156,7 +206,7 @@ public class SettingFragment extends BaseFragment {
         TextInputEditText edBirth = dialog.findViewById(R.id.edBirth);
         icSave.setColorFilter(R.color.red);
         changeColorIcCheck(edName, icSave);
-        changeColorIcCheck(edPhone,icSave);
+        changeColorIcCheck(edPhone, icSave);
         changeColorIcCheck(edEmail, icSave);
         changeColorIcCheck(edAddress, icSave);
         changeColorIcCheck(edBirth, icSave);
@@ -166,10 +216,9 @@ public class SettingFragment extends BaseFragment {
     }
 
 
-
     //cái này chưa dùng đến, nghiên cứu sau
 
-    private void changeColorIcCheck(EditText editText, ImageView icCheck){
+    private void changeColorIcCheck(EditText editText, ImageView icCheck) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -183,16 +232,16 @@ public class SettingFragment extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(editText.length() != 0){
+                if (editText.length() != 0) {
                     icCheck.setColorFilter(R.color.blue);
-                }else {
+                } else {
                     icCheck.setColorFilter(R.color.grey_350);
                 }
             }
         });
     }
 
-    private void signOut(Context context){
+    private void signOut(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Đăng xuất tài khoản ");
         builder.setIcon(context.getDrawable(R.drawable.ic_logout));
@@ -210,7 +259,7 @@ public class SettingFragment extends BaseFragment {
         builder.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context,"Đã hủy !",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Đã hủy !", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
             }
         });

@@ -41,6 +41,7 @@ public class ProductFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,59 +98,27 @@ public class ProductFragment extends BaseFragment {
         });
     }
 
-
     @Override
     public void loadData() {
+
     }
 
     @Override
     public void listening() {
+
     }
 
     @Override
     public void initObSever() {
-    }
-    @Override
-    public void initView() {
+
     }
 
-    private void add_product(){
-        FirebaseDatabase data = FirebaseDatabase.getInstance();
-        DatabaseReference mRef= data.getReference("list_product");
-        ArrayList<Product> list_product = new ArrayList<>();
-        listType = new ArrayList<>();
-        TypePoduct Coffee = new TypePoduct("Coffee");
-        TypePoduct  Sinhto = new TypePoduct("Sinh tố");
-        TypePoduct Banh = new TypePoduct("Bánh ngọt");
-        list_product.add( new Product(0,"Campuchino",35000,"Coffee nóng có lớp bọt sữa",Coffee,R.drawable.img_capuchino));
-        list_product.add( new Product(1,"Capuchino Vienese",20000,"Coffee nóng có lớp kem",Coffee,R.drawable.img_capuchino_viennese));
-        list_product.add( new Product(2,"Late machiato",25000,"Coffee lạnh có lớp bọt sữa",Coffee,R.drawable.img_latte_machiato));
-        list_product.add( new Product(3,"Coffee Hot",20000,"Coffee nóng",Coffee,R.drawable.img_coffee_hot));
-        list_product.add( new Product(4,"Espresson Con Panna",20000,"Coffee thường có lớp kem",Coffee,R.drawable.img_espresso_con_panna));
-        list_product.add( new Product(5,"Mocha Matcha",20000,"Lớp kem vị trà xanh",Coffee,R.drawable.img_mocha_matcha));
-        list_product.add(new Product(6,"Bạc xỉu",20000,"Coffee có nhiều sữa",Coffee,R.drawable.img_bacxiu));
-        list_product.add(new Product(7,"Coffee Milk",20000,"Coffee sữa ",Coffee,R.drawable.img_cofffe_sua));
-        list_product.add(new Product(8,"Nước Cam",25000,"cam ép tự nhiên",Sinhto,R.drawable.img_orange_juice));
-        list_product.add(new Product(9,"Nước Lựu",30000,"lựu ép tự nhiên",Sinhto,R.drawable.img_pomegranate_juice));
-        list_product.add(new Product(10,"Nước Táo",20000,"táo ép tự nhiên",Sinhto,R.drawable.img_apple_juice));
-        list_product.add(new Product(11,"Nước Nho",30000,"táo ép tự nhiên",Sinhto,R.drawable.img_grape_juice));
-        list_product.add(new Product(12,"Sinh Tố Bơ",30000,"quả bơ say với sữa,đá",Sinhto,R.drawable.img_avocado_juice));
-        list_product.add(new Product(13,"Sinh Tố Cam Dứa",30000,"nước ép cam với dứa",Sinhto,R.drawable.img_pineapple_juice));
-        list_product.add(new Product(14,"Sinh Tố Dưa Hấu",30000,"nước ép dưa với táo ",Sinhto,R.drawable.img_watermelon));
-        list_product.add(new Product(15,"Sinh Tố Dưa Hấu",30000,"nước ép xoài với sữa ",Sinhto,R.drawable.img_mangoes_juice));
-        list_product.add(new Product(16,"Bánh Donut",15000,"bánh nương",Banh,R.drawable.img_donut));
-        list_product.add(new Product(17,"Bánh Cupcake",25000,"bánh nướng ",Banh,R.drawable.img_cupcake));
-        list_product.add(new Product(18,"Bánh Cupcake Dâu",25000,"bánh nướng",Banh,R.drawable.img_cupcake_dau));
-        list_product.add(new Product(19,"Bánh Mochi",10000,"bánh bột gạo",Banh,R.drawable.img_mochi));
-        list_product.add(new Product(20,"Bánh Muffin Socola",15000,"bánh nướng vị socola",Banh,R.drawable.img_muffin));
-        list_product.add(new Product(21,"Bánh Muffin ",15000,"bánh nướng",Banh,R.drawable.muffin_defaut));
-        list_product.add(new Product(22,"Bánh Pudding",50000,"thạch",Banh,R.drawable.img_pudding));
-       mRef.setValue(list_product, new DatabaseReference.CompletionListener() {
-           @Override
-           public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-           }
-       });
+    @Override
+    public void initView() {
+
+
     }
+
     private  void get_Product(){
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference mRef = data.getReference("list_product");
@@ -158,7 +127,11 @@ public class ProductFragment extends BaseFragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listProduct.clear();
                 for(DataSnapshot datasnapshot : snapshot.getChildren()){
-                    Product product = datasnapshot.getValue(Product.class);
+
+                    Product product =  datasnapshot.getValue(Product.class);
+                    Log.e(TAG, "onDataChange: " + product.toString());
+
+                  //  Product product = datasnapshot.getValue(Product.class);
                     listProduct.add(product);
                 }
                     bindProduct.tvCountProduct.setText("Có "+listProduct.size()+" sản phẩm");
@@ -189,5 +162,6 @@ public class ProductFragment extends BaseFragment {
         window.setStatusBarColor(mMainActivity.getColor(R.color.white));
 
     }
+
 
 }

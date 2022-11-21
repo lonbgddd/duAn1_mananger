@@ -9,7 +9,6 @@ import java.util.Map;
 public class User {
     private String id;
     private String name_user;
-    private String avatar;
     private Boolean sex = true;
     private String phone_number;
     private String birthday;
@@ -33,13 +32,6 @@ public class User {
         this.name_user = name_user;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 
     public Boolean getSex() {
         return sex;
@@ -89,10 +81,9 @@ public class User {
         this.email = email;
     }
 
-    public User(String id, String name_user, String avatar, Boolean sex, String phone_number, String birthday, String address, String password, String email) {
+    public User(String id, String name_user, Boolean sex, String phone_number, String birthday, String address, String password, String email) {
         this.id = id;
         this.name_user = name_user;
-        this.avatar = avatar;
         this.sex = sex;
         this.phone_number = phone_number;
         this.birthday = birthday;
