@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
+
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding = null;
 
@@ -35,12 +37,12 @@ public class SignUpActivity extends AppCompatActivity {
         window.setStatusBarColor(getColor(R.color.brown_120));
         setBindingAnimation(binding);
 
-        binding.icBack.setOnClickListener(ic ->{
+        binding.icBack.setOnClickListener(ic -> {
             onBackPressed();
         });
 
         binding.btnSignup.setOnClickListener(v -> {
-            if(validateInput()){
+            if (validateInput()) {
                 createUser();
             }
 
@@ -58,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), binding.name.getText().toString(), "", null, "", "", "",
+                            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(), binding.name.getText().toString(), null, "", "", "",
                                     binding.pass.getText().toString(),
                                     binding.email.getText().toString());
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -84,52 +86,53 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private boolean validateInput(){
+    private boolean validateInput() {
+
         String strName = binding.name.getText().toString().trim();
         String strEmail = binding.email.getText().toString().trim();
         String strPass = binding.pass.getText().toString().trim();
         String strRePass = binding.rePass.getText().toString().trim();
-        if(TextUtils.isEmpty(strName)) {
+        if (TextUtils.isEmpty(strName)) {
             binding.email.setError(getString(R.string.error_name), null);
             binding.email.requestFocus();
             return false;
-        }else if(TextUtils.isEmpty(strEmail)){
-            binding.email.setError(getString(R.string.error_email_1),null);
+        } else if (TextUtils.isEmpty(strEmail)) {
+            binding.email.setError(getString(R.string.error_email_1), null);
             binding.email.requestFocus();
             return false;
-        }else if(!Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
-            binding.email.setError(getString(R.string.error_email_2),null);
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
+            binding.email.setError(getString(R.string.error_email_2), null);
             binding.email.requestFocus();
             return false;
-        }else if(TextUtils.isEmpty(strPass)) {
-            binding.pass.setError(getString(R.string.error_pass_1),null);
+        } else if (TextUtils.isEmpty(strPass)) {
+            binding.pass.setError(getString(R.string.error_pass_1), null);
             binding.pass.requestFocus();
             return false;
-        } else if(!(strRePass.matches(strPass)) || TextUtils.isEmpty(strRePass)){
-            binding.rePass.setError(getString(R.string.error_pass_2),null);
+        } else if (!(strRePass.matches(strPass)) || TextUtils.isEmpty(strRePass)) {
+            binding.rePass.setError(getString(R.string.error_pass_2), null);
             binding.rePass.requestFocus();
             return false;
-        }else {
+        } else {
             return true;
         }
 
     }
 
-    private void setBindingAnimation(ActivitySignUpBinding binding ){
-        viewAnimation(binding.icBack,"translationX", -400f, 0f);
-        viewAnimation(binding.icLogo,"translationX", 400f, 0f);
-        viewAnimation(binding.tvIcon,"translationX", -400f, 0f);
-        viewAnimation(binding.tvContent,"translationY", -400f, 0f);
-        viewAnimation(binding.name,"translationX", 400f, 0f);
-        viewAnimation(binding.email,"translationX", -400f, 0f);
-        viewAnimation(binding.tilPass,"translationX", 400f, 0f);
-        viewAnimation(binding.tilRePass,"translationX", -400f, 0f);
-        viewAnimation(binding.cavButton,"translationY", 400f, 0f);
+    private void setBindingAnimation(ActivitySignUpBinding binding) {
+        viewAnimation(binding.icBack, "translationX", -400f, 0f);
+        viewAnimation(binding.icLogo, "translationX", 400f, 0f);
+        viewAnimation(binding.tvIcon, "translationX", -400f, 0f);
+        viewAnimation(binding.tvContent, "translationY", -400f, 0f);
+        viewAnimation(binding.name, "translationX", 400f, 0f);
+        viewAnimation(binding.email, "translationX", -400f, 0f);
+        viewAnimation(binding.tilPass, "translationX", 400f, 0f);
+        viewAnimation(binding.tilRePass, "translationX", -400f, 0f);
+        viewAnimation(binding.cavButton, "translationY", 400f, 0f);
 
     }
 
-    private void viewAnimation(View view, String ani, float... values){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view,ani,values);
+    private void viewAnimation(View view, String ani, float... values) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, ani, values);
         animator.setDuration(1800);
         animator.start();
     }
