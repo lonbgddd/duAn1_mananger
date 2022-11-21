@@ -139,6 +139,8 @@ public class UpdateUserFragment extends BaseFragment {
                         Log.d("TAG", "initView: "+uri);
                         Glide.with(getContext()).load(uri).into(binding.imgAvatar);
                     });
+                } else {
+                    Glide.with(getContext()).load(R.drawable.img_avatar).into(binding.imgAvatar);
                 }
 
             }
