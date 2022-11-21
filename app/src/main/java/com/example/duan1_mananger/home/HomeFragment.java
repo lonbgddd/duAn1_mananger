@@ -15,16 +15,25 @@ import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentHomeBinding;
+import com.example.duan1_mananger.model.User;
 import com.example.duan1_mananger.table.FragmentListAllTables;
 import com.example.duan1_mananger.home.fragments.FragmentListEmptyTables;
 import com.example.duan1_mananger.home.fragments.FragmentListOpenTables;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class HomeFragment extends BaseFragment {
-   private  FragmentHomeBinding binding;
+   private FragmentHomeBinding binding;
+   private User user;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -76,7 +85,23 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void loadData() {
+        user = new User();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        String userID = firebaseUser.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(User.class);
+                if (firebaseUser != null) {
+                    binding.tvName.setText(user.getName_user());
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     @Override

@@ -9,13 +9,15 @@
         android:id="@+id/layoutItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_5dp"
-        app:cardElevation="@dimen/dimen_5dp"
+        android:layout_marginHorizontal="@dimen/dimen_5dp"
+        android:layout_marginVertical="@dimen/dimen_8dp"
+        app:cardElevation="@dimen/dimen_4dp"
         app:cardCornerRadius="@dimen/dimen_20dp"
+
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
           <androidx.constraintlayout.widget.ConstraintLayout
               android:id="@+id/layoutHeaderTable"
               android:layout_width="match_parent"
@@ -91,6 +93,7 @@
                 android:layout_height="@dimen/dimen_110dp"
                 android:orientation="vertical"
                 android:background="@color/grey_55"
+
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dimen_10dp"
                 android:paddingVertical="@dimen/dimen_10dp"
@@ -130,9 +133,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     />
-
-
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

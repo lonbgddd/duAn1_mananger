@@ -42,6 +42,7 @@
                         app:layout_constraintVertical_bias="0.035" />
 
                     <TextView
+                        android:id="@+id/tvName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimen_7dp"
