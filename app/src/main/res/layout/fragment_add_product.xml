@@ -89,7 +89,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" >
                     <ImageView
-                        android:id="@+id/imgAvatar"
+                        android:id="@+id/imgProduct"
                         android:layout_width="@dimen/dimen_200dp"
                         android:layout_height="@dimen/dimen_150dp"
                         android:scaleType="centerCrop"
@@ -115,6 +115,7 @@
                     app:tint="@color/grey_200" />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
+                android:id="@+id/tvAddImgProduct"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -279,7 +280,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/dimen_15dp"
@@ -289,6 +289,7 @@
                 app:cardCornerRadius="@dimen/dimen_20dp"
                 >
                 <Button
+                    android:id="@+id/btnSaveProduct"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
