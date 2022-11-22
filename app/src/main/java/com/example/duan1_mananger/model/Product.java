@@ -4,31 +4,30 @@ public class Product {
     private int id ;
     private String name_product;
     private double price;
-    private String mota;
-    private TypePoduct type_poduct;
-    private String image_product;
+    private String describe;
+    private TypePoduct typePoduct;
+    private String imgProduct;
     private String note;
 
     public Product() {
     }
 
-    public Product(int id ,String name_product, double price, String mota, TypePoduct type_poduct, String image_product) {
-        this.id = id;
+    public Product (String name_product, double price, String describe, TypePoduct typePoduct, String note) {
         this.name_product = name_product;
         this.price = price;
-        this.mota = mota;
-        this.type_poduct = type_poduct;
-        this.image_product = image_product;
+        this.describe = describe;
+        this.typePoduct = typePoduct;
+        this.note = note;
     }
 
-    public Product(int id, String name_product, double price, String note, String mota, TypePoduct type_poduct, String image_product) {
+    public Product(int id, String name_product, double price, String note, String describe, TypePoduct typePoduct, String imgProduct) {
         this.id = id;
         this.name_product = name_product;
         this.price = price;
         this.note = note;
-        this.mota = mota;
-        this.type_poduct = type_poduct;
-        this.image_product = image_product;
+        this.describe = describe;
+        this.typePoduct = typePoduct;
+        this.imgProduct = imgProduct;
     }
 
     public int getId() {
@@ -63,27 +62,27 @@ public class Product {
         this.note = note;
     }
 
-    public TypePoduct getType_product() {
-        return type_poduct;
+    public TypePoduct getTypePoduct() {
+        return typePoduct;
     }
 
-    public void setType_product(TypePoduct type_poduct) {
-        this.type_poduct = type_poduct;
+    public void setTypePoduct(TypePoduct typePoduct) {
+        this.typePoduct = typePoduct;
     }
 
-    public String getMota() {
-        return mota;
+    public String getDescribe() {
+        return describe;
     }
 
-    public void setMota(String mota) {
-        this.mota = mota;
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 
-    public String getImage_product() {
-        return image_product;
+    public String getImgProduct() {
+        return imgProduct;
     }
 
-    public void setImage_product(String image_product) {
-        this.image_product = image_product;
+    public void setImgProduct(String imgProduct) {
+        this.imgProduct = imgProduct;
     }
 }
