@@ -64,12 +64,14 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
         reference.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference files: listResult.getItems()
             ) {
-                if (files.getName().equals(user.getUid())){
+                if (files.getName().equals(firebaseUser.getUid())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
                         Log.d("TAG", "initView: "+uri);
                         Glide.with(getContext()).load(uri).into(binding.icUserSetting);

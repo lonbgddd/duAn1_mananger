@@ -19,6 +19,7 @@ import com.example.duan1_mananger.databinding.LayoutItemProductBinding;
 import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.table.TableAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,6 +31,7 @@ import java.util.Locale;
 public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
     private String text;
+
 
     public ProductApdater(ArrayList<Product> listProduct, String text) {
         this.listProduct = listProduct;
@@ -57,14 +59,7 @@ public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHold
         if (product == null) {
             return;
         } else {
-//            if (text.equalsIgnoreCase("")) {
-//            } else {
-//                if (product.getTypePoduct().getName_type().equalsIgnoreCase(text)) {
-//
-//                } else {
-//                    listProduct.remove(position);
-//                }
-//            }
+
             holder.initData(product);
         }
     }
@@ -102,9 +97,13 @@ public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHold
                     }
                 }
             });
-                tvName.setText(product.getName_product());
-                tvPrice.setText(String.valueOf(product.getPrice()));
-                tvNote.setText(product.getNote());
+            tvName.setText(product.getName_product());
+            Locale locale = new Locale("en","EN");
+            NumberFormat numberFormat = NumberFormat.getInstance(locale);
+            Double price = product.getPrice();
+            String strPrice = numberFormat.format(price);
+            tvPrice.setText(strPrice +"đ");
+            tvNote.setText(product.getNote());
         }
     }
 }
