@@ -1,11 +1,11 @@
 package com.example.duan1_mananger.model;
 
 public class Product {
-    private int id ;
-    private String name_product;
+    private String id ;
+    private String nameProduct;
     private double price;
     private String describe;
-    private TypePoduct typePoduct;
+    private TypeProduct typeProduct;
     private String imgProduct;
     private String note;
 
@@ -13,38 +13,31 @@ public class Product {
     public Product() {
     }
 
-    public Product (String name_product, double price, TypePoduct typePoduct, String note) {
-        this.name_product = name_product;
-        this.price = price;
 
-        this.typePoduct = typePoduct;
-        this.note = note;
-    }
-
-    public Product(int id, String name_product, double price, String note, String describe, TypePoduct typePoduct, String imgProduct) {
+    public Product(String id, String nameProduct, String describe, TypeProduct typeProduct, double price, String note) {
         this.id = id;
-        this.name_product = name_product;
+        this.nameProduct = nameProduct;
         this.price = price;
         this.note = note;
         this.describe = describe;
-        this.typePoduct = typePoduct;
-        this.imgProduct = imgProduct;
+        this.typeProduct = typeProduct;
+
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName_product() {
-        return name_product;
+    public String getNameProduct() {
+        return nameProduct;
     }
 
-    public void setName_product(String name_product) {
-        this.name_product = name_product;
+    public void setNameProduct(String nameProduct) {
+        this.nameProduct = nameProduct;
     }
 
     public double getPrice() {
@@ -63,12 +56,12 @@ public class Product {
         this.note = note;
     }
 
-    public TypePoduct getTypePoduct() {
-        return typePoduct;
+    public TypeProduct getTypeProduct() {
+        return typeProduct;
     }
 
-    public void setTypePoduct(TypePoduct typePoduct) {
-        this.typePoduct = typePoduct;
+    public void setTypeProduct(TypeProduct typeProduct) {
+        this.typeProduct = typeProduct;
     }
 
     public String getDescribe() {

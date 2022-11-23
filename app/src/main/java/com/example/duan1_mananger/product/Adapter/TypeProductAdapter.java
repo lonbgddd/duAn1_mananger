@@ -1,6 +1,7 @@
 package com.example.duan1_mananger.product.Adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,87 +13,92 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.duan1_mananger.R;
-import com.example.duan1_mananger.model.TypePoduct;
+import com.example.duan1_mananger.databinding.LayoutItemProductBinding;
+import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
+import com.example.duan1_mananger.databinding.LayoutItemTypeProductBinding;
+import com.example.duan1_mananger.databinding.LayoutProductTypeBinding;
+import com.example.duan1_mananger.model.Product;
+import com.example.duan1_mananger.model.Table;
+import com.example.duan1_mananger.model.TypeProduct;
 
 import java.util.ArrayList;
 
-public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.Type_product_ViewHolder> {
-    private ArrayList<TypePoduct> list_type;
+public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.ViewHolderTypeProduct> {
+    private ArrayList<TypeProduct> listType;
     private Context context;
-    private IClickItemListener iClickItemListener;
-    public interface IClickItemListener{
-        void onClickItemType(TypePoduct typePoduct);
+
+
+    public TypeProductAdapter(ArrayList<TypeProduct> listType) {
+        this.listType = listType;
     }
 
-    public TypeProductAdapter(ArrayList<TypePoduct> list_type,IClickItemListener iClickItemListener) {
-        this.iClickItemListener = iClickItemListener;
-        this.list_type = list_type;
-    }
 
-    public  void setFilterListType(ArrayList<TypePoduct> filterList ){
-        this.list_type = filterList;
+
+    public  void setFilterListType(ArrayList<TypeProduct> filterList ){
+        this.listType = filterList;
         notifyDataSetChanged();
 
     }
 
 
-
     @NonNull
     @Override
-    public Type_product_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater =LayoutInflater.from(parent.getContext());
-        View row =inflater.inflate(R.layout.layout_item_type_product,parent,false);
-        Type_product_ViewHolder viewHolder = new Type_product_ViewHolder(row);
-        return viewHolder;
+    public ViewHolderTypeProduct onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new TypeProductAdapter.ViewHolderTypeProduct(LayoutItemTypeProductBinding.inflate(LayoutInflater.from(parent.getContext()),parent, false));
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Type_product_ViewHolder holder, int position) {
-        final  TypePoduct type_poduct = list_type.get(position);
-        String text = type_poduct.getName_type();
-        if(type_poduct ==null){
+    public void onBindViewHolder(@NonNull ViewHolderTypeProduct holder, int position) {
+        TypeProduct typeProduct = listType.get(position);
+        if (typeProduct == null) {
             return;
+        } else {
+            holder.initData(typeProduct);
         }
-        holder.tvNameType.setText(type_poduct.getName_type());
-        holder.layout_item_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(holder.icCheckType.getVisibility()==View.GONE){
-                    holder.icCheckType.setVisibility(View.VISIBLE);
-                }else if(holder.icCheckType.getVisibility()==View.INVISIBLE){
-                    iClickItemListener.onClickItemType(type_poduct);
-                    holder.icCheckType.setVisibility(View.VISIBLE);
-                }else {
-                    holder.icCheckType.setVisibility(View.INVISIBLE);
-                    iClickItemListener.onClickItemType(null);
-                }
-
-            }
-        });
 
     }
 
     @Override
     public int getItemCount() {
-        if(list_type!= null){
-            return list_type.size();
+        if(listType!= null){
+            return listType.size();
         }
         return 0;
     }
 
-    public class Type_product_ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNameType;
-        ConstraintLayout layout_item_type;
-        ImageView icCheckType;
+    class ViewHolderTypeProduct extends RecyclerView.ViewHolder {
+        private TextView tvNameType;
+        private ImageView icCheck;
+        private ConstraintLayout layoutItem;
 
-        public Type_product_ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvNameType = itemView.findViewById(R.id.tvNameType);
-            layout_item_type= itemView.findViewById(R.id.layout_item_type);
-            icCheckType=itemView.findViewById(R.id.icCheckTypeProduct);
+        public ViewHolderTypeProduct(LayoutItemTypeProductBinding binding) {
+            super(binding.getRoot());
+            tvNameType = binding.tvNameType;
+            icCheck = binding.icCheckTypeProduct;
+            layoutItem = binding.layoutItemType;
+        }
+
+        void initData(TypeProduct typeProduct){
+            tvNameType.setText(typeProduct.getNameType());
+            layoutItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(icCheck.getVisibility()==View.GONE){
+                        icCheck.setVisibility(View.VISIBLE);
+                    }else if(icCheck.getVisibility()==View.INVISIBLE){
+
+                        icCheck.setVisibility(View.VISIBLE);
+                    }else {
+                        icCheck.setVisibility(View.INVISIBLE);
+
+                    }
+
+                }
+            });
         }
     }
+
 
 
 

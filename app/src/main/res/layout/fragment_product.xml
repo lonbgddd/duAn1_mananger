@@ -7,11 +7,7 @@
     tools:context=".product.ProductFragment"
     android:background="@color/grey_40"
     android:orientation="vertical">
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_control"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        />
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
