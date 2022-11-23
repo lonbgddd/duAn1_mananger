@@ -9,6 +9,7 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.duan1_mananger.MainActivity;
@@ -68,31 +69,29 @@ public class ProductFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            TypePoduct typePoduct = (TypePoduct) bundle.get("objType");
-            if(typePoduct!=null){
-                NameType = typePoduct.getName_type();
-                Log.e("aa", "onViewCreated: "+typePoduct.getName_type());
-            }
-        }
 
-//        getProduct();
-//        tạm thời rào lại
 
         listProduct = new ArrayList<>();
-        productAdapter = new ProductApdater(listProduct,NameType);
-        bindProduct.listProduct.setAdapter(productAdapter);
+        loadData();
+        listening();
+        initObSever();
+    }
 
+    @Override
+    public void loadData() {
+        getProduct();
 
-        //add_product();
-        // đã thêm cứng dữ liệu nên dào lại
-        Log.e("aa", "onViewCreated: 2" );
+    }
+
+    @Override
+    public void listening() {
         bindProduct.layoutType.setOnClickListener(layout ->{
-            ReplaceTypeFragment();
+            replaceTypeFragment();
             Log.e("aa", "onViewCreated: 3" );
         });
-
+        bindProduct.fabAddProduct.setOnClickListener(v -> {
+           replaceAddProductFragment();
+        });
         bindProduct.searchViewProduct.clearFocus();
         bindProduct.searchViewProduct.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -102,24 +101,21 @@ public class ProductFragment extends BaseFragment {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-               Filterlist(newText,listProduct);
+                Filterlist(newText);
                 return false;
             }
         });
-        listening();
-        initObSever();
-    }
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            TypePoduct typePoduct = (TypePoduct) bundle.get("objType");
+            if(typePoduct!=null){
+                NameType = typePoduct.getName_type();
+                Log.e("aa", "onViewCreated: "+typePoduct.getName_type());
+                Filterlist(NameType);
+            }
+        }
 
-    @Override
-    public void loadData() {
-        getProduct();
-    }
 
-    @Override
-    public void listening() {
-        bindProduct.fabAddProduct.setOnClickListener(v -> {
-            replaceFragment(new AddProductFragment().newInstance());
-        });
     }
 
     @Override
@@ -145,18 +141,21 @@ public class ProductFragment extends BaseFragment {
                     listProduct.add(product);
                 }
                     bindProduct.tvCountProduct.setText("Có "+listProduct.size()+" sản phẩm");
-                    productAdapter.notifyDataSetChanged();
+                productAdapter.notifyDataSetChanged();
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
         productAdapter = new ProductApdater(listProduct);
-        Log.d("TAG", "getProduct: "+listProduct.size());
+        Log.d("TAG", "getProduct:"+listProduct.size());
         recyclerView.setAdapter(productAdapter);
+
     }
-    private void Filterlist(String text,ArrayList<Product> listProduct) {
+    private void Filterlist(String text) {
         ArrayList<Product> filterlist =new ArrayList<>();
+        Log.e("aa", "onViewCreated: "+listProduct.size());
         for (Product product: listProduct) {
             if(product.getName_product().toLowerCase().contains(text.toLowerCase())||product.getTypePoduct().getName_type().toLowerCase().contains(text.toLowerCase())){
                 filterlist.add(product);
@@ -168,13 +167,29 @@ public class ProductFragment extends BaseFragment {
             bindProduct.tvCountProduct.setText(filterlist.size()+" sản phẩm");
         }
     }
-    private void ReplaceTypeFragment(){
+    private void replaceTypeFragment(){
         Window window = mMainActivity.getWindow();
         mMainActivity. getSupportFragmentManager().beginTransaction().add(R.id.fade_control, TypeProductFragment.newInstance()).commit();
         mMainActivity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         window.setStatusBarColor(mMainActivity.getColor(R.color.white));
 
     }
+    private void replaceAddProductFragment(){
+        FragmentTransaction fragmentTransaction = mMainActivity.getSupportFragmentManager().beginTransaction();
+        AddProductFragment addProductFragment = new AddProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("listProduct", listProduct);
+        Log.e("list", "replaceAddProductFragment: "+listProduct.size() );
+        addProductFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.fade_control, addProductFragment);
+        fragmentTransaction.commit();
+        mMainActivity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        Window window = mMainActivity.getWindow();
+        window.setStatusBarColor(mMainActivity.getColor(R.color.white));
+
+
+    }
+
 
 
 }

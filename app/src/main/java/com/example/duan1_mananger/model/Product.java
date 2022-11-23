@@ -9,13 +9,14 @@ public class Product {
     private String imgProduct;
     private String note;
 
+
     public Product() {
     }
 
-    public Product (String name_product, double price, String describe, TypePoduct typePoduct, String note) {
+    public Product (String name_product, double price, TypePoduct typePoduct, String note) {
         this.name_product = name_product;
         this.price = price;
-        this.describe = describe;
+
         this.typePoduct = typePoduct;
         this.note = note;
     }
