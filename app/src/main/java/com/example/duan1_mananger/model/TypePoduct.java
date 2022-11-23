@@ -3,13 +3,13 @@ package com.example.duan1_mananger.model;
 import java.io.Serializable;
 
 public class TypePoduct implements Serializable {
-    private long id;
+    private int id;
     private String name_type;
 
     public TypePoduct() {
     }
 
-    public TypePoduct(long id, String name_type) {
+    public TypePoduct(int id, String name_type) {
         this.id = id;
         this.name_type = name_type;
     }
@@ -18,11 +18,11 @@ public class TypePoduct implements Serializable {
         this.name_type = name_type;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
