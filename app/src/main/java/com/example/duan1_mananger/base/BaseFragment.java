@@ -1,5 +1,6 @@
 package com.example.duan1_mananger.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.duan1_mananger.R;
+import com.example.duan1_mananger.databinding.LayoutErrorInputBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -40,6 +43,17 @@ public abstract class BaseFragment extends Fragment {
         getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                 R.anim.slide_out_right).replace(R.id.fade_control, fragment).addToBackStack(null).commit();
     }
+
+    public void errSnackBarInput(Context context,String textErr){
+        LayoutErrorInputBinding binding = LayoutErrorInputBinding.inflate(LayoutInflater.from(context));
+        final  Snackbar snackbar = Snackbar.make(binding.getRoot(),"", Snackbar.LENGTH_SHORT);
+
+        binding.tvErr.setText(textErr);
+
+        snackbar.show();
+
+    }
+
     abstract public void loadData();
 
     abstract public void listening();

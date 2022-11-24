@@ -9,7 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0606</color>
     <color name="blue">#03A9F4</color>
-
+    <color name="red_200">#FF3232</color>
     <color name="blue_100">#77D5FE</color>
     <color name="green_50">#E3FFCD</color>
     <color name="green_200">#00A110</color>

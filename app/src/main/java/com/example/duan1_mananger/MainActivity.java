@@ -1,55 +1,21 @@
 package com.example.duan1_mananger;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-
-
 
 
 import android.os.Bundle;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.security.identity.CipherSuiteNotSupportedException;
-
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.duan1_mananger.databinding.ActivityMainBinding;
 import com.example.duan1_mananger.home.HomeFragment;
 import com.example.duan1_mananger.maket.MaketFragment;
-import com.example.duan1_mananger.model.TypePoduct;
 import com.example.duan1_mananger.product.ProductFragment;
-import com.example.duan1_mananger.product.TypeProductFragment;
 import com.example.duan1_mananger.setting.SettingFragment;
-import com.example.duan1_mananger.setting.UpdateUserFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-
-import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding = null;
@@ -106,28 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void ReplaceProductFragment(TypePoduct typePoduct) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        ProductFragment productFragment = new ProductFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("objType", typePoduct);
-        productFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fade_control, productFragment);
-        fragmentTransaction.addToBackStack(ProductFragment.TAG);
-        fragmentTransaction.commit();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        Window window = getWindow();
-        window.setStatusBarColor(getColor(R.color.white));
 
-    }
-
-    public void ReplaceTypeFragment() {
-        Window window = getWindow();
-        getSupportFragmentManager().beginTransaction().add(R.id.fade_control, TypeProductFragment.newInstance()).commit();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        window.setStatusBarColor(getColor(R.color.white));
-
-    }
 
 
 

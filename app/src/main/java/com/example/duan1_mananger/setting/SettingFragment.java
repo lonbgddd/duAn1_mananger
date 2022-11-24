@@ -121,7 +121,6 @@ public class SettingFragment extends BaseFragment {
         user = new User();
         firebaseUser = firebaseAuth.getCurrentUser();
         String userID = firebaseUser.getUid();
-        Log.d("zzzz", "onViewCreated: " + userID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -142,7 +141,6 @@ public class SettingFragment extends BaseFragment {
             ) {
                 if (files.getName().equals(userID)) {
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Log.d("TAG", "initView: " + uri);
                         Glide.with(getContext()).load(uri).into(binding.imgAvatar);
                     });
                 }
@@ -171,21 +169,7 @@ public class SettingFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child("avatars");
-        reference.listAll().addOnSuccessListener(listResult -> {
-            for (StorageReference files : listResult.getItems()
-            ) {
-                if (files.getName().equals(user.getId())) {
-                    files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Log.d("TAG", "initView: " + uri);
-                        binding.imgAvatar.setImageURI(uri);
-                    });
-                }
 
-            }
-        }).addOnFailureListener(e -> {
-
-        });
 
     }
 

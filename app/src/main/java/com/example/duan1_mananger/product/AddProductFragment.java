@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -21,17 +22,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
 import com.example.duan1_mananger.databinding.FragmentAddProductBinding;
+import com.example.duan1_mananger.databinding.FragmentTypeProductBinding;
 import com.example.duan1_mananger.model.Product;
-import com.example.duan1_mananger.model.TypePoduct;
-import com.example.duan1_mananger.product.Adapter.SpipnerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.duan1_mananger.model.TypeProduct;
+import com.example.duan1_mananger.product.Adapter.SpinnerTypeProductAdapter;
+import com.example.duan1_mananger.product.Adapter.TypeProductAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,14 +49,10 @@ import java.util.ArrayList;
 public class AddProductFragment extends BaseFragment {
 
     private FragmentAddProductBinding binding;
-    private Product product = null;
-    private ArrayList<Product> listProduct;
-    private ArrayList<TypePoduct> listType;
+    private ArrayList<TypeProduct> listTypeProduct;
     private static final int PICL_IMAGES_CODE = 1001;
-    private TypePoduct typePoduct;
-    private Spinner spinner;
-    Uri imgProduct;
-    FirebaseAuth firebaseAuth;
+
+    private Uri imgProduct;
 
     public AddProductFragment() {
         // Required empty public constructor
@@ -79,52 +78,56 @@ public class AddProductFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentAddProductBinding.inflate(inflater, container, false);
-        listProduct = new ArrayList<>();
-        listType = new ArrayList<>();
-        spinner = binding.spinerType;
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            ArrayList<Product> list = (ArrayList<Product>) bundle.get("listProduct");
-            if(list!=null){
-                listProduct = list;
-                Log.e("list", "onViewCreated: "+listProduct.size());
-            }
-        }
 
         loadData();
         listening();
-        initObSever();
+        binding.icSaveProduct.setOnClickListener(v -> {
+            saveProduct(getContext());
+        });
+
+        binding.btnSaveProduct.setOnClickListener(v -> {
+            saveProduct(getContext());
+        });
     }
 
     @Override
     public void loadData() {
-        getTypeProduct();
+        listTypeProduct = new ArrayList<>();
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("list_type_product");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listTypeProduct.clear();
+                for(DataSnapshot datasnapshot : snapshot.getChildren()){
+                    TypeProduct type = datasnapshot.getValue(TypeProduct.class);
+                    listTypeProduct.add(type);
+                }
+                SpinnerTypeProductAdapter spinnerAdapter = new SpinnerTypeProductAdapter(listTypeProduct);
+                binding.spinnerType.setAdapter(spinnerAdapter);
+                spinnerAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
 
     }
 
     @Override
     public void listening() {
         binding.icClose.setOnClickListener(v -> {
-            backStack();
+          backStack();
         });
 
-        binding.icSaveProduct.setOnClickListener(v -> {
-            dialogConfirmUpdate(getContext());
-        });
 
-        binding.btnSaveProduct.setOnClickListener(v -> {
-            dialogConfirmUpdate(getContext());
-        });
-
-//        binding.icChoosertYPE.setOnClickListener(v -> {
-//            replaceFragment(new TypeProductFragment().newInstance());
-//        });
 
         binding.icAddImg.setOnClickListener(v -> {
             requestPermission();
@@ -143,40 +146,41 @@ public class AddProductFragment extends BaseFragment {
     public void initView() {
 
     }
-    private void getTypeProduct(){
-        FirebaseDatabase data = FirebaseDatabase.getInstance();
-        DatabaseReference mRef = data.getReference("list_type_product");
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listType.clear();
-                for(DataSnapshot datasnapshot : snapshot.getChildren()){
-                    TypePoduct type = datasnapshot.getValue(TypePoduct.class);
-                    listType.add(type);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
 
-        });
 
-        SpipnerAdapter spipnerAdapter = new SpipnerAdapter(listType);
-        spinner.setAdapter(spipnerAdapter);
-        typePoduct = (TypePoduct) spinner.getSelectedItem();
+    private void saveProduct(Context context){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
+        String key = reference.push().getKey();
+        TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
 
-    }
+        Product product = new Product(key,binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
+                Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
 
-    private void dialogConfirmUpdate(Context context){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Thêm sản phẩm");
-//        builder.setIcon(context.getDrawable(R.drawable.icon_save));
         builder.setMessage("Bạn chắc chắn muốn thêm " + binding.edNameProduct.getText().toString().trim() + " vào menu");
+        builder.setIcon(context.getDrawable(R.drawable.ic_save));
         builder.setCancelable(false);
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveProduct(listProduct);
+                reference.child(key).setValue(product).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                if(imgProduct != null){
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getNameProduct());
+                    storageReference.putFile(imgProduct).addOnSuccessListener(taskSnapshot -> {
+                    }).addOnFailureListener(command -> {
+                        Toast.makeText(getContext(), "Cập nhật ảnh thất bại", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
                 cleanEditText();
             }
         });
@@ -190,42 +194,18 @@ public class AddProductFragment extends BaseFragment {
 
         AlertDialog sh = builder.create();
         sh.show();
+
     }
 
 
 
 
 
-    private void saveProduct(ArrayList<Product> list){
-        Log.d("TAG", "saveProduct: "+binding.imgProduct.getImageAlpha());
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        product = new Product(binding.edNameProduct.getText().toString().trim(), Double.parseDouble(binding.edPrice.getText().toString().trim()),
-                typePoduct,
-                binding.edNote.getText().toString().trim());
-        list.add(product);
-
-        reference.child("Products").setValue(listProduct, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Toast.makeText(getContext(), "OKE", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        if(imgProduct != null){
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getName_product());
-            storageReference.putFile(imgProduct).addOnSuccessListener(taskSnapshot -> {
-                Toast.makeText(getContext(), "Cập nhật ảnh thành công", Toast.LENGTH_SHORT).show();
-            }).addOnFailureListener(command -> {
-                Toast.makeText(getContext(), "Cập nhật ảnh thất bại", Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
 
 
     private void cleanEditText(){
         binding.edNameProduct.setText("");
         binding.edDescribe.setText("");
-//        binding.edTypeProduct.setText("");
         binding.edPrice.setText("");
         binding.edNote.setText("");
         binding.tvAddImgProduct.setVisibility(View.VISIBLE);

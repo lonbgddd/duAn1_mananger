@@ -1,44 +1,36 @@
 package com.example.duan1_mananger.product.Adapter;
 
 
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.databinding.LayoutItemProductBinding;
-import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
 import com.example.duan1_mananger.model.Product;
-import com.example.duan1_mananger.table.TableAdapter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHolderProduct> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
     private String text;
 
 
-    public ProductApdater(ArrayList<Product> listProduct, String text) {
+    public ProductAdapter(ArrayList<Product> listProduct, String text) {
         this.listProduct = listProduct;
         this.text = text;
     }
 
-    public ProductApdater(ArrayList<Product> listProduct) {
+    public ProductAdapter(ArrayList<Product> listProduct) {
         this.listProduct = listProduct;
     }
 
@@ -59,7 +51,6 @@ public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHold
         if (product == null) {
             return;
         } else {
-
             holder.initData(product);
         }
     }
@@ -72,13 +63,13 @@ public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHold
 
     public class ViewHolderProduct extends RecyclerView.ViewHolder {
         ImageView imgProduct;
-        TextView tvName, tvNote, tvPrice;
+        TextView tvName, tvDescribe, tvPrice;
 
         public ViewHolderProduct(LayoutItemProductBinding binding) {
             super(binding.getRoot());
             imgProduct = binding.imgProduct;
             tvName = binding.tvNameProduct;
-            tvNote = binding.tvDescribeProduct;
+            tvDescribe = binding.tvDescribeProduct;
             tvPrice = binding.tvPriceProduct;
         }
 
@@ -86,24 +77,22 @@ public class ProductApdater extends RecyclerView.Adapter<ProductApdater.ViewHold
             StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
             reference.listAll().addOnSuccessListener(listResult -> {
                 for (StorageReference files: listResult.getItems()){
-                    if(files.getName().equals(product.getName_product())){
-                        Log.d("TAG", "initData: "+product.getName_product());
-                        Log.d("TAG", "initData: "+files.getName());
-
+                    if(files.getName().equals(product.getNameProduct())){
                         files.getDownloadUrl().addOnSuccessListener(uri -> {
-                            Log.d("TAG", "initData: "+uri);
                             Glide.with(itemView).load(uri).into(imgProduct);
                         });
                     }
                 }
             });
-            tvName.setText(product.getName_product());
+            tvName.setText(product.getNameProduct());
             Locale locale = new Locale("en","EN");
             NumberFormat numberFormat = NumberFormat.getInstance(locale);
             Double price = product.getPrice();
             String strPrice = numberFormat.format(price);
+
             tvPrice.setText(strPrice +"đ");
-            tvNote.setText(product.getNote());
+            tvDescribe.setText(product.getDescribe());
+
         }
     }
 }
