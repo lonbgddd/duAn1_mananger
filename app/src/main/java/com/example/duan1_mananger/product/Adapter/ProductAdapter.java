@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,11 @@ import java.util.Locale;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
     private String text;
+    OnClickItemListener mOnClickItemListener;
+
+    public interface OnClickItemListener{
+        public void onClickItempProduct(Product product);
+    }
 
 
     public ProductAdapter(ArrayList<Product> listProduct, String text) {
@@ -30,8 +36,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         this.text = text;
     }
 
-    public ProductAdapter(ArrayList<Product> listProduct) {
+    public ProductAdapter(ArrayList<Product> listProduct, OnClickItemListener mOnClickItemListener) {
         this.listProduct = listProduct;
+        this.mOnClickItemListener = mOnClickItemListener;
     }
 
     public void setFilterList(ArrayList<Product> filterList) {
@@ -64,6 +71,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public class ViewHolderProduct extends RecyclerView.ViewHolder {
         ImageView imgProduct;
         TextView tvName, tvDescribe, tvPrice;
+        CardView layoutItem;
 
         public ViewHolderProduct(LayoutItemProductBinding binding) {
             super(binding.getRoot());
@@ -71,6 +79,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             tvName = binding.tvNameProduct;
             tvDescribe = binding.tvDescribeProduct;
             tvPrice = binding.tvPriceProduct;
+            layoutItem = binding.layoutItem;
         }
 
         void initData(Product product) {
@@ -92,7 +101,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
             tvPrice.setText(strPrice +"đ");
             tvDescribe.setText(product.getDescribe());
-
+            layoutItem.setOnClickListener(v -> {
+                Log.d("TAG", "initDataaaaaaaaaaaaaaa: "+product.getId());
+                mOnClickItemListener.onClickItempProduct(product);
+            });
         }
     }
 }

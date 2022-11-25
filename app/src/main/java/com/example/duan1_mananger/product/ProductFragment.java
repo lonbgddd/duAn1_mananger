@@ -16,6 +16,7 @@ import com.example.duan1_mananger.databinding.FragmentProductBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.ProductAdapter;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,10 +66,9 @@ public class ProductFragment extends BaseFragment {
             TypeProduct typeProduct = (TypeProduct) bundle.get("objType");
             if(typeProduct!=null){
                 NameType = typeProduct.getNameType();
-
             }
         }
-
+//        Log.d("TAG", "onViewCreated: "+NameType);
         listProduct = new ArrayList<>();
         productAdapter = new ProductAdapter(listProduct,NameType);
         bindProduct.listProduct.setAdapter(productAdapter);
@@ -136,7 +136,52 @@ public class ProductFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        productAdapter = new ProductAdapter(listProduct);
+        // chưa tìm được cách khác nên thôi dùng cashc này tuy hơi cồng kềnh.
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Product product = snapshot.getValue(Product.class);
+                if(product == null || listProduct == null || listProduct.isEmpty()){
+                    return;
+                }
+                for(int i = 0; i < listProduct.size(); i++){
+                    if(product.getId() == listProduct.get(i).getId()){
+                        listProduct.remove(listProduct.get(i));
+                        break;
+                    }
+                }
+                productAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        productAdapter = new ProductAdapter(listProduct, new ProductAdapter.OnClickItemListener() {
+            @Override
+            public void onClickItempProduct(Product product) {
+
+                replaceFragment(new DetailProductFragment(product, NameType));
+
+            }
+        });
         bindProduct.listProduct.setAdapter(productAdapter);
 
     }
