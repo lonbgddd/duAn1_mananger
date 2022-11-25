@@ -54,22 +54,5 @@
         android:textSize="@dimen/dimen_18dp"
         android:fontFamily="@font/poppins_medium"
         android:layout_marginVertical="@dimen/dimen_10dp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_70"
-        android:elevation="@dimen/dimen_2dp"
-        />
-    <TextView
-        android:id="@+id/tvExit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:text="Thoát"
-        android:textColor="@color/grey_300"
-        android:layout_marginStart="@dimen/dimen_15dp"
-        android:textSize="@dimen/dimen_18dp"
-        android:fontFamily="@font/poppins_medium"
-        android:layout_marginVertical="@dimen/dimen_10dp"/>
 
 </LinearLayout>
