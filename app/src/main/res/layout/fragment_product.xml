@@ -100,7 +100,6 @@
         android:id="@+id/tvCountProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5 sản phẩm"
         android:textColor="@color/grey_350"
         android:fontFamily="@font/poppins_regular"
         android:textSize="@dimen/dimen_16dp"

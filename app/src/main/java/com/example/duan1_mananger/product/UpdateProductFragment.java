@@ -9,13 +9,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +34,11 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
 import com.example.duan1_mananger.databinding.DialogFunctionImageProductBinding;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.databinding.FragmentEditProductBinding;
+import com.example.duan1_mananger.databinding.LayoutFullImageProductBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.SpinnerTypeProductAdapter;
@@ -56,9 +65,7 @@ public class UpdateProductFragment extends BaseFragment {
     private ArrayList<TypeProduct> listTypeProduct;
 
 
-
     public UpdateProductFragment(Product product) {
-
         this.dataProduct = product;
     }
 
@@ -111,8 +118,19 @@ public class UpdateProductFragment extends BaseFragment {
     @Override
     public void listening() {
         binding.btnSaveUpdate.setOnClickListener(v -> {
-            dialogConfirmUpdate(getContext());
+            if(checkInputData()){
+                updateProduct(getContext());
+            }
+
         });
+        binding.icSaveEditProduct.setOnClickListener(v -> {
+            if(checkInputData()){
+                updateProduct(getContext());
+            }
+        });
+
+
+
         binding.imgProduct.setOnClickListener(v->{
             dialogFunctionImage(getContext());
         });
@@ -130,11 +148,10 @@ public class UpdateProductFragment extends BaseFragment {
     public void initView() {
 
     }
-    private void updateProduct(){
+    private void updateProduct(Context context){
         if (avatar != null) {
             StorageReference reference = FirebaseStorage.getInstance().getReference("imgProducts/"+dataProduct.getId());
             reference.putFile(avatar).addOnSuccessListener(taskSnapshot -> {
-                Toast.makeText(requireContext(), "Cập nhật ảnh sản phẩm thành công", Toast.LENGTH_SHORT).show();
             }).addOnFailureListener(command -> {
                 Toast.makeText(requireContext(), "Cập nhật ảnh sản phẩm thất bại", Toast.LENGTH_SHORT).show();
             });
@@ -143,28 +160,7 @@ public class UpdateProductFragment extends BaseFragment {
         TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
         Product product = new Product(dataProduct.getId(),binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
                 Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
-        reference.child(dataProduct.getId()).setValue(product).addOnCompleteListener(task->{
-            if (task.isSuccessful()){
-                Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
-    private void dialogFunctionImage(Context context) {
-        BottomSheetDialog dialog = new BottomSheetDialog(context);
-        DialogFunctionImageProductBinding binding = DialogFunctionImageProductBinding.inflate(LayoutInflater.from(context));
-        dialog.setContentView(binding.getRoot());
-        dialog.setCancelable(false);
-        binding.tvEditImgProduct.setOnClickListener(v->{
-            dialog.cancel();
-            requestPermission();
-        });
-        dialog.show();
-
-    }
-    private void dialogConfirmUpdate(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Cập nhật thông tin "+dataProduct.getNameProduct());
         builder.setIcon(context.getDrawable(R.drawable.ic_update));
@@ -173,7 +169,16 @@ public class UpdateProductFragment extends BaseFragment {
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                updateProduct();
+                reference.child(dataProduct.getId()).setValue(product).addOnCompleteListener(task->{
+                    if (task.isSuccessful()){
+                        notificationSuccessInput(getContext(),"Cập nhật thành công!");
+                        backStack();
+                    }else {
+                        notificationSuccessInput(getContext(),"Cập nhật không thành công!");
+
+                    }
+                });
+
             }
         });
         builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -186,20 +191,54 @@ public class UpdateProductFragment extends BaseFragment {
 
         AlertDialog sh = builder.create();
         sh.show();
+
     }
 
 
-    private void showDetailProduct(){
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
-        reference.listAll().addOnSuccessListener(listResult -> {
-            for (StorageReference files: listResult.getItems()){
-                if(files.getName().equals(dataProduct.getId())){
-                    files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getView()).load(uri).into(binding.imgProduct);
-                    });
-                }
-            }
+    private void dialogFunctionImage(Context context) {
+        final Dialog dialog = new Dialog(context);
+        DialogFunctionImageProductBinding bindingDialog = DialogFunctionImageProductBinding.inflate(LayoutInflater.from(context));
+        dialog.setContentView(bindingDialog.getRoot());
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        window.setAttributes(layoutParams);
+        bindingDialog.dialogChooserFunction.setTranslationY(150);
+        bindingDialog.dialogChooserFunction.animate().translationYBy(-150).setDuration(400);
+
+        bindingDialog.tvEditImgProduct.setOnClickListener(v->{
+            dialog.cancel();
+            requestPermission();
         });
+        bindingDialog.tvFullImg.setOnClickListener(tv ->{
+            dialogFullImg(getContext(),binding.layoutChangeProduct);
+            dialog.cancel();
+        });
+
+        dialog.show();
+
+    }
+
+    private boolean checkInputData(){
+        if(TextUtils.isEmpty(binding.edNameProduct.getText().toString())){
+            notificationErrInput(getContext(),"Hãy nhập tên sản phẩm!");
+            return false;
+        }else if(binding.spinnerType.getSelectedItem() == null) {
+            notificationErrInput(getContext(),"Hãy thêm loại sản phẩm!");
+            replaceFragment(new TypeProductFragment().newInstance());
+            return false;
+        } else if(TextUtils.isEmpty(binding.edPrice.getText().toString())){
+            notificationErrInput(getContext(),"Hãy nhập giá sản phẩm!");
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    private void showDetailProduct(){
+
 
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
         reference2.child("list_product").child(dataProduct.getId()).addValueEventListener(new ValueEventListener() {
@@ -212,11 +251,7 @@ public class UpdateProductFragment extends BaseFragment {
                 }
                 binding.edNameProduct.setText(dataProduct.getNameProduct());
                 binding.edDescribe.setText(dataProduct.getDescribe());
-                Locale locale = new Locale("en","EN");
-                NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                Double price = dataProduct.getPrice();
-                String strPrice = numberFormat.format(price);
-                binding.edPrice.setText(strPrice);
+                binding.edPrice.setText(String.format("%.0f", dataProduct.getPrice()));
                 binding.edNote.setText(dataProduct.getNote());
 
                 listTypeProduct = new ArrayList<>();
@@ -242,17 +277,50 @@ public class UpdateProductFragment extends BaseFragment {
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
-
-
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files: listResult.getItems()){
+                if(files.getName().equals(dataProduct.getId())){
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Glide.with(getView()).load(uri).into(binding.imgProduct);
+                    });
+                }
+            }
+        });
+    }
+
+    private void dialogFullImg(Context context, LinearLayout layout){
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_Light_NoActionBar);
+        LayoutFullImageProductBinding binding = LayoutFullImageProductBinding.inflate(LayoutInflater.from(context));
+        dialog.setContentView(binding.getRoot());
+        dialog.setCancelable(false);
+        context.setTheme(R.style.Theme_Full_Img);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layout.setAlpha(0.1f);
+        binding.icCloseDialog.setOnClickListener(ic ->{
+            dialog.cancel();
+            layout.setAlpha(1f);
+        });
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files: listResult.getItems()){
+                if(files.getName().equals(dataProduct.getId())){
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Glide.with(getView()).load(uri).into(binding.imgFullProduct);
+                    });
+                }
+            }
+        });
+
+        dialog.show();
     }
     private void requestPermission(){
         if (ContextCompat.checkSelfPermission(requireContext(),

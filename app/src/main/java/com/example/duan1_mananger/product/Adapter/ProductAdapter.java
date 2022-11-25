@@ -27,13 +27,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     OnClickItemListener mOnClickItemListener;
 
     public interface OnClickItemListener{
-        public void onClickItempProduct(Product product);
+        public void onClickItemProduct(Product product);
     }
 
 
-    public ProductAdapter(ArrayList<Product> listProduct, String text) {
+    public ProductAdapter(ArrayList<Product> listProduct) {
         this.listProduct = listProduct;
-        this.text = text;
     }
 
     public ProductAdapter(ArrayList<Product> listProduct, OnClickItemListener mOnClickItemListener) {
@@ -94,16 +93,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
             });
             tvName.setText(product.getNameProduct());
+
             Locale locale = new Locale("en","EN");
             NumberFormat numberFormat = NumberFormat.getInstance(locale);
             Double price = product.getPrice();
             String strPrice = numberFormat.format(price);
-
             tvPrice.setText(strPrice +"đ");
+
             tvDescribe.setText(product.getDescribe());
             layoutItem.setOnClickListener(v -> {
-                Log.d("TAG", "initDataaaaaaaaaaaaaaa: "+product.getId());
-                mOnClickItemListener.onClickItempProduct(product);
+                mOnClickItemListener.onClickItemProduct(product);
             });
         }
     }

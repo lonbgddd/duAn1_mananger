@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,6 @@ public class AddProductFragment extends BaseFragment {
     private ArrayList<TypeProduct> listTypeProduct;
     private static final int PICL_IMAGES_CODE = 1001;
     private Uri imgProduct;
-
     public AddProductFragment() {
         // Required empty public constructor
     }
@@ -87,11 +87,15 @@ public class AddProductFragment extends BaseFragment {
         loadData();
         listening();
         binding.icSaveProduct.setOnClickListener(v -> {
-            saveProduct(getContext());
-        });
+            if(checkInputData()){
+                saveProduct(getContext());
+            }
 
+        });
         binding.btnSaveProduct.setOnClickListener(v -> {
-            saveProduct(getContext());
+            if(checkInputData()){
+                saveProduct(getContext());
+            }
         });
     }
 
@@ -148,29 +152,27 @@ public class AddProductFragment extends BaseFragment {
 
 
     private void saveProduct(Context context){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
-        String key = reference.push().getKey();
-        TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
-
-        Product product = new Product(key,binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
-                Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Thêm sản phẩm");
-        builder.setMessage("Bạn chắc chắn muốn thêm " + binding.edNameProduct.getText().toString().trim() + " vào menu");
-        builder.setIcon(context.getDrawable(R.drawable.ic_save));
-        builder.setCancelable(false);
-        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                reference.child(key).setValue(product).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
+            String key = reference.push().getKey();
+            TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
+            Product product = new Product(key,binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
+                    Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Thêm sản phẩm");
+            builder.setMessage("Bạn chắc chắn muốn thêm " + binding.edNameProduct.getText().toString().trim() + " vào menu");
+            builder.setIcon(context.getDrawable(R.drawable.ic_save));
+            builder.setCancelable(false);
+            builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    reference.child(key).setValue(product).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()){
+                            notificationSuccessInput(getContext(),"Thêm thành công!");
+                            backStack();
+                        }else {
+                            notificationErrInput(getContext(),"Thêm thất bại");
+                        }
+                    });
 
                 if(imgProduct != null){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getId());
@@ -191,15 +193,27 @@ public class AddProductFragment extends BaseFragment {
             }
         });
 
-        AlertDialog sh = builder.create();
-        sh.show();
+            AlertDialog sh = builder.create();
+            sh.show();
 
     }
 
 
-
-
-
+    private boolean checkInputData(){
+        if(TextUtils.isEmpty(binding.edNameProduct.getText().toString())){
+            notificationErrInput(getContext(),"Hãy nhập tên sản phẩm!");
+            return false;
+        }else if(binding.spinnerType.getSelectedItem() == null) {
+            notificationErrInput(getContext(),"Hãy thêm loại sản phẩm!");
+            replaceFragment(new TypeProductFragment().newInstance());
+            return false;
+        } else if(TextUtils.isEmpty(binding.edPrice.getText().toString())){
+            notificationErrInput(getContext(),"Hãy nhập giá sản phẩm!");
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 
     private void cleanEditText(){

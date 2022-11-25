@@ -51,7 +51,7 @@ import java.util.Calendar;
 public class UpdateUserFragment extends BaseFragment {
     private LayoutChangeProfileBinding binding = null;
     private User userData = null;
-    private UpdateUserViewModel mViewModel;
+
     private FirebaseAuth firebaseAuth;
     private Uri avatar;
     private static final int PICL_IMAGES_CODE = 1000;
@@ -212,8 +212,6 @@ public class UpdateUserFragment extends BaseFragment {
                 Toast.makeText(requireContext(), "Cập nhật ảnh đại diện thất bại", Toast.LENGTH_SHORT).show();
             });
         }
-
-
         boolean gender;
             if(binding.rdoMale.isSelected()){
                 gender = true;
@@ -221,12 +219,8 @@ public class UpdateUserFragment extends BaseFragment {
                 gender = false;
             }
 
-        userData = new User(binding.edName.getText().toString().trim(),
-                gender,
-                binding.edPhone.getText().toString().trim(),
-                binding.edBirth.getText().toString().trim(),
-                binding.edAddress.getText().toString().trim(),
-                binding.edEmail.getText().toString().trim());
+        userData = new User(binding.edName.getText().toString().trim(), gender, binding.edPhone.getText().toString().trim(), binding.edBirth.getText().toString().trim(),
+                binding.edAddress.getText().toString().trim(), binding.edEmail.getText().toString().trim());
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
             databaseReference.child("users").child(userID).updateChildren(userData.toMap(),
                     new DatabaseReference.CompletionListener() {
@@ -243,7 +237,7 @@ public class UpdateUserFragment extends BaseFragment {
     private void dialogConfirmUpdate(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Cập nhật thông tin cá nhân");
-        builder.setIcon(context.getDrawable(R.drawable.icon_save));
+        builder.setIcon(context.getDrawable(R.drawable.ic_save));
         builder.setMessage("Bạn chắc chắn muốn thay đổi thông tin cá nhân");
         builder.setCancelable(false);
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {

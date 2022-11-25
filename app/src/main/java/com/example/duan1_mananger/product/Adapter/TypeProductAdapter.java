@@ -26,12 +26,18 @@ import java.util.ArrayList;
 public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.ViewHolderTypeProduct> {
     private ArrayList<TypeProduct> listType;
     private Context context;
-
+    private OnClickItemListener mOnClickItemListener;
+    public interface OnClickItemListener{
+        public void onClickItemProduct(TypeProduct typeProduct);
+    }
 
     public TypeProductAdapter(ArrayList<TypeProduct> listType) {
         this.listType = listType;
     }
-
+    public TypeProductAdapter(ArrayList<TypeProduct> listType,OnClickItemListener mOnClickItemListener) {
+        this.listType = listType;
+        this.mOnClickItemListener = mOnClickItemListener;
+    }
 
 
     public  void setFilterListType(ArrayList<TypeProduct> filterList ){
@@ -61,40 +67,23 @@ public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.
 
     @Override
     public int getItemCount() {
-        if(listType!= null){
-            return listType.size();
-        }
-        return 0;
+        return listType.size();
     }
 
     class ViewHolderTypeProduct extends RecyclerView.ViewHolder {
         private TextView tvNameType;
-        private ImageView icCheck;
         private ConstraintLayout layoutItem;
 
         public ViewHolderTypeProduct(LayoutItemTypeProductBinding binding) {
             super(binding.getRoot());
             tvNameType = binding.tvNameType;
-            icCheck = binding.icCheckTypeProduct;
             layoutItem = binding.layoutItemType;
         }
 
         void initData(TypeProduct typeProduct){
             tvNameType.setText(typeProduct.getNameType());
-            layoutItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(icCheck.getVisibility()==View.GONE){
-                        icCheck.setVisibility(View.VISIBLE);
-                    }else if(icCheck.getVisibility()==View.INVISIBLE){
-
-                        icCheck.setVisibility(View.VISIBLE);
-                    }else {
-                        icCheck.setVisibility(View.INVISIBLE);
-
-                    }
-
-                }
+            layoutItem.setOnClickListener(ic ->{
+                mOnClickItemListener.onClickItemProduct(typeProduct);
             });
         }
     }
