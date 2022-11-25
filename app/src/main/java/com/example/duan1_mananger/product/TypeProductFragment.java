@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,17 +64,19 @@ public class TypeProductFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        listType = new ArrayList<>();
+        typeAdapter = new TypeProductAdapter(listType);
+        binding.listsTypeProduct.setAdapter(typeAdapter);
         listening();
         loadData();
-        getTypeProduct();
+
 
     }
 
     @Override
     public void loadData() {
-        listType = new ArrayList<>();
-        typeAdapter = new TypeProductAdapter(listType);
-        binding.listsTypeProduct.setAdapter(typeAdapter);
+        getTypeProduct();
 
     }
 
@@ -108,6 +111,9 @@ public class TypeProductFragment extends BaseFragment {
             }
         });
 
+        binding.tvAllProduct.setOnClickListener(tv ->{
+            replaceFragment(new ProductFragment().newInstance());
+        });
         binding.icAddType.setOnClickListener(ic ->{
             dialogAddTypeProduct(getContext());
         });
@@ -144,20 +150,24 @@ public class TypeProductFragment extends BaseFragment {
             FirebaseDatabase data = FirebaseDatabase.getInstance();
             DatabaseReference mRef = data.getReference("list_type_product");
             String key = mRef.push().getKey();
-            TypeProduct typeProduct = new TypeProduct(key,binding.edNameType.getText().toString().trim());
-            mRef.child(key).setValue(typeProduct).addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
-                    Toast.makeText(getContext(), "Thêm loại thành công", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
-                }
-            });
-            dialog.dismiss();
+            if(TextUtils.isEmpty(binding.edNameType.getText().toString())){
+                Toast.makeText(context, "Hãy nhập tên loại !"  , Toast.LENGTH_SHORT).show();
+            }else {
+                TypeProduct typeProduct = new TypeProduct(key,binding.edNameType.getText().toString().trim());
+                mRef.child(key).setValue(typeProduct).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Toast.makeText(getContext(), "Thêm loại thành công", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                dialog.dismiss();
+            }
         });
         dialog.show();
 
     }
-
 
     private void getTypeProduct(){
         DatabaseReference mRef =  FirebaseDatabase.getInstance().getReference("list_type_product");
@@ -175,6 +185,14 @@ public class TypeProductFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        typeAdapter = new TypeProductAdapter(listType, new TypeProductAdapter.OnClickItemListener() {
+            @Override
+            public void onClickItemProduct(TypeProduct typeProduct) {
+                replaceFragment(new ProductFragment(typeProduct));
+            }
+        });
+        binding.listsTypeProduct.setAdapter(typeAdapter);
+
 
     }
 

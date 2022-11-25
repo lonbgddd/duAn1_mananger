@@ -6,7 +6,6 @@
    >
     <TextView
         android:id="@+id/tvSpinnerType"
-        android:layout_marginHorizontal="@dimen/dimen_5dp"
         android:layout_marginTop="@dimen/dimen_15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,6 +16,7 @@
         android:textSize="@dimen/dimen_18dp"
          />
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_1dp"
         android:background="@color/grey_60"
