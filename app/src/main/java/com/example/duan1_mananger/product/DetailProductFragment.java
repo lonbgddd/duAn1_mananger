@@ -19,6 +19,8 @@ import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.TypeProduct;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class DetailProductFragment extends BaseFragment {
 
@@ -68,8 +72,12 @@ public class DetailProductFragment extends BaseFragment {
 
     @Override
     public void listening() {
+        binding.icBack.setOnClickListener(v -> {
+            backStack();
+        });
+
         binding.btnDeleteProduct.setOnClickListener(v -> {
-            dialogConfirmUpdate(getContext());
+            dialogConfirmDelete(getContext());
         });
     }
 
@@ -83,20 +91,34 @@ public class DetailProductFragment extends BaseFragment {
 
     }
 
-    private void dialogConfirmUpdate(Context context){
+    private void dialogConfirmDelete(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Cập nhật thông tin cá nhân");
-        builder.setIcon(context.getDrawable(R.drawable.icon_save));
-        builder.setMessage("Bạn chắc chắn muốn thay đổi thông tin cá nhân");
+        builder.setTitle("Xóa sản phẩm");
+        builder.setIcon(context.getDrawable(R.drawable.ic_delete));
+        builder.setMessage("Bạn chắc chắn muốn xóa " + dataProduct.getNameProduct()+" ?");
         builder.setCancelable(false);
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // xóa ảnh trên firebase
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                storageReference.child("imgProducts/"+dataProduct.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "FAIL", Toast.LENGTH_SHORT).show();     
+                    }
+                });
+                // xóa trên realtime
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("list_product");
-                replaceFragment(new ProductFragment().newInstance());
                 reference.child(dataProduct.getId()).removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        backStack();
                         Toast.makeText(context, "Đã xóa ", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -109,17 +131,13 @@ public class DetailProductFragment extends BaseFragment {
                 dialog.cancel();
             }
         });
-
         AlertDialog sh = builder.create();
         sh.show();
     }
 
-    private void getTypeProduct(){
-
-    }
-
     private void showDetailProduct(){
-        TypeProduct typeProduct = dataProduct.getTypeProduct();
+        Locale locale = new Locale("en","EN");
+        NumberFormat numberFormat = NumberFormat.getInstance(locale);
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
         reference.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference files: listResult.getItems()){
@@ -133,28 +151,23 @@ public class DetailProductFragment extends BaseFragment {
 
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
         reference2.child("list_product").child(dataProduct.getId()).addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataProduct = snapshot.getValue(Product.class);
                 if (dataProduct == null) {
                     return;
                 }
+                Double price = dataProduct.getPrice();
+                String strPrice = numberFormat.format(price);
                 binding.tvNameProduct.setText(dataProduct.getNameProduct());
                 binding.tvDescribe.setText(dataProduct.getDescribe());
-                // cái này thì không biết lấy name type product kiểu gì luôn r
-                binding.tvTypeProduct.setText(String.valueOf(typeProduct.getNameType()));
-                binding.tvPriceProduct.setText(String.valueOf(dataProduct.getPrice()));
+                binding.tvTypeProduct.setText(String.valueOf(dataProduct.getTypeProduct().getNameType()));
+                binding.tvPriceProduct.setText(strPrice + "đ");
                 binding.tvNoteProduct.setText(dataProduct.getNote());
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
-
-
 }

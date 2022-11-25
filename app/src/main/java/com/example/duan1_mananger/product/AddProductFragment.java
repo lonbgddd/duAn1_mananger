@@ -174,7 +174,7 @@ public class AddProductFragment extends BaseFragment {
                 });
 
                 if(imgProduct != null){
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getNameProduct());
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getId());
                     storageReference.putFile(imgProduct).addOnSuccessListener(taskSnapshot -> {
                     }).addOnFailureListener(command -> {
                         Toast.makeText(getContext(), "Cập nhật ảnh thất bại", Toast.LENGTH_SHORT).show();
