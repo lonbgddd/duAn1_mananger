@@ -86,7 +86,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
             reference.listAll().addOnSuccessListener(listResult -> {
                 for (StorageReference files: listResult.getItems()){
-                    if(files.getName().equals(product.getNameProduct())){
+                    if(files.getName().equals(product.getId())){
                         files.getDownloadUrl().addOnSuccessListener(uri -> {
                             Glide.with(itemView).load(uri).into(imgProduct);
                         });

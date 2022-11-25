@@ -1,0 +1,300 @@
+package com.example.duan1_mananger.product;
+
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
+import com.example.duan1_mananger.R;
+import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
+import com.example.duan1_mananger.databinding.FragmentEditProductBinding;
+import com.example.duan1_mananger.model.Product;
+import com.example.duan1_mananger.model.TypeProduct;
+import com.example.duan1_mananger.product.Adapter.SpinnerTypeProductAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class UpdateProductFragment extends BaseFragment {
+    private static final int PICL_IMAGES_CODE = 1000;
+    private Uri avatar;
+    private FragmentEditProductBinding binding = null;
+    private Product dataProduct = null;
+    private ArrayList<TypeProduct> listTypeProduct;
+
+
+
+    public UpdateProductFragment(Product product) {
+
+        this.dataProduct = product;
+    }
+
+    public UpdateProductFragment newInstance() {
+        return new UpdateProductFragment(dataProduct);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentEditProductBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+//        Log.d("TAG", "newInstance222: "+dataProduct.getId());
+        loadData();
+        listening();
+        initObSever();
+
+    }
+
+    @Override
+    public void loadData() {
+        listTypeProduct = new ArrayList<>();
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("list_type_product");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listTypeProduct.clear();
+                for(DataSnapshot datasnapshot : snapshot.getChildren()){
+                    TypeProduct type = datasnapshot.getValue(TypeProduct.class);
+                    listTypeProduct.add(type);
+                }
+                SpinnerTypeProductAdapter spinnerAdapter = new SpinnerTypeProductAdapter(listTypeProduct);
+                binding.spinnerType.setAdapter(spinnerAdapter);
+                spinnerAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
+    }
+
+    @Override
+    public void listening() {
+        binding.btnSaveUpdate.setOnClickListener(v -> {
+            dialogConfirmUpdate(getContext());
+        });
+        binding.imgProduct.setOnClickListener(v->{
+            dialogFunctionImage(getContext());
+        });
+        binding.icBack.setOnClickListener(v->{
+            backStack();
+        });
+    }
+
+    @Override
+    public void initObSever() {
+        showDetailProduct();
+    }
+
+    @Override
+    public void initView() {
+
+    }
+    private void updateProduct(){
+        if (avatar != null) {
+            StorageReference reference = FirebaseStorage.getInstance().getReference("imgProducts/"+dataProduct.getId());
+            reference.putFile(avatar).addOnSuccessListener(taskSnapshot -> {
+                Toast.makeText(requireContext(), "Cập nhật ảnh sản phẩm thành công", Toast.LENGTH_SHORT).show();
+            }).addOnFailureListener(command -> {
+                Toast.makeText(requireContext(), "Cập nhật ảnh sản phẩm thất bại", Toast.LENGTH_SHORT).show();
+            });
+        }
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
+        TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
+        Product product = new Product(dataProduct.getId(),binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
+                Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
+        reference.child(dataProduct.getId()).setValue(product).addOnCompleteListener(task->{
+            if (task.isSuccessful()){
+                Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void dialogFunctionImage(Context context) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_function_image_product);
+        dialog.setCancelable(true);
+        TextView tvEditImageProduct,tvExit;
+        tvEditImageProduct =dialog.findViewById(R.id.tvEditImgProduct);
+        tvExit = dialog.findViewById(R.id.tvExit);
+        tvEditImageProduct.setOnClickListener(v->{
+            dialog.cancel();
+            requestPermission();
+        });
+        tvExit.setOnClickListener(v->{
+            dialog.dismiss();
+        });
+        dialog.show();
+
+    }
+
+    private void dialogConfirmUpdate(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Cập nhật thông tin sản phẩm");
+        builder.setIcon(context.getDrawable(R.drawable.ic_update));
+        builder.setMessage("Bạn chắc chắn muốn thay đổi thông tin sản phẩm");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateProduct();
+            }
+        });
+        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context,"Đã hủy !",Toast.LENGTH_SHORT).show();
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog sh = builder.create();
+        sh.show();
+    }
+
+
+    private void showDetailProduct(){
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
+        reference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference files: listResult.getItems()){
+                if(files.getName().equals(dataProduct.getId())){
+                    files.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Glide.with(getView()).load(uri).into(binding.imgProduct);
+                    });
+                }
+            }
+        });
+
+        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+        reference2.child("list_product").child(dataProduct.getId()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dataProduct = snapshot.getValue(Product.class);
+                if (dataProduct == null) {
+                    return;
+                }
+                binding.edNameProduct.setText(dataProduct.getNameProduct());
+                binding.edDescribe.setText(dataProduct.getDescribe());
+                Locale locale = new Locale("en","EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                Double price = dataProduct.getPrice();
+                String strPrice = numberFormat.format(price);
+                binding.edPrice.setText(strPrice);
+                binding.edNote.setText(dataProduct.getNote());
+
+                listTypeProduct = new ArrayList<>();
+                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("list_type_product");
+                mRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listTypeProduct.clear();
+                        for(DataSnapshot datasnapshot : snapshot.getChildren()){
+                            TypeProduct type = datasnapshot.getValue(TypeProduct.class);
+                            listTypeProduct.add(type);
+                        }
+                        for(int i =0;i<listTypeProduct.size();i++){
+                            TypeProduct temp = listTypeProduct.get(i);
+                            if(temp.getNameType().equals(dataProduct.getTypeProduct().getNameType())){
+                                binding.spinnerType.setSelection(i);
+                                binding.spinnerType.setSelected(true);
+                            }
+                        }
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void requestPermission(){
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+            } else {
+                ActivityCompat.requestPermissions(requireActivity(),
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1);
+            }
+
+        } else {
+            addImage();
+        }
+    }
+    private void addImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICL_IMAGES_CODE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICL_IMAGES_CODE) {
+                avatar = data.getData();
+                binding.imgProduct.setImageURI(avatar);
+                Log.d("TAG", "onActivityResult: "+data.getData());
+            }
+        }
+    }
+    public void backStack() {
+        getParentFragmentManager().popBackStack();
+    }
+
+}
+
+
