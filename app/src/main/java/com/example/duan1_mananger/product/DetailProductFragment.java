@@ -73,7 +73,7 @@ public class DetailProductFragment extends BaseFragment {
     @Override
     public void listening() {
         binding.btnDeleteProduct.setOnClickListener(v -> {
-            dialogConfirmUpdate(getContext());
+            dialogConfirmDelete(getContext());
         });
         binding.icEditProduct.setOnClickListener(v->{
             replaceFragment(new UpdateProductFragment(dataProduct));
@@ -93,11 +93,11 @@ public class DetailProductFragment extends BaseFragment {
 
     }
 
-    private void dialogConfirmUpdate(Context context){
+    private void dialogConfirmDelete(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Xóa sản phẩm");
         builder.setIcon(context.getDrawable(R.drawable.ic_delete));
-        builder.setMessage("Bạn chắc chắn muốn xóa sản phẩm");
+        builder.setMessage("Bạn chắc chắn muốn xóa "+dataProduct.getNameProduct());
         builder.setCancelable(false);
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
@@ -137,9 +137,9 @@ public class DetailProductFragment extends BaseFragment {
         AlertDialog sh = builder.create();
         sh.show();
     }
-
     private void showDetailProduct(){
-
+        Locale locale = new Locale("en","EN");
+        NumberFormat numberFormat = NumberFormat.getInstance(locale);
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
         reference.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference files: listResult.getItems()){
@@ -159,14 +159,11 @@ public class DetailProductFragment extends BaseFragment {
                 if (dataProduct == null) {
                     return;
                 }
+                Double price = dataProduct.getPrice();
+                String strPrice = numberFormat.format(price);
                 binding.tvNameProduct.setText(dataProduct.getNameProduct());
                 binding.tvDescribe.setText(dataProduct.getDescribe());
                 binding.tvTypeProduct.setText(dataProduct.getTypeProduct().getNameType());
-
-                Locale locale = new Locale("en","EN");
-                NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                Double price = dataProduct.getPrice();
-                String strPrice = numberFormat.format(price);
                 binding.tvPriceProduct.setText(strPrice+" đ");
                 binding.tvNoteProduct.setText(dataProduct.getNote());
 
@@ -176,7 +173,5 @@ public class DetailProductFragment extends BaseFragment {
             }
         });
     }
-    public void backStack() {
-        getParentFragmentManager().popBackStack();
-    }
+
 }

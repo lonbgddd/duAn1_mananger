@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.databinding.DialogFunctionImageProductBinding;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.databinding.FragmentEditProductBinding;
 import com.example.duan1_mananger.model.Product;
@@ -34,6 +35,7 @@ import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.SpinnerTypeProductAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -151,26 +153,20 @@ public class UpdateProductFragment extends BaseFragment {
     }
 
     private void dialogFunctionImage(Context context) {
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_function_image_product);
-        dialog.setCancelable(true);
-        TextView tvEditImageProduct,tvExit;
-        tvEditImageProduct =dialog.findViewById(R.id.tvEditImgProduct);
-        tvExit = dialog.findViewById(R.id.tvExit);
-        tvEditImageProduct.setOnClickListener(v->{
+        BottomSheetDialog dialog = new BottomSheetDialog(context);
+        DialogFunctionImageProductBinding binding = DialogFunctionImageProductBinding.inflate(LayoutInflater.from(context));
+        dialog.setContentView(binding.getRoot());
+        dialog.setCancelable(false);
+        binding.tvEditImgProduct.setOnClickListener(v->{
             dialog.cancel();
             requestPermission();
-        });
-        tvExit.setOnClickListener(v->{
-            dialog.dismiss();
         });
         dialog.show();
 
     }
-
     private void dialogConfirmUpdate(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Cập nhật thông tin sản phẩm");
+        builder.setTitle("Cập nhật thông tin "+dataProduct.getNameProduct());
         builder.setIcon(context.getDrawable(R.drawable.ic_update));
         builder.setMessage("Bạn chắc chắn muốn thay đổi thông tin sản phẩm");
         builder.setCancelable(false);
