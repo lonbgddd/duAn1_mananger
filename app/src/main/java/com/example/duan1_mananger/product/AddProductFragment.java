@@ -51,7 +51,6 @@ public class AddProductFragment extends BaseFragment {
     private FragmentAddProductBinding binding;
     private ArrayList<TypeProduct> listTypeProduct;
     private static final int PICL_IMAGES_CODE = 1001;
-
     private Uri imgProduct;
 
     public AddProductFragment() {

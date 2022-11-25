@@ -148,39 +148,32 @@
                         app:cardElevation="@dimen/dimen_1dp"
                         app:cardCornerRadius="@dimen/dimen_20dp"
                         app:cardBackgroundColor="@color/grey_70">
-                            <LinearLayout
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginVertical="@dimen/dimen_3dp"
+                            android:layout_marginHorizontal="@dimen/dimen_15dp"
+                            android:background="@drawable/custom_view_spinner"
+                            android:padding="@dimen/dimen_8dp">
+
+                            <TextView
+                                android:id="@+id/tvContent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="Loại sản phẩm"
+                                android:textColor="@color/grey_200"
+                                android:textSize="@dimen/dimen_15dp"
+                                />
+                            <Spinner
+                                android:id="@+id/spinnerType"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:paddingEnd="@dimen/dimen_10dp">
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.8"
-                                    android:textColorHint="@color/grey_100"
-                                    app:hintAnimationEnabled="true"
-                                    app:hintTextColor="@color/grey_100"
-                                    android:background="@color/grey_70">
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/edTypeProduct"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:backgroundTint="@color/grey_70"
-                                        android:hint="Loại sản phẩm"
-                                        android:fontFamily="@font/poppins_medium"
-                                        android:inputType="text"
-                                        android:paddingStart="@dimen/dimen_10dp"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/dimen_18dp" />
-                                </com.google.android.material.textfield.TextInputLayout>
-                                <ImageView
-                                    android:id="@+id/icChoosertYPE"
-                                    android:layout_width="@dimen/dimen_30dp"
-                                    android:layout_height="@dimen/dimen_30dp"
-                                    android:src="@drawable/ic_next"
-                                    android:layout_gravity="center"
-                                    />
-                            </LinearLayout>
+                                />
+
+                        </LinearLayout>
                         </androidx.cardview.widget.CardView>
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -249,6 +242,7 @@
                 app:cardCornerRadius="@dimen/dimen_20dp"
                 >
                 <Button
+                    android:id="@+id/btnSaveUpdate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"

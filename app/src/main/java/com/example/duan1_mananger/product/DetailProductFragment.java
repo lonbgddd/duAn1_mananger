@@ -72,12 +72,14 @@ public class DetailProductFragment extends BaseFragment {
 
     @Override
     public void listening() {
-        binding.icBack.setOnClickListener(v -> {
-            backStack();
-        });
-
         binding.btnDeleteProduct.setOnClickListener(v -> {
-            dialogConfirmDelete(getContext());
+            dialogConfirmUpdate(getContext());
+        });
+        binding.icEditProduct.setOnClickListener(v->{
+            replaceFragment(new UpdateProductFragment(dataProduct));
+        });
+        binding.icBack.setOnClickListener(v->{
+            backStack();
         });
     }
 
@@ -91,11 +93,11 @@ public class DetailProductFragment extends BaseFragment {
 
     }
 
-    private void dialogConfirmDelete(Context context){
+    private void dialogConfirmUpdate(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Xóa sản phẩm");
         builder.setIcon(context.getDrawable(R.drawable.ic_delete));
-        builder.setMessage("Bạn chắc chắn muốn xóa " + dataProduct.getNameProduct()+" ?");
+        builder.setMessage("Bạn chắc chắn muốn xóa sản phẩm");
         builder.setCancelable(false);
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
@@ -110,11 +112,12 @@ public class DetailProductFragment extends BaseFragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "FAIL", Toast.LENGTH_SHORT).show();     
+                        Toast.makeText(context, "FAIL", Toast.LENGTH_SHORT).show();
                     }
                 });
                 // xóa trên realtime
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("list_product");
+                replaceFragment(new ProductFragment().newInstance());
                 reference.child(dataProduct.getId()).removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
@@ -136,12 +139,11 @@ public class DetailProductFragment extends BaseFragment {
     }
 
     private void showDetailProduct(){
-        Locale locale = new Locale("en","EN");
-        NumberFormat numberFormat = NumberFormat.getInstance(locale);
+
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
         reference.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference files: listResult.getItems()){
-                if(files.getName().equals(dataProduct.getNameProduct())){
+                if(files.getName().equals(dataProduct.getId())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
                         Glide.with(getView()).load(uri).into(binding.imgProduct);
                     });
@@ -157,17 +159,24 @@ public class DetailProductFragment extends BaseFragment {
                 if (dataProduct == null) {
                     return;
                 }
-                Double price = dataProduct.getPrice();
-                String strPrice = numberFormat.format(price);
                 binding.tvNameProduct.setText(dataProduct.getNameProduct());
                 binding.tvDescribe.setText(dataProduct.getDescribe());
-                binding.tvTypeProduct.setText(String.valueOf(dataProduct.getTypeProduct().getNameType()));
-                binding.tvPriceProduct.setText(strPrice + "đ");
+                binding.tvTypeProduct.setText(dataProduct.getTypeProduct().getNameType());
+
+                Locale locale = new Locale("en","EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                Double price = dataProduct.getPrice();
+                String strPrice = numberFormat.format(price);
+                binding.tvPriceProduct.setText(strPrice+" đ");
                 binding.tvNoteProduct.setText(dataProduct.getNote());
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+    public void backStack() {
+        getParentFragmentManager().popBackStack();
     }
 }
