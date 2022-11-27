@@ -275,12 +275,24 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </FrameLayout>
-            
+
             <Button
                 android:id="@+id/btnDeleteProduct"
                 android:layout_width="@dimen/dimen_200dp"
                 android:layout_height="@dimen/dimen_50dp"
                 android:text="Xóa sản phẩm"
+                android:textColor="@color/red"
+                android:textAllCaps="false"
+                android:textSize="@dimen/dimen_18dp"
+                android:fontFamily="@font/poppins_medium"
+                android:background="@drawable/custom_button_details_product"/>
+
+            <Button
+                android:id="@+id/btnAddOder"
+                android:layout_width="@dimen/dimen_200dp"
+                android:layout_height="@dimen/dimen_50dp"
+                android:text="Thêm"
+                android:visibility="gone"
                 android:textColor="@color/red"
                 android:textAllCaps="false"
                 android:textSize="@dimen/dimen_18dp"

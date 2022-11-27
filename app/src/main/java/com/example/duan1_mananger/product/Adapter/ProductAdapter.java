@@ -27,7 +27,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     OnClickItemListener mOnClickItemListener;
 
     public interface OnClickItemListener{
-        public void onClickItemProduct(Product product);
+        void onClickItemProduct(Product product);
     }
 
 

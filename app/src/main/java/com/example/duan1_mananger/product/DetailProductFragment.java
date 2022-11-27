@@ -25,7 +25,9 @@ import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.databinding.LayoutFullImageProductBinding;
 import com.example.duan1_mananger.model.Product;
+import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.model.TypeProduct;
+import com.example.duan1_mananger.table.DetailTableFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -44,14 +46,18 @@ public class DetailProductFragment extends BaseFragment {
 
     private FragmentDetailsProductBinding binding = null;
     private Product dataProduct = null;
+    private  Table table = null;
 
-
-    public DetailProductFragment(Product product) {
+    public DetailProductFragment(Product product, Table table) {
         this.dataProduct = product;
+        this.table = table;
+    }
+
+    public DetailProductFragment() {
     }
 
     public DetailProductFragment newInstance() {
-        return new DetailProductFragment(dataProduct);
+        return new DetailProductFragment(dataProduct, table);
     }
 
     @Override
@@ -72,9 +78,20 @@ public class DetailProductFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-
+        if (table != null){
+            binding.btnDeleteProduct.setVisibility(View.GONE);
+            binding.btnAddOder.setVisibility(View.VISIBLE);
+            binding.btnAddOder.setOnClickListener(v -> {
+                DetailTableFragment detailTableFragment = new DetailTableFragment(table);
+                Bundle bundle = new Bundle();
+                bundle.putString("idProduct", dataProduct.getId());
+                bundle.putString("table_id",String.valueOf(table.getId_table()));
+                bundle.putString("table_name", table.getName_table());
+                detailTableFragment.setArguments(bundle);
+                replaceFragment(detailTableFragment);
+            });
+        }
     }
-
     @Override
     public void listening() {
         binding.btnDeleteProduct.setOnClickListener(v -> {
@@ -97,7 +114,6 @@ public class DetailProductFragment extends BaseFragment {
         binding.icBack.setOnClickListener(v->{
             backStack();
         });
-
     }
 
     @Override

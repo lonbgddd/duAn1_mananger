@@ -17,6 +17,7 @@ import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentProductBinding;
 import com.example.duan1_mananger.home.HomeFragment;
 import com.example.duan1_mananger.model.Product;
+import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.ProductAdapter;
 import com.google.firebase.database.ChildEventListener;
@@ -29,20 +30,21 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ProductFragment extends BaseFragment {
+public class ProductFragment extends BaseFragment implements ProductAdapter.OnClickItemListener {
     public static final String TAG = ProductFragment.class.getName();
     private FragmentProductBinding bindProduct = null;
     private ArrayList<Product> listProduct;
     public ProductAdapter productAdapter = null;
     private TypeProduct typeProduct;
-
+    Table table = null;
 
     public ProductFragment() {
+    }
 
-    }
     public ProductFragment(TypeProduct typeProduct) {
-       this.typeProduct = typeProduct;
+        this.typeProduct = typeProduct;
     }
+
     public ProductFragment newInstance2() {
         return new ProductFragment(typeProduct);
     }
@@ -64,41 +66,30 @@ public class ProductFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        bindProduct = FragmentProductBinding.inflate(inflater,container,false);
+        bindProduct = FragmentProductBinding.inflate(inflater, container, false);
         return bindProduct.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(typeProduct == null){
+        if (typeProduct == null) {
             bindProduct.tvNameTypeProduct.setText(R.string.text_type_product_1);
             listProduct = new ArrayList<>();
             getProduct();
             productAdapter = new ProductAdapter(listProduct);
-            productAdapter = new ProductAdapter(listProduct, new ProductAdapter.OnClickItemListener() {
-                @Override
-                public void onClickItemProduct(Product product) {
-                    replaceFragment(new DetailProductFragment(product));
-                }
-            });
+            productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
 
             bindProduct.listProduct.setAdapter(productAdapter);
-        }else {
+        } else {
             bindProduct.tvNameTypeProduct.setText(typeProduct.getNameType());
             listProduct = new ArrayList<>();
             getFilterProduct();
             productAdapter = new ProductAdapter(listProduct);
-            productAdapter = new ProductAdapter(listProduct, new ProductAdapter.OnClickItemListener() {
-                @Override
-                public void onClickItemProduct(Product product) {
-                    replaceFragment(new DetailProductFragment(product));
-                }
-            });
+            productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
 
             bindProduct.listProduct.setAdapter(productAdapter);
         }
-        loadData();
         listening();
         initObSever();
 
@@ -106,7 +97,9 @@ public class ProductFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-
+        if (getArguments() != null) {
+            table = (Table) getArguments().getSerializable("table");
+        }
     }
 
     @Override
@@ -114,7 +107,7 @@ public class ProductFragment extends BaseFragment {
         bindProduct.fabAddProduct.setOnClickListener(v -> {
             replaceFragment(new AddProductFragment().newInstance());
         });
-        bindProduct.layoutType.setOnClickListener(layout ->{
+        bindProduct.layoutType.setOnClickListener(layout -> {
             replaceFragment(new TypeProductFragment().newInstance());
         });
 
@@ -124,23 +117,23 @@ public class ProductFragment extends BaseFragment {
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterList(newText,listProduct);
+                filterList(newText, listProduct);
                 return true;
             }
         });
         bindProduct.swiperRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(typeProduct == null){
+                if (typeProduct == null) {
                     getProduct();
-                }else {
+                } else {
                     getFilterProduct();
                 }
                 bindProduct.listProduct.setAdapter(productAdapter);
                 bindProduct.swiperRefreshLayout.setRefreshing(false);
-
             }
         });
 
@@ -158,19 +151,20 @@ public class ProductFragment extends BaseFragment {
     }
 
 
-    private void getProduct(){
+    private void getProduct() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listProduct.clear();
-                for(DataSnapshot datasnapshot : snapshot.getChildren()){
-                    Product product =  datasnapshot.getValue(Product.class);
+                for (DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    Product product = datasnapshot.getValue(Product.class);
                     listProduct.add(product);
                 }
-                    bindProduct.tvCountProduct.setText("Có "+listProduct.size()+" sản phẩm");
-                    productAdapter.notifyDataSetChanged();
+                bindProduct.tvCountProduct.setText("Có " + listProduct.size() + " sản phẩm");
+                productAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -180,18 +174,20 @@ public class ProductFragment extends BaseFragment {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Product product = snapshot.getValue(Product.class);
-                if(product == null || listProduct == null || listProduct.isEmpty()){
+                if (product == null || listProduct == null || listProduct.isEmpty()) {
                     return;
                 }
-                for(int i = 0; i < listProduct.size(); i++){
-                    if(product.getId() == listProduct.get(i).getId()){
+                for (int i = 0; i < listProduct.size(); i++) {
+                    if (product.getId() == listProduct.get(i).getId()) {
                         listProduct.remove(listProduct.get(i));
                         break;
                     }
@@ -213,26 +209,27 @@ public class ProductFragment extends BaseFragment {
 
     }
 
-    private void getFilterProduct(){
+    private void getFilterProduct() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listProduct.clear();
-                for(DataSnapshot datasnapshot : snapshot.getChildren()){
-                    Product product =  datasnapshot.getValue(Product.class);
+                for (DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    Product product = datasnapshot.getValue(Product.class);
                     listProduct.add(product);
                 }
                 ArrayList<Product> listFilter = new ArrayList<>();
-                for(Product product : listProduct){
-                    if(product.getTypeProduct().getId().equalsIgnoreCase(typeProduct.getId()) ){
+                for (Product product : listProduct) {
+                    if (product.getTypeProduct().getId().equalsIgnoreCase(typeProduct.getId())) {
                         listFilter.add(product);
                     }
                 }
                 listProduct.retainAll(listFilter);
-                bindProduct.tvCountProduct.setText("Có "+listProduct.size()+" sản phẩm ");
+                bindProduct.tvCountProduct.setText("Có " + listProduct.size() + " sản phẩm ");
                 productAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -242,18 +239,20 @@ public class ProductFragment extends BaseFragment {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Product product = snapshot.getValue(Product.class);
-                if(product == null || listProduct == null || listProduct.isEmpty()){
+                if (product == null || listProduct == null || listProduct.isEmpty()) {
                     return;
                 }
-                for(int i = 0; i < listProduct.size(); i++){
-                    if(product.getId() == listProduct.get(i).getId()){
+                for (int i = 0; i < listProduct.size(); i++) {
+                    if (product.getId() == listProduct.get(i).getId()) {
                         listProduct.remove(listProduct.get(i));
                         break;
                     }
@@ -275,20 +274,25 @@ public class ProductFragment extends BaseFragment {
     }
 
 
-    private void filterList(String text,ArrayList<Product> listProduct) {
-        ArrayList<Product> filterLists =new ArrayList<>();
-        for (Product product: listProduct) {
-            if(product.getNameProduct().toLowerCase().contains(text.toLowerCase())){
+    private void filterList(String text, ArrayList<Product> listProduct) {
+        ArrayList<Product> filterLists = new ArrayList<>();
+        for (Product product : listProduct) {
+            if (product.getNameProduct().toLowerCase().contains(text.toLowerCase())) {
                 filterLists.add(product);
             }
         }
-        if(filterLists.isEmpty()){
+        if (filterLists.isEmpty()) {
 
-        }else{
+        } else {
             productAdapter.setFilterList(filterLists);
-            bindProduct.tvCountProduct.setText("Có "+filterLists.size()+" sản phẩm.");
+            bindProduct.tvCountProduct.setText("Có " + filterLists.size() + " sản phẩm.");
         }
     }
 
 
+    @Override
+    public void onClickItemProduct(Product product) {
+        Log.d("TAG", "onClickItemProduct: "+table.getName_table());
+        replaceFragment(new DetailProductFragment(product, table));
+    }
 }
