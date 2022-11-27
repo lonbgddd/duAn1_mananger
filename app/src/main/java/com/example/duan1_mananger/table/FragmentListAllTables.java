@@ -9,9 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.FragmentListAllTablesBinding;
 import com.example.duan1_mananger.model.Table;
+import com.example.duan1_mananger.product.ProductFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentListAllTables extends BaseFragment {
+public class FragmentListAllTables extends BaseFragment implements OnclickOptionMenu {
     private FragmentListAllTablesBinding binding;
     private TableAdapter adapter = null;
     FirebaseDatabase database;
@@ -83,7 +86,7 @@ public class FragmentListAllTables extends BaseFragment {
 
             }
         });
-        adapter = new TableAdapter(listTable);
+        adapter = new TableAdapter(listTable, FragmentListAllTables.this);
         recyclerView.setAdapter(adapter);
 
     }
@@ -101,5 +104,10 @@ public class FragmentListAllTables extends BaseFragment {
     @Override
     public void initView() {
 
+    }
+
+    @Override
+    public void onClick(Table table) {
+        replaceFragment(DetailTableFragment.newInstance(table));
     }
 }

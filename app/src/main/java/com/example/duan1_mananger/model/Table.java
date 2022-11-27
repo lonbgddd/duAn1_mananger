@@ -1,9 +1,11 @@
 package com.example.duan1_mananger.model;
 
-public class Table {
+import java.io.Serializable;
+
+public class Table implements Serializable {
     private int id_table;
     private String name_table;
-    private Boolean status = false;
+    private String status = "false";
 
     public int getId_table() {
         return id_table;
@@ -21,11 +23,11 @@ public class Table {
         this.name_table = name_table;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }

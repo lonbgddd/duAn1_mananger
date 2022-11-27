@@ -72,6 +72,7 @@
                 app:cardElevation="@dimen/dimen_15dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ImageAddNew"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -88,6 +89,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
+                            android:id="@+id/imgList"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_cart_oder" />
