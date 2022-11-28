@@ -12,7 +12,7 @@ import android.view.Window;
 
 import com.example.duan1_mananger.databinding.ActivityMainBinding;
 import com.example.duan1_mananger.home.HomeFragment;
-import com.example.duan1_mananger.maket.MaketFragment;
+import com.example.duan1_mananger.maket.MarketFragment;
 import com.example.duan1_mananger.product.ProductFragment;
 import com.example.duan1_mananger.setting.SettingFragment;
 import com.google.android.material.navigation.NavigationBarView;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         window.setStatusBarColor(getColor(R.color.white));
                         break;
                     case R.id.maket_fragment:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fade_control, MaketFragment.newInstance()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fade_control, MarketFragment.newInstance()).commit();
                         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                         window.setStatusBarColor(getColor(R.color.white));
                         break;

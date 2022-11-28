@@ -48,7 +48,6 @@ import java.util.ArrayList;
 
 
 public class AddProductFragment extends BaseFragment {
-
     private FragmentAddProductBinding binding;
     private ArrayList<TypeProduct> listTypeProduct;
     private static final int PICL_IMAGES_CODE = 1001;
@@ -56,7 +55,6 @@ public class AddProductFragment extends BaseFragment {
     public AddProductFragment() {
         // Required empty public constructor
     }
-
 
     public static AddProductFragment newInstance() {
         AddProductFragment fragment = new AddProductFragment();
@@ -119,8 +117,6 @@ public class AddProductFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
-
 
     }
 

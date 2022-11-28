@@ -5,43 +5,50 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentAddOderBinding;
+import com.example.duan1_mananger.home.HomeFragment;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Receipt;
 import com.example.duan1_mananger.model.Table;
-import com.example.duan1_mananger.product.ProductFragment;
+import com.example.duan1_mananger.table.adapter.OderAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailTableFragment extends BaseFragment {
     private FragmentAddOderBinding binding = null;
     private Table table;
-    private String idProduct = null;
+    private ArrayList<String> idProduct = null;
     private String idTable = null;
     public DetailTableFragment(Table table) {
         this.table = table;
     }
     private TableViewModel model = null;
-    private List<String> listProduct;
+    private ArrayList<String> listProduct;
     private String statusTable = "false";
+    private Double totalMoney = 0.0;
+    private   Receipt receipt;
+
+    public DetailTableFragment() {
+    }
+
     public static DetailTableFragment newInstance(Table table) {
         DetailTableFragment fragment = new DetailTableFragment(table);
         Bundle args = new Bundle();
@@ -90,53 +97,66 @@ public class DetailTableFragment extends BaseFragment {
                 statusTable = table.getStatus();
                 binding.tvNameBill.setText(table.getName_table());
             } else {
-                idProduct = getArguments().getString("idProduct");
-                listProduct.add(idProduct);
+                idProduct = getArguments().getStringArrayList("list_product_select");
+                listProduct.addAll(idProduct);
                 idTable = getArguments().getString("table_id");
                 binding.tvNameBill.setText(getArguments().getString("table_name"));
             }
             model.listLiveData(listProduct);
         }
+            binding.btnSaveOder.setOnClickListener(v -> {
+                if(binding.listProductOder.getVisibility() == View.GONE){
+                    notificationErrInput(getContext(), "Hãy chọn món !");
+                }else {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OderSave");
+                    String key = reference.push().getKey();
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String strDate = dateFormat.format(date);
 
-        binding.btnSaveOder.setOnClickListener(v -> {
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OderSave");
-            String key = reference.push().getKey();
-            Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-            String strDate = dateFormat.format(date);
-            Log.d("TAG", "listening: "+idTable);
-            Receipt receipt = new Receipt(key,idTable,strDate,10000.0,listProduct);
+                    receipt = new Receipt(key,idTable,strDate,totalMoney,listProduct,binding.edNoteOder.getText().toString());
 
+                    reference.child(key).setValue(receipt);
+                    model.setStatusTable(idTable);
 
-            reference.child(key).setValue(receipt);
-            model.setStatusTable(idTable);
-
-            Toast.makeText(requireContext(), "Đã đặt bàn", Toast.LENGTH_SHORT).show();
-        });
-        if (statusTable.equals("true")){
-            model.liveDataGetReceipt(idTable);
-        }
-
-        model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
-            @Override
-            public void onChanged(Receipt receipt) {
-                binding.btnSaveOder.setVisibility(View.GONE);
-                model.listLiveData(receipt.getListIdProduct());
-                binding.layoutAddProduct.setVisibility(View.GONE  );
+                    replaceFragment(HomeFragment.newInstance());
+                }
+            });
+            if (statusTable.equals("true")){
+                model.liveDataGetReceipt(idTable);
             }
-        });
+
+            model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
+                @Override
+                public void onChanged(Receipt receipt) {
+                    binding.btnSaveOder.setVisibility(View.GONE);
+                    model.listLiveData(receipt.getListIdProduct());
+                    binding.layoutAddProduct.setVisibility(View.GONE  );
+                    binding.edNoteOder.setEnabled(false);
+                    binding.edNoteOder.setText(receipt.getNoteOder()+"");
+                }
+            });
+
+            //Thanh toán dơn
+            binding.btnPayOder.setOnClickListener(btn ->{
+                if(binding.listProductOder.getVisibility() == View.GONE){
+                    notificationErrInput(getContext(), "Hãy chọn món !");
+                }else {
+
+                }
+            });
 
     }
 
     @Override
     public void listening() {
         binding.icBack.setOnClickListener(v -> backStack());
-        binding.imgList.setOnClickListener(v -> {
-            ProductFragment productFragment = new ProductFragment();
+        binding.layoutAddProduct.setOnClickListener(v -> {
+            FragmentListAllProductToOder productToOder = new FragmentListAllProductToOder();
             Bundle bundle = new Bundle();
             bundle.putSerializable("table", table);
-            productFragment.setArguments(bundle);
-            replaceFragment(productFragment);
+            productToOder.setArguments(bundle);
+            replaceFragment(productToOder);
         });
 
 
@@ -149,25 +169,30 @@ public class DetailTableFragment extends BaseFragment {
             public void onChanged(List<Product> products) {
                 binding.layoutAddProduct.setVisibility(View.GONE);
                 binding.listProductOder.setVisibility(View.VISIBLE);
-                int number = products.size();
 
+                int number = products.size();
                 binding.tvAmountProduct.setText(String.valueOf(number));
-                Double money = 0.0;
-                for (Product product:products
-                     ) {
-                    money += product.getPrice();
+
+                for (Product product : products) {
+                    totalMoney += product.getPrice();
                 }
-                binding.tvTotalOder.setText(String.valueOf(money));
-                binding.tvTotalAmount.setText(String.valueOf(money));
+                Locale locale = new Locale("en","EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                String strMoney = numberFormat.format(totalMoney);
+
+                binding.tvTotalOder.setText(strMoney);
+                binding.tvTotalAmount.setText(strMoney);
+
                 OderAdapter adapter = new OderAdapter(products);
                 binding.listProductOder.setAdapter(adapter);
+
             }
         });
         model.oderTableStatus.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String aBoolean) {
                 if (aBoolean == "true"){
-                    Toast.makeText(requireContext(), "Đặt bàn thành công", Toast.LENGTH_SHORT).show();
+                   notificationSuccessInput(getContext(), "Đặt bàn thành công!");
                 }
             }
         });
@@ -177,4 +202,6 @@ public class DetailTableFragment extends BaseFragment {
     public void initView() {
 
     }
+
+
 }

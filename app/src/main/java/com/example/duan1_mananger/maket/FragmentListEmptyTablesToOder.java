@@ -1,4 +1,4 @@
-package com.example.duan1_mananger.home.fragments;
+package com.example.duan1_mananger.maket;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.base.OnclickOptionMenu;
+import com.example.duan1_mananger.databinding.FragmentEmptyTableToOderBinding;
 import com.example.duan1_mananger.databinding.FragmentListEmptyTablesBinding;
-import com.example.duan1_mananger.databinding.FragmentListOpenTablesBinding;
 import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.table.DetailTableFragment;
 import com.example.duan1_mananger.table.adapter.TableAdapter;
@@ -26,20 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentListOpenTables extends BaseFragment  implements OnclickOptionMenu {
-    private FragmentListOpenTablesBinding binding;
+public class FragmentListEmptyTablesToOder extends BaseFragment implements OnclickOptionMenu {
+    private FragmentEmptyTableToOderBinding binding;
     private TableAdapter adapter = null;
     FirebaseDatabase database;
     private RecyclerView recyclerView;
     private List<Table> listTable;
 
 
-    public FragmentListOpenTables() {
-        // Required empty public constructor
+    public FragmentListEmptyTablesToOder() {
+
     }
 
-    public static FragmentListOpenTables newInstance() {
-        FragmentListOpenTables fragment = new FragmentListOpenTables();
+    public static FragmentListEmptyTablesToOder newInstance() {
+        FragmentListEmptyTablesToOder fragment = new FragmentListEmptyTablesToOder();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -55,9 +55,9 @@ public class FragmentListOpenTables extends BaseFragment  implements OnclickOpti
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentListOpenTablesBinding.inflate(inflater,container,false);
+        binding = FragmentEmptyTableToOderBinding.inflate(inflater,container,false);
         listTable = new ArrayList<>();
-        recyclerView = binding.reVListOpenTable;
+        recyclerView = binding.recViewTableEmpty;
         return binding.getRoot();
 
     }
@@ -79,11 +79,11 @@ public class FragmentListOpenTables extends BaseFragment  implements OnclickOpti
                 listTable.clear();
                 for (DataSnapshot snapshot1: snapshot.getChildren()) {
                     Table table = snapshot1.getValue(Table.class);
-                    if(table.getStatus().equals("true")){
+                    if(table.getStatus().equals("false")){
                         listTable.add(table);
                     }
-
                 }
+                binding.tvNumberOfTable.setText("Có tất cả "+listTable.size()+" bàn trống");
                 adapter.notifyDataSetChanged();
             }
 
@@ -92,7 +92,7 @@ public class FragmentListOpenTables extends BaseFragment  implements OnclickOpti
 
             }
         });
-        adapter = new TableAdapter(listTable, FragmentListOpenTables.this,getContext());
+        adapter = new TableAdapter(listTable, FragmentListEmptyTablesToOder.this,getContext());
         recyclerView.setAdapter(adapter);
 
     }

@@ -1,7 +1,6 @@
-package com.example.duan1_mananger.table;
+package com.example.duan1_mananger.table.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -11,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.duan1_mananger.databinding.ItemOderMenuBinding;
 import com.example.duan1_mananger.model.Product;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class OderAdapter extends RecyclerView.Adapter<OderAdapter.ViewHolder>{
     List<Product> productList;
@@ -52,7 +53,11 @@ public class OderAdapter extends RecyclerView.Adapter<OderAdapter.ViewHolder>{
         }
         void initData(Product product){
             tvName.setText(product.getNameProduct());
-            tvPrice.setText(product.getPrice()+"");
+            Locale locale = new Locale("en","EN");
+            NumberFormat numberFormat = NumberFormat.getInstance(locale);
+            Double price = product.getPrice();
+            String strPrice = numberFormat.format(price);
+            tvPrice.setText(strPrice);
         }
     }
 }

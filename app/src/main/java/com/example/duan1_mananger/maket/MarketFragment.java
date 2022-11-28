@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,21 +15,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
-import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
 import com.example.duan1_mananger.databinding.FragmentMaketBinding;
 
-public class MaketFragment extends BaseFragment {
+public class MarketFragment extends BaseFragment {
     private FragmentMaketBinding binding = null;
-    public MaketFragment() {
+    public MarketFragment() {
         // Required empty public constructor
     }
 
-    public static MaketFragment newInstance() {
-        MaketFragment fragment = new MaketFragment();
+    public static MarketFragment newInstance() {
+        MarketFragment fragment = new MarketFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -71,6 +68,10 @@ public class MaketFragment extends BaseFragment {
 
         binding.layoutEvaluate.setOnClickListener(layout ->{
             dialogEvaluate(getContext());
+        });
+
+        binding.tvListTableEmpty.setOnClickListener(tv ->{
+            replaceFragment(FragmentListEmptyTablesToOder.newInstance());
         });
 
     }

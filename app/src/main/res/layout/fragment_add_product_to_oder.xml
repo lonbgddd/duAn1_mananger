@@ -16,9 +16,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingVertical="@dimen/dimen_10dp">
 
             <ImageView
@@ -26,30 +27,22 @@
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_30dp"
                 android:src="@drawable/ic_arrow_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.031"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.022"
-                app:tint="@color/grey_350" />
+                app:tint="@color/grey_350"
+                android:layout_marginStart="10dp"/>
 
 
             <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_view_type_product"
-                android:layout_width="@dimen/dimen_300dp"
+                android:id="@+id/search_view_product"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="@dimen/dimen_35dp"
-                android:layout_marginHorizontal="@dimen/dimen_25dp"
+                android:layout_marginHorizontal="@dimen/dimen_20dp"
                 android:background="@drawable/custom_search_view_2"
                 app:iconifiedByDefault="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ic_back"
-                app:layout_constraintTop_toTopOf="parent"
                 app:queryBackground="@null"
                 app:queryHint="@string/text_hint_search_product"
                 app:submitBackground="@null" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
     <LinearLayout
         android:id="@+id/layoutType"
@@ -67,28 +60,67 @@
             android:fontFamily="@font/poppins_medium"
             android:textColor="@color/black"
             android:textSize="@dimen/dimen_16dp"/>
-        <ImageView
-            android:layout_width="@dimen/dimen_25dp"
-            android:layout_height="@dimen/dimen_25dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow_down"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/dimen_3dp"
-            app:tint="@color/grey_100" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/white">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listProductToOder"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/dimen_5dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listProductToOder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/dimen_5dp"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/dimen_10dp"
+            app:cardElevation="@dimen/dimen_4dp"
+            android:layout_gravity="center"
+            android:layout_marginVertical="@dimen/dimen_10dp"
+            android:layout_marginHorizontal="@dimen/dimen_15dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btnReselect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_50dp"
+                    android:layout_weight="0.5"
+                    android:text="Chọn lại"
+                    android:textColor="@color/black"
+                    android:background="@drawable/custom_border_button_reselect"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/dimen_18dp"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+                <Button
+                    android:id="@+id/btnAddOder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_50dp"
+                    android:layout_weight="0.5"
+                    android:text="Xong"
+                    android:textColor="@color/black"
+                    android:background="@color/brown_90"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/dimen_18dp"
+                    android:fontFamily="@font/poppins_medium"
+                    />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 

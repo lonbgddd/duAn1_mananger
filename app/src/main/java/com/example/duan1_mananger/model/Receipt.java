@@ -8,16 +8,19 @@ public class Receipt {
     private String timeOder;
     private Double money;
     private List<String> listIdProduct;
+    private String noteOder;
+
 
     public Receipt() {
     }
 
-    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct) {
+    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct, String noteOder) {
         this.idReceipt = idReceipt;
         this.idTable = idTable;
         this.timeOder = timeOder;
         this.money = money;
         this.listIdProduct = listIdProduct;
+        this.noteOder = noteOder;
     }
 
     public String getIdReceipt() {
@@ -58,5 +61,14 @@ public class Receipt {
 
     public void setListIdProduct(List<String> listIdProduct) {
         this.listIdProduct = listIdProduct;
+    }
+
+
+    public String getNoteOder() {
+        return noteOder;
+    }
+
+    public void setNoteOder(String noteOder) {
+        this.noteOder = noteOder;
     }
 }

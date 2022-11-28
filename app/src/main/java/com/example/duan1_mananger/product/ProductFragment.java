@@ -20,6 +20,8 @@ import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.ProductAdapter;
+import com.example.duan1_mananger.table.DetailTableFragment;
+import com.example.duan1_mananger.table.FragmentListAllProductToOder;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,13 +32,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ProductFragment extends BaseFragment implements ProductAdapter.OnClickItemListener {
+public class ProductFragment extends BaseFragment implements  ProductAdapter.OnClickItemListener{
     public static final String TAG = ProductFragment.class.getName();
     private FragmentProductBinding bindProduct = null;
     private ArrayList<Product> listProduct;
     public ProductAdapter productAdapter = null;
     private TypeProduct typeProduct;
-    Table table = null;
+
 
     public ProductFragment() {
     }
@@ -77,19 +79,13 @@ public class ProductFragment extends BaseFragment implements ProductAdapter.OnCl
             bindProduct.tvNameTypeProduct.setText(R.string.text_type_product_1);
             listProduct = new ArrayList<>();
             getProduct();
-            productAdapter = new ProductAdapter(listProduct);
-            productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
-
-            bindProduct.listProduct.setAdapter(productAdapter);
         } else {
             bindProduct.tvNameTypeProduct.setText(typeProduct.getNameType());
             listProduct = new ArrayList<>();
             getFilterProduct();
-            productAdapter = new ProductAdapter(listProduct);
-            productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
-
-            bindProduct.listProduct.setAdapter(productAdapter);
         }
+        productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
+        bindProduct.listProduct.setAdapter(productAdapter);
         listening();
         initObSever();
 
@@ -97,9 +93,7 @@ public class ProductFragment extends BaseFragment implements ProductAdapter.OnCl
 
     @Override
     public void loadData() {
-        if (getArguments() != null) {
-            table = (Table) getArguments().getSerializable("table");
-        }
+
     }
 
     @Override
@@ -149,7 +143,6 @@ public class ProductFragment extends BaseFragment implements ProductAdapter.OnCl
 
 
     }
-
 
     private void getProduct() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
@@ -292,7 +285,6 @@ public class ProductFragment extends BaseFragment implements ProductAdapter.OnCl
 
     @Override
     public void onClickItemProduct(Product product) {
-        Log.d("TAG", "onClickItemProduct: "+table.getName_table());
-        replaceFragment(new DetailProductFragment(product, table));
+        replaceFragment(new DetailProductFragment(product));
     }
 }

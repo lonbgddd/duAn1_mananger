@@ -14,7 +14,7 @@ import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.FragmentListAllTablesBinding;
 import com.example.duan1_mananger.model.Table;
-import com.example.duan1_mananger.product.ProductFragment;
+import com.example.duan1_mananger.table.adapter.TableAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -86,7 +86,7 @@ public class FragmentListAllTables extends BaseFragment implements OnclickOption
 
             }
         });
-        adapter = new TableAdapter(listTable, FragmentListAllTables.this);
+        adapter = new TableAdapter(listTable, FragmentListAllTables.this,getContext());
         recyclerView.setAdapter(adapter);
 
     }
