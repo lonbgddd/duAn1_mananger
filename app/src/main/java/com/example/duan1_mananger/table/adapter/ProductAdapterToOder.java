@@ -1,18 +1,18 @@
-package com.example.duan1_mananger.product.Adapter;
+package com.example.duan1_mananger.table.adapter;
 
 
-import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.databinding.LayoutItemProductBinding;
 import com.example.duan1_mananger.model.Product;
 import com.google.firebase.storage.FirebaseStorage;
@@ -22,30 +22,29 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> {
+public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToOder.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
-    private String text;
-    OnClickItemListener mOnClickItemListener;
+    private Context context;
 
-
-    public interface OnClickItemListener{
-        void onClickItemProduct(Product product);
-    }
-
-
-    public ProductAdapter(ArrayList<Product> listProduct) {
+    public ProductAdapterToOder(ArrayList<Product> listProduct) {
         this.listProduct = listProduct;
     }
 
-    public ProductAdapter(ArrayList<Product> listProduct, OnClickItemListener mOnClickItemListener) {
+    public ProductAdapterToOder(ArrayList<Product> listProduct, Context context) {
         this.listProduct = listProduct;
-        this.mOnClickItemListener = mOnClickItemListener;
+        this.context = context;
+
+
+
     }
 
     public void setFilterList(ArrayList<Product> filterList) {
         this.listProduct = filterList;
         notifyDataSetChanged();
     }
+
+
+
 
     @NonNull
     @Override
@@ -56,11 +55,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolderProduct holder, int position) {
         Product product = listProduct.get(position);
+
         if (product == null) {
             return;
         } else {
-            holder.initData(product);
+            holder.initData(product,context);
         }
+
     }
 
     @Override
@@ -74,6 +75,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         TextView tvName, tvDescribe, tvPrice;
         ConstraintLayout layoutItem;
 
+
         public ViewHolderProduct(LayoutItemProductBinding binding) {
             super(binding.getRoot());
             imgProduct = binding.imgProduct;
@@ -83,7 +85,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             layoutItem = binding.layoutItem;
         }
 
-        void initData(Product product) {
+       public void initData(Product product, Context context ) {
             StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
             reference.listAll().addOnSuccessListener(listResult -> {
                 for (StorageReference files: listResult.getItems()){
@@ -95,19 +97,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 }
             });
             tvName.setText(product.getNameProduct());
-
             Locale locale = new Locale("en","EN");
             NumberFormat numberFormat = NumberFormat.getInstance(locale);
             Double price = product.getPrice();
             String strPrice = numberFormat.format(price);
             tvPrice.setText(strPrice +"đ");
-
             tvDescribe.setText(product.getDescribe());
-            layoutItem.setOnClickListener(v -> {
-                mOnClickItemListener.onClickItemProduct(product);
-            });
-
+           layoutItem.setBackgroundColor(product.isSelected() ? context.getColor(R.color.brown_70) : context.getColor(R.color.white));
+           layoutItem.setOnClickListener(v ->{
+               product.setSelected(!product.isSelected());
+               layoutItem.setBackgroundColor(product.isSelected() ? context.getColor(R.color.brown_70) : context.getColor(R.color.white));
+           });
 
         }
+
+
+
+
     }
 }

@@ -83,6 +83,9 @@
     <dimen name="dimen_150dp">150dp</dimen>
     <dimen name="dimen_160dp">160dp</dimen>
     <dimen name="dimen_170dp">170dp</dimen>
+    <dimen name="dimen_180dp">180dp</dimen>
+
+    <dimen name="dimen_190dp">190dp</dimen>
     <dimen name="dimen_200dp">200dp</dimen>
     <dimen name="dimen_300dp">300dp</dimen>
     <dimen name="dimen_345dp">345dp</dimen>

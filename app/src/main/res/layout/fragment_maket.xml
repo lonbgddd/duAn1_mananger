@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".maket.MaketFragment"
+    tools:context=".maket.MarketFragment"
     android:orientation="vertical"
     android:background="@color/grey_20">
     <androidx.fragment.app.FragmentContainerView
@@ -174,7 +174,7 @@
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_30dp"
                 android:layout_marginTop="@dimen/dimen_15dp"
-                android:src="@drawable/ic_table_bar"
+                android:src="@drawable/ic_outline_table"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.03"
                 app:layout_constraintStart_toStartOf="parent"

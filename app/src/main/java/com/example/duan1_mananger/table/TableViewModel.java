@@ -59,7 +59,7 @@ public class TableViewModel extends ViewModel {
         return oderTableStatus;
     }
     public LiveData<Receipt> liveDataGetReceipt(String idTable){
-        reference = FirebaseDatabase.getInstance().getReference("OderSave");
+        reference = FirebaseDatabase.getInstance().getReference("oder_save_table");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

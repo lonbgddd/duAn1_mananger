@@ -1,5 +1,6 @@
-package com.example.duan1_mananger.table;
+package com.example.duan1_mananger.table.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
 import com.example.duan1_mananger.model.Table;
@@ -17,10 +20,12 @@ import java.util.List;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTable> {
     private List<Table> list;
-    private OnclickOptionMenu onclickOpntionMenu;
-    public TableAdapter(List<Table> list, OnclickOptionMenu onclickOpntionMenu) {
+    private OnclickOptionMenu onclickOptionMenu;
+    private Context context;
+    public TableAdapter(List<Table> list, OnclickOptionMenu onclickOptionMenu, Context context) {
         this.list = list;
-        this.onclickOpntionMenu = onclickOpntionMenu;
+        this.onclickOptionMenu = onclickOptionMenu;
+        this.context = context;
     }
 
     @NonNull
@@ -35,7 +40,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
         if (table == null){
             return;
         } else {
-            holder.initData(table);
+            holder.initData(table,context);
         }
 
     }
@@ -47,31 +52,36 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
 
     class ViewHolderTable extends RecyclerView.ViewHolder {
         private TextView tv_name, tvStatusOff, tvStatusOn;
-        private ImageView optionMenu;
+        private ConstraintLayout layoutHeaderTable,layoutBodyTable ;
         private ImageView logo;
 
         public ViewHolderTable(LayoutItemTableBinding binding) {
             super(binding.getRoot());
             tv_name = binding.tvNameTable;
-            optionMenu = binding.icMenuChooser;
             logo = binding.icLogoTable;
             tvStatusOff = binding.tvStatusEmpty;
             tvStatusOn = binding.tvLogoTable;
+            layoutHeaderTable = binding.layoutHeaderTable;
+            layoutBodyTable = binding.layoutBodyTable;
         }
 
-        void initData(Table table){
+        void initData(Table table, Context context){
             tv_name.setText(table.getName_table());
             itemView.setOnClickListener(v -> {
-                onclickOpntionMenu.onClick(table);
+                onclickOptionMenu.onClick(table);
             });
             if (table.getStatus().equals("true")){
                 logo.setVisibility(View.VISIBLE);
                 tvStatusOff.setVisibility(View.GONE);
                 tvStatusOn.setVisibility(View.VISIBLE);
+                layoutHeaderTable.setBackgroundColor(context.getColor(R.color.orange_200) );
+                layoutBodyTable.setBackgroundColor(context.getColor(R.color.grey_10) );
             } else {
                 logo.setVisibility(View.GONE);
                 tvStatusOff.setVisibility(View.VISIBLE);
                 tvStatusOn.setVisibility(View.GONE);
+                layoutHeaderTable.setBackgroundColor(context.getColor(R.color.grey_65) );
+                layoutBodyTable.setBackgroundColor(context.getColor(R.color.grey_55) );
             }
 
 

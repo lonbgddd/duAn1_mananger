@@ -1,36 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:padding="@dimen/dimen_10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-      <TextView
-          android:id="@+id/tvNameProductOder"
-          android:text="Cà phê"
-          android:layout_weight="1"
-          android:paddingHorizontal="@dimen/dimen_20dp"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
-        <TextView
-            android:text="x"
-            android:layout_weight="1"
-            android:paddingHorizontal="@dimen/dimen_20dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimen_10dp">
+
+        <ImageView
+            android:id="@+id/icCancelProduct"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="1"
-        android:paddingHorizontal="@dimen/dimen_10dp"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:text="Giá:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tvMoneyProductOder"
-        android:text="100000Đ"
-        android:layout_weight="1"
-        android:paddingHorizontal="@dimen/dimen_10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_round_close"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/grey_150" />
+
+
+        <TextView
+            android:id="@+id/tvNameProductOder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Cà phê"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_17dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.002"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/dimen_5dp"
+            app:cardElevation="@dimen/dimen_2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.55">
+
+            <TextView
+                android:id="@+id/tvCountProduct"
+                android:layout_width="@dimen/dimen_60dp"
+                android:layout_height="@dimen/dimen_23dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimen_16dp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Giá:"
+            android:textColor="@color/grey_150"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNameProductOder"
+            app:layout_constraintVertical_bias="0.7" />
+
+        <TextView
+            android:id="@+id/tvMoneyProductOder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
+            android:text="100000Đ"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dimen_17dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.02"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/tvNameProductOder"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_40"
+        android:layout_marginHorizontal="@dimen/dimen_15dp"
+      />
 </LinearLayout>
