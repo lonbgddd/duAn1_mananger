@@ -16,8 +16,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RatingBar;
 
+import com.example.duan1_mananger.Oder.ListOderFragment;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
+import com.example.duan1_mananger.databinding.FragmentListOderBinding;
 import com.example.duan1_mananger.databinding.FragmentMaketBinding;
 
 public class MarketFragment extends BaseFragment {
@@ -72,6 +74,9 @@ public class MarketFragment extends BaseFragment {
 
         binding.tvListTableEmpty.setOnClickListener(tv ->{
             replaceFragment(FragmentListEmptyTablesToOder.newInstance());
+        });
+        binding.icNext.setOnClickListener(ic->{
+            replaceFragment(ListOderFragment.newInstance());
         });
 
     }
