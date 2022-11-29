@@ -2,6 +2,7 @@ package com.example.duan1_mananger.table.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,9 +14,12 @@ import com.example.duan1_mananger.model.Product;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class OderAdapter extends RecyclerView.Adapter<OderAdapter.ViewHolder>{
     List<Product> productList;
+
 
     public OderAdapter(List<Product> productList) {
         this.productList = productList;
@@ -45,19 +49,42 @@ public class OderAdapter extends RecyclerView.Adapter<OderAdapter.ViewHolder>{
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvName, tvPrice;
+        private TextView tvName, tvPrice, tvCountProduct;
+        private ImageView icAscending,icDecrease;
         public ViewHolder(@NonNull ItemOderMenuBinding binding) {
             super(binding.getRoot());
             tvName = binding.tvNameProductOder;
             tvPrice = binding.tvMoneyProductOder;
+            icAscending = binding.icAscending;
+            icDecrease = binding.icDecrease;
+            tvCountProduct = binding.tvCountProduct;
         }
-        void initData(Product product){
+         public void initData(Product product){
             tvName.setText(product.getNameProduct());
             Locale locale = new Locale("en","EN");
             NumberFormat numberFormat = NumberFormat.getInstance(locale);
             Double price = product.getPrice();
             String strPrice = numberFormat.format(price);
             tvPrice.setText(strPrice);
+
+            icAscending.setOnClickListener(ic ->{
+                int count= Integer.parseInt(String.valueOf(tvCountProduct.getText()));
+                count++;
+                tvCountProduct.setText(String.valueOf(count));
+
+            });
+            icDecrease.setOnClickListener(ic ->{
+                int count= Integer.parseInt(String.valueOf(tvCountProduct.getText()));
+                if(count > 1){
+                    count--;
+                    tvCountProduct.setText(String.valueOf(count));
+                }
+            });
+
         }
+
+
+
+
     }
 }

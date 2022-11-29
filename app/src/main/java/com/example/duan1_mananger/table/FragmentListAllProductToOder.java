@@ -120,8 +120,6 @@ public class FragmentListAllProductToOder extends BaseFragment {
             for(Product product : listProductSelect){
                 listId.add(product.getId());
             }
-            Toast.makeText(getContext(), "Số lượng: "+listProductSelect.size(), Toast.LENGTH_SHORT).show();
-
             if (table != null){
                 DetailTableFragment detailTableFragment = new DetailTableFragment(table);
                 Bundle bundle = new Bundle();

@@ -74,11 +74,11 @@ public class ListOderAdapter extends RecyclerView.Adapter<ListOderAdapter.ViewHo
                     }else {
                         Locale locale = new Locale("en","EN");
                         NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                        tvNameBill.setText("Poly đơn "+table.getName_table());
+                        tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
                         tvTimeOder.setText(receipt.getTimeOder());
                         Double Money =receipt.getMoney();
                         String strMoney = numberFormat.format(Money);
-                        tvTotalMoney.setText(strMoney+"đ");
+                        tvTotalMoney.setText(strMoney);
                     }
                 }
 

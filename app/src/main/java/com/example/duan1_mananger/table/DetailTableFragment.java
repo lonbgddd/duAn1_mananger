@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,16 +41,18 @@ public class DetailTableFragment extends BaseFragment {
     private ArrayList<String> idProduct = null;
     private String idTable = null;
     private Receipt receiptModel;
+    private TableViewModel model = null;
+    private ArrayList<String> listProduct;
+    private String statusTable = "false";
+    private Double totalMoney = 0.0;
+    private  Receipt receipt;
+
+
 
     public DetailTableFragment(Table table) {
         this.table = table;
     }
 
-    private TableViewModel model = null;
-    private ArrayList<String> listProduct;
-    private String statusTable = "false";
-    private Double totalMoney = 0.0;
-    private Receipt receipt;
 
     public DetailTableFragment() {
     }
@@ -136,15 +139,16 @@ public class DetailTableFragment extends BaseFragment {
             @Override
             public void onChanged(Receipt receipt) {
                 binding.btnSaveOder.setVisibility(View.GONE);
+                binding.btnPayOder.setVisibility(View.VISIBLE);
                 receiptModel = receipt;
                 model.listLiveData(receipt.getListIdProduct());
                 binding.layoutAddProduct.setVisibility(View.GONE);
                 binding.edNoteOder.setEnabled(false);
                 binding.edNoteOder.setText(receipt.getNoteOder() + "");
+
             }
         });
 
-        //Thanh toán dơn
         binding.btnPayOder.setOnClickListener(btn -> {
             if (binding.listProductOder.getVisibility() == View.GONE) {
                 notificationErrInput(getContext(), "Hãy chọn món !");
@@ -154,23 +158,14 @@ public class DetailTableFragment extends BaseFragment {
                 backStack();
             }
         });
-        model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
-            @Override
-            public void onChanged(Receipt receipt) {
-                binding.btnSaveOder.setVisibility(View.GONE);
-                receiptModel = receipt;
-                model.listLiveData(receipt.getListIdProduct());
-                binding.layoutAddProduct.setVisibility(View.GONE  );
-            }
-        });
+
         model.liveDataPayReceipt.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 if (s.equals("success")){
-                    Toast.makeText(requireContext(), "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+                    notificationSuccessInput(getContext(),"Thanh toán thành công!");
                 } else {
-                    Toast.makeText(requireContext(), "Thanh toán thất bại", Toast.LENGTH_SHORT).show();
-
+                    notificationErrInput(getContext(),"Thanh toán thất bại" );
                 }
             }
         });
@@ -203,6 +198,7 @@ public class DetailTableFragment extends BaseFragment {
                 binding.layoutAddProduct.setVisibility(View.GONE);
                 binding.listProductOder.setVisibility(View.VISIBLE);
 
+                OderAdapter adapter = new OderAdapter(products);
                 int number = products.size();
                 binding.tvAmountProduct.setText(String.valueOf(number));
 
@@ -215,8 +211,6 @@ public class DetailTableFragment extends BaseFragment {
 
                 binding.tvTotalOder.setText(strMoney);
                 binding.tvTotalAmount.setText(strMoney);
-
-                OderAdapter adapter = new OderAdapter(products);
                 binding.listProductOder.setAdapter(adapter);
 
             }
@@ -235,6 +229,9 @@ public class DetailTableFragment extends BaseFragment {
     public void initView() {
 
     }
+
+
+
 
 
 }

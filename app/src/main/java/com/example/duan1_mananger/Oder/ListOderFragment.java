@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
 import com.example.duan1_mananger.base.BaseFragment;
@@ -20,12 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ListOderFragment extends BaseFragment {
     private FragmentListOderBinding binding = null;
     private ArrayList<Receipt> listReceipt;
-    private Receipt receipt;
     private ListOderAdapter adapter ;
+
+
     public ListOderFragment(){
 
     }
@@ -62,6 +65,7 @@ public class ListOderFragment extends BaseFragment {
         adapter= new ListOderAdapter(listReceipt);
         binding.recListBill.setAdapter(adapter);
 
+
     }
 
     @Override
@@ -69,8 +73,8 @@ public class ListOderFragment extends BaseFragment {
         binding.icBack.setOnClickListener(ic->{
             backStack();
         });
-        binding.searchViewTable.clearFocus();
-        binding.searchViewTable.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchViewOder.clearFocus();
+        binding.searchViewOder.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -80,6 +84,26 @@ public class ListOderFragment extends BaseFragment {
             public boolean onQueryTextChange(String newText) {
                 filterReceipt(newText);
                 return true;
+            }
+        });
+        binding.btnChangeLayoutHorizontal.setOnClickListener(btn ->{
+            binding.btnChangeLayoutHorizontal.setVisibility(View.GONE);
+            binding.btnChangeLayoutVertical.setVisibility(View.VISIBLE);
+
+        });
+        binding.btnChangeLayoutVertical.setOnClickListener(btn ->{
+            binding.btnChangeLayoutVertical.setVisibility(View.GONE);
+            binding.btnChangeLayoutHorizontal.setVisibility(View.VISIBLE);
+
+
+        });
+
+        binding.swiperRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getReceipt();
+                binding.recListBill.setAdapter(adapter);
+                binding.swiperRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -118,18 +142,17 @@ public class ListOderFragment extends BaseFragment {
     private void filterReceipt(String text){
         ArrayList<Receipt> filterReceipt = new ArrayList<>();
         for (Receipt receipt: listReceipt) {
-            if(receipt.getTimeOder().toLowerCase().contains(text.toLowerCase())
-                    ||receipt.getMoney().toString().toLowerCase().contains(text.toLowerCase())){
+            if(("POLY000"+receipt.getIdReceipt().substring(16,20)).toLowerCase().contains(text.toLowerCase())||
+                    receipt.getTimeOder().toLowerCase().contains(text.toLowerCase()) ||
+                    receipt.getMoney().toString().toLowerCase().contains(text.toLowerCase())){
+
                 filterReceipt.add(receipt);
             }
 
         }
-        if(filterReceipt.isEmpty()){
-
-        }else {
+        if(!filterReceipt.isEmpty()) {
             adapter.setFilterList(filterReceipt);
-            binding.tvNumberOfOder.setText(filterReceipt.size()+" đơn");
+            binding.tvNumberOfOder.setText(filterReceipt.size() + " đơn");
         }
-
     }
 }

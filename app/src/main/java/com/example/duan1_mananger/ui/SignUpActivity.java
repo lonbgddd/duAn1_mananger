@@ -93,8 +93,8 @@ public class SignUpActivity extends AppCompatActivity {
         String strPass = binding.pass.getText().toString().trim();
         String strRePass = binding.rePass.getText().toString().trim();
         if (TextUtils.isEmpty(strName)) {
-            binding.email.setError(getString(R.string.error_name), null);
-            binding.email.requestFocus();
+            binding.name.setError(getString(R.string.error_name), null);
+            binding.name.requestFocus();
             return false;
         } else if (TextUtils.isEmpty(strEmail)) {
             binding.email.setError(getString(R.string.error_email_1), null);

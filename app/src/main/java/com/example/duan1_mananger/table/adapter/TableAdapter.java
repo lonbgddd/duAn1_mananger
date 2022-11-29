@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
+import com.example.duan1_mananger.model.Receipt;
 import com.example.duan1_mananger.model.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTable> {
@@ -26,6 +28,10 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
         this.list = list;
         this.onclickOptionMenu = onclickOptionMenu;
         this.context = context;
+    }
+    public void setFilterList(ArrayList<Table> list) {
+        this.list = list;
+        notifyDataSetChanged();
     }
 
     @NonNull
