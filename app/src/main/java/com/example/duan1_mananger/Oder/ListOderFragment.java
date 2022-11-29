@@ -1,6 +1,7 @@
 package com.example.duan1_mananger.Oder;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ListOderFragment extends BaseFragment {
+public class ListOderFragment extends BaseFragment implements ListOderAdapter.OnClickListener {
     private FragmentListOderBinding binding = null;
     private ArrayList<Receipt> listReceipt;
     private ListOderAdapter adapter ;
+    private int typeLayout = 1;
 
 
     public ListOderFragment(){
@@ -62,7 +64,7 @@ public class ListOderFragment extends BaseFragment {
     public void loadData() {
         listReceipt = new ArrayList<>();
         getReceipt();
-        adapter= new ListOderAdapter(listReceipt);
+        adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
         binding.recListBill.setAdapter(adapter);
 
 
@@ -89,11 +91,21 @@ public class ListOderFragment extends BaseFragment {
         binding.btnChangeLayoutHorizontal.setOnClickListener(btn ->{
             binding.btnChangeLayoutHorizontal.setVisibility(View.GONE);
             binding.btnChangeLayoutVertical.setVisibility(View.VISIBLE);
+            typeLayout=1;
+            listReceipt = new ArrayList<>();
+            getReceipt();
+            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
+            binding.recListBill.setAdapter(adapter);
 
         });
         binding.btnChangeLayoutVertical.setOnClickListener(btn ->{
             binding.btnChangeLayoutVertical.setVisibility(View.GONE);
             binding.btnChangeLayoutHorizontal.setVisibility(View.VISIBLE);
+            typeLayout=2;
+            listReceipt = new ArrayList<>();
+            getReceipt();
+            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
+            binding.recListBill.setAdapter(adapter);
 
 
         });
@@ -154,5 +166,11 @@ public class ListOderFragment extends BaseFragment {
             adapter.setFilterList(filterReceipt);
             binding.tvNumberOfOder.setText(filterReceipt.size() + " đơn");
         }
+    }
+
+    @Override
+    public void onClickListener(Receipt receipt) {
+        Log.e("TAG", "onClickListener: "+receipt.getIdTable() );
+        replaceFragment(new DetailReceiptFragment(receipt));
     }
 }
