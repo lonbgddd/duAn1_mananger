@@ -1,8 +1,11 @@
 package com.example.duan1_mananger.Oder.Adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -27,17 +30,15 @@ import java.util.Locale;
 public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Receipt> listReceipt;
     OnClickListener mOnClickListener;
-    private int typeLayout ;
-    private Table table;
-    public static final int typeHorizoltal =1;
-    public static final int typeVertical =2;
-
+    private int typeLayout;
+    public static final int TYPE_HORIZONTAL = 0;
+    public static final int TYPE_VERTICAL = 1;
 
     public interface OnClickListener{
         void onClickListener(Receipt receipt);
     }
 
-    public ListOderAdapter(ArrayList<Receipt> listReceipt, OnClickListener mOnClickListener,int typeLayout) {
+    public ListOderAdapter(ArrayList<Receipt> listReceipt, OnClickListener mOnClickListener, int typeLayout) {
         this.listReceipt = listReceipt;
         this.mOnClickListener = mOnClickListener;
         this.typeLayout= typeLayout;
@@ -50,29 +51,21 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(typeHorizoltal==viewType){
-            return new ViewHolderListOder(LayoutItemReceiptHorizontalBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
-        }else if(typeVertical==viewType){
+        if(TYPE_HORIZONTAL == viewType){
+            return new ViewHolderListOderHorizontal(LayoutItemReceiptHorizontalBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
+        }else{
             return new ViewHolderListOderVertical(LayoutItemReceiptVerticalBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false));
         }
-        return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Receipt receipt = listReceipt.get(position);
-        if(typeHorizoltal==holder.getItemViewType()){
-            ViewHolderListOder viewHolderListOder = (ViewHolderListOder) holder;
-
-            if(receipt==null){
-                return;
-            }else {
-                ((ViewHolderListOder) holder).initData(receipt);
-            }
-        }else  if(typeVertical==holder.getItemViewType()){
-            ViewHolderListOderVertical viewHolderListOderVertucal = (ViewHolderListOderVertical) holder;
-            if(receipt==null){
-                return;
+        if(receipt==null) {
+            return;
+        }else {
+            if(TYPE_HORIZONTAL == holder.getItemViewType()){
+                ((ViewHolderListOderHorizontal) holder).initData(receipt);
             }else {
                 ((ViewHolderListOderVertical) holder).initData(receipt);
             }
@@ -87,19 +80,19 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if(typeLayout==2){
-            return typeVertical;
-        }else {
-            return  typeHorizoltal;
+        if(typeLayout == 0){
+            return TYPE_HORIZONTAL;
+        }else{
+            return TYPE_VERTICAL;
         }
-    }
-    //
 
-    public  class ViewHolderListOder extends RecyclerView.ViewHolder {
+    }
+
+    public  class ViewHolderListOderHorizontal extends RecyclerView.ViewHolder {
         TextView tvNameBill,tvTotalMoney,tvTimeOder;
         ConstraintLayout layoutItem;
 
-        public ViewHolderListOder(LayoutItemReceiptHorizontalBinding binding) {
+        public ViewHolderListOderHorizontal(LayoutItemReceiptHorizontalBinding binding) {
             super(binding.getRoot());
             tvNameBill=binding.tvNameBill;
             tvTotalMoney=binding.tvTotalMoney;
@@ -107,37 +100,23 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             layoutItem= binding.layoutItem;
         }
         void initData(Receipt receipt){
-            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
-            mRef.child("tables").child(receipt.getIdTable()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    table= snapshot.getValue(Table.class);
-                    if(table==null){
-                        return;
-                    }else {
-                        Locale locale = new Locale("en","EN");
-                        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                        tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
-                        tvTimeOder.setText(receipt.getTimeOder());
-                        Double Money =receipt.getMoney();
-                        String strMoney = numberFormat.format(Money);
-                        tvTotalMoney.setText(strMoney);
-                    }
-                }
+            Locale locale = new Locale("en","EN");
+            NumberFormat numberFormat = NumberFormat.getInstance(locale);
+            tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
+            tvTimeOder.setText(receipt.getTimeOder());
+            Double Money =receipt.getMoney();
+            String strMoney = numberFormat.format(Money);
+            tvTotalMoney.setText(strMoney);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
             layoutItem.setOnClickListener(v->{
                 mOnClickListener.onClickListener(receipt);
             });
         }
     }
     public  class ViewHolderListOderVertical extends RecyclerView.ViewHolder {
-        TextView tvNameBill,tvTotalMoney,tvTimeOder,tvNoteBill;
+        TextView tvNameBill,tvTotalMoney,tvTimeOder,tvNoteBill, tvStatus;
         CardView layoutItem;
+        LinearLayout layoutOderPrint;
 
         public ViewHolderListOderVertical(LayoutItemReceiptVerticalBinding binding) {
             super(binding.getRoot());
@@ -145,35 +124,26 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvTotalMoney=binding.tvTotalMoney;
             tvTimeOder=binding.tvTimeOder;
             tvNoteBill= binding.tvNoteBill;
+            tvStatus= binding.tvStatus;
             layoutItem= binding.layoutItem;
+            layoutOderPrint = binding.layoutOderPrint;
         }
         void initData(Receipt receipt){
-            DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
-            mRef.child("tables").child(receipt.getIdTable()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    table= snapshot.getValue(Table.class);
-                    if(table==null){
-                        return;
-                    }else {
-                        Locale locale = new Locale("en","EN");
-                        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                        tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
-                        tvTimeOder.setText(receipt.getTimeOder());
-                        Double Money =receipt.getMoney();
-                        String strMoney = numberFormat.format(Money);
-                        tvTotalMoney.setText(strMoney);
-                        if(!receipt.getNoteOder().equals("")){
-                            tvNoteBill.setText(receipt.getNoteOder());
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
+            Locale locale = new Locale("en","EN");
+            NumberFormat numberFormat = NumberFormat.getInstance(locale);
+            tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
+            tvStatus.setText("Đã thanh toán");
+            tvTimeOder.setText(receipt.getTimeOder());
+            Double Money =receipt.getMoney();
+            String strMoney = numberFormat.format(Money);
+            tvTotalMoney.setText(strMoney);
+            if(!receipt.getNoteOder().equals("")){
+                tvNoteBill.setText(receipt.getNoteOder());
+            }
+            layoutOderPrint.setOnClickListener(layout ->{
+                Toast.makeText(itemView.getContext(), "Chưa thiết lập máy in!", Toast.LENGTH_SHORT).show();
             });
+
             layoutItem.setOnClickListener(v->{
                 mOnClickListener.onClickListener(receipt);
             });

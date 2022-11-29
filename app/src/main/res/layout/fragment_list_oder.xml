@@ -22,7 +22,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dimen_10dp">
+
+                >
                 <ImageView
                     android:id="@+id/ic_back"
                     android:layout_width="@dimen/dimen_30dp"
@@ -33,19 +34,24 @@
                     app:layout_constraintHorizontal_bias="0.031"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.7"
+                    app:layout_constraintVertical_bias="0.5"
                     app:tint="@color/grey_200" />
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/btnChangeLayoutHorizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:contentPadding="@dimen/dimen_8dp"
+                    android:layout_marginVertical="@dimen/dimen_6dp"
                     android:elevation="@dimen/dimen_1dp"
                     app:cardCornerRadius="@dimen/dimen_360dp"
+                    app:contentPadding="@dimen/dimen_8dp"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.95"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintHorizontal_bias="0.95">
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <ImageView
                         android:layout_width="@dimen/dimen_25dp"
                         android:layout_height="@dimen/dimen_25dp"
@@ -56,14 +62,16 @@
                     android:id="@+id/btnChangeLayoutVertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:contentPadding="@dimen/dimen_8dp"
+                    android:layout_marginVertical="@dimen/dimen_6dp"
                     android:elevation="@dimen/dimen_1dp"
-                    android:visibility="gone"
                     app:cardCornerRadius="@dimen/dimen_360dp"
+                    app:contentPadding="@dimen/dimen_8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.95"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintHorizontal_bias="0.95">
+                    app:layout_constraintTop_toTopOf="parent">
                     <ImageView
                         android:layout_width="@dimen/dimen_25dp"
                         android:layout_height="@dimen/dimen_25dp"
@@ -79,7 +87,6 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_semi_bold"
                 android:textColor="@color/black"
-                android:layout_marginTop="@dimen/dimen_10dp"
                 android:textSize="@dimen/dimen_25dp"/>
 
 

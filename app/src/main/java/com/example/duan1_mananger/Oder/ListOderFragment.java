@@ -28,9 +28,7 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
     private FragmentListOderBinding binding = null;
     private ArrayList<Receipt> listReceipt;
     private ListOderAdapter adapter ;
-    private int typeLayout = 1;
-
-
+    private int isChangedLayout = 0;
     public ListOderFragment(){
 
     }
@@ -56,7 +54,6 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadData();
         listening();
     }
 
@@ -64,7 +61,7 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
     public void loadData() {
         listReceipt = new ArrayList<>();
         getReceipt();
-        adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
+        adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,isChangedLayout);
         binding.recListBill.setAdapter(adapter);
 
 
@@ -91,20 +88,18 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
         binding.btnChangeLayoutHorizontal.setOnClickListener(btn ->{
             binding.btnChangeLayoutHorizontal.setVisibility(View.GONE);
             binding.btnChangeLayoutVertical.setVisibility(View.VISIBLE);
-            typeLayout=1;
-            listReceipt = new ArrayList<>();
+            isChangedLayout = 1;
             getReceipt();
-            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
+            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,isChangedLayout);
             binding.recListBill.setAdapter(adapter);
 
         });
         binding.btnChangeLayoutVertical.setOnClickListener(btn ->{
             binding.btnChangeLayoutVertical.setVisibility(View.GONE);
             binding.btnChangeLayoutHorizontal.setVisibility(View.VISIBLE);
-            typeLayout=2;
-            listReceipt = new ArrayList<>();
+            isChangedLayout = 0;
             getReceipt();
-            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,typeLayout);
+            adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,isChangedLayout);
             binding.recListBill.setAdapter(adapter);
 
 
