@@ -274,9 +274,7 @@ public class ProductFragment extends BaseFragment implements  ProductAdapter.OnC
                 filterLists.add(product);
             }
         }
-        if (filterLists.isEmpty()) {
-
-        } else {
+        if (!filterLists.isEmpty()) {
             productAdapter.setFilterList(filterLists);
             bindProduct.tvCountProduct.setText("Có " + filterLists.size() + " sản phẩm.");
         }

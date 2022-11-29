@@ -75,7 +75,7 @@ public class MarketFragment extends BaseFragment {
         binding.tvListTableEmpty.setOnClickListener(tv ->{
             replaceFragment(FragmentListEmptyTablesToOder.newInstance());
         });
-        binding.icNext.setOnClickListener(ic->{
+        binding.tvListOder.setOnClickListener(ic->{
             replaceFragment(ListOderFragment.newInstance());
         });
 

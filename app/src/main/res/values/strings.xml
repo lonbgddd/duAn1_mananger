@@ -62,7 +62,7 @@
     <string name="text_sex_change_profile">Giới tính</string>
     <string name="text_hint_search_product">Tìm tên sản phẩm</string>
     <string name="text_hint_search_table">Tìm tên bàn</string>
-    <string name="text_hint_search_oder">Tìm tên đơn hàng</string>
+    <string name="text_hint_search_oder">Tên đơn, ngày tháng, giờ</string>
 
     <string name="text_hint_search_type_product">Nhập tên loại</string>
     <string name="text_title_type_product">Loại sản phẩm</string>
