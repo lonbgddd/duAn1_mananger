@@ -25,12 +25,17 @@
             android:textSize="@dimen/dimen_21dp"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginVertical="@dimen/dimen_5dp"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnFilter"
+            android:text="Lọc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey_70"
-
             />
+
         <LinearLayout
             android:id="@+id/layoutChooserTimeStart"
             android:layout_width="match_parent"
@@ -41,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
+                android:visibility="gone"
                 android:text="Chọn ngày bắt đầu"
                 android:textColor="@color/black"
                 android:layout_marginStart="@dimen/dimen_15dp"
@@ -52,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:text="22/11/2022"
                 android:textColor="@color/grey_150"
                 android:layout_marginStart="@dimen/dimen_15dp"
@@ -70,23 +76,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
+                android:visibility="gone"
                 android:text="Chọn ngày kết thúc"
                 android:textColor="@color/black"
                 android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_19dp"
                 android:fontFamily="@font/poppins_medium" />
+
             <TextView
                 android:id="@+id/tvTimeEnd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_15dp"
+                android:fontFamily="@font/poppins_regular"
                 android:gravity="left"
                 android:text="22/11/2022"
-                android:visibility="gone"
                 android:textColor="@color/grey_150"
-                android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_17dp"
-                android:fontFamily="@font/poppins_regular"
-                />
+                android:visibility="visible" />
         </LinearLayout>
 
 

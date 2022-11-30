@@ -157,9 +157,12 @@ public class SettingFragment extends BaseFragment {
         binding.icEditUser.setOnClickListener(ic -> {
             replaceFragment(new UpdateUserFragment().newInstance(user));
         });
-
         binding.btnLogout.setOnClickListener(btn -> {
             signOut(getContext());
+        });
+
+        binding.icOrderStatistics.setOnClickListener(v -> {
+            replaceFragment(StatisticalFragment.newInstance());
         });
     }
 
