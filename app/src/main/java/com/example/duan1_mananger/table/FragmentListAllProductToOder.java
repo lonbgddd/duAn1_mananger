@@ -1,6 +1,7 @@
 package com.example.duan1_mananger.table;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ public class FragmentListAllProductToOder extends BaseFragment {
     public void loadData() {
         if (getArguments() != null) {
             table = (Table) getArguments().getSerializable("table");
+            Log.d("TAG", "loadData: Bán mang về "+table.getName_table());
         }
 
     }
@@ -124,8 +126,7 @@ public class FragmentListAllProductToOder extends BaseFragment {
                 DetailTableFragment detailTableFragment = new DetailTableFragment(table);
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("list_product_select",  listId);
-                bundle.putString("table_id",String.valueOf(table.getId_table()));
-                bundle.putString("table_name", table.getName_table());
+                bundle.putSerializable("table", table);
                 detailTableFragment.setArguments(bundle);
                 replaceFragment(detailTableFragment);
             }

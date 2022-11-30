@@ -45,14 +45,12 @@ public class DetailTableFragment extends BaseFragment {
     private ArrayList<String> listProduct;
     private String statusTable = "false";
     private Double totalMoney = 0.0;
-    private  Receipt receipt;
-
+    private Receipt receipt;
 
 
     public DetailTableFragment(Table table) {
         this.table = table;
     }
-
 
     public DetailTableFragment() {
     }
@@ -102,13 +100,21 @@ public class DetailTableFragment extends BaseFragment {
             if (getArguments().getSerializable("table") != null) {
                 table = (Table) getArguments().getSerializable("table");
                 idTable = String.valueOf(table.getId_table());
+                if (getArguments().getStringArrayList("list_product_select") != null) {
+                    idProduct = getArguments().getStringArrayList("list_product_select");
+                    listProduct.addAll(idProduct);
+                }
                 statusTable = table.getStatus();
                 binding.tvNameBill.setText(table.getName_table());
+                if (table.getName_table() == null) {
+                    binding.tvNameBill.setText("Bán mang về");
+                    binding.btnPayOder.setVisibility(View.VISIBLE);
+                    binding.btnSaveOder.setVisibility(View.GONE);
+                }
             } else {
-                idProduct = getArguments().getStringArrayList("list_product_select");
-                listProduct.addAll(idProduct);
-                idTable = getArguments().getString("table_id");
-                binding.tvNameBill.setText(getArguments().getString("table_name"));
+                binding.tvNameBill.setText("Bán mang về");
+                binding.btnPayOder.setVisibility(View.VISIBLE);
+                binding.btnSaveOder.setVisibility(View.VISIBLE);
             }
             model.listLiveData(listProduct);
         }
@@ -134,38 +140,58 @@ public class DetailTableFragment extends BaseFragment {
         if (statusTable.equals("true")) {
             model.liveDataGetReceipt(idTable);
         }
+        if (table.getName_table() != null) {
+            model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
+                @Override
+                public void onChanged(Receipt receipt) {
+                    binding.btnSaveOder.setVisibility(View.GONE);
+                    binding.btnPayOder.setVisibility(View.VISIBLE);
+                    receiptModel = receipt;
+                    model.listLiveData(receipt.getListIdProduct());
+                    binding.layoutAddProduct.setVisibility(View.GONE);
+                    binding.edNoteOder.setEnabled(false);
+                    binding.edNoteOder.setText(receipt.getNoteOder() + "");
+                }
+            });
+        }
+
+
+        binding.btnPayOder.setOnClickListener(btn -> {
+            if (binding.listProductOder.getVisibility() == View.GONE) {
+                notificationErrInput(getContext(), "Hãy chọn món !");
+            } else if (receiptModel != null) {
+                model.setStatusTable(idTable, "false");
+                model.liveDataPayReceipt(receiptModel);
+                backStack();
+            } else {
+                DatabaseReference reference;
+                reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
+                Date date = Calendar.getInstance().getTime();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String strDate = dateFormat.format(date);
+                String key = reference.push().getKey();
+                Receipt receipt = new Receipt(key, "", strDate, totalMoney, listProduct, binding.edNoteOder.getText().toString());
+                reference.child(key).setValue(receipt);
+                notificationErrInput(requireContext(), "Bán hàng thành công");
+            }
+        });
 
         model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
             @Override
             public void onChanged(Receipt receipt) {
                 binding.btnSaveOder.setVisibility(View.GONE);
-                binding.btnPayOder.setVisibility(View.VISIBLE);
                 receiptModel = receipt;
                 model.listLiveData(receipt.getListIdProduct());
                 binding.layoutAddProduct.setVisibility(View.GONE);
-                binding.edNoteOder.setEnabled(false);
-                binding.edNoteOder.setText(receipt.getNoteOder() + "");
-
             }
         });
-
-        binding.btnPayOder.setOnClickListener(btn -> {
-            if (binding.listProductOder.getVisibility() == View.GONE) {
-                notificationErrInput(getContext(), "Hãy chọn món !");
-            } else {
-                model.setStatusTable(idTable, "false");
-                model.liveDataPayReceipt(receiptModel);
-                backStack();
-            }
-        });
-
         model.liveDataPayReceipt.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if (s.equals("success")){
-                    notificationSuccessInput(getContext(),"Thanh toán thành công!");
+                if (s.equals("success")) {
+                    notificationSuccessInput(getContext(), "Thanh toán thành công!");
                 } else {
-                    notificationErrInput(getContext(),"Thanh toán thất bại" );
+                    notificationErrInput(getContext(), "Thanh toán thất bại");
                 }
             }
         });
@@ -201,14 +227,12 @@ public class DetailTableFragment extends BaseFragment {
                 OderAdapter adapter = new OderAdapter(products);
                 int number = products.size();
                 binding.tvAmountProduct.setText(String.valueOf(number));
-
                 for (Product product : products) {
                     totalMoney += product.getPrice();
                 }
                 Locale locale = new Locale("en", "EN");
                 NumberFormat numberFormat = NumberFormat.getInstance(locale);
                 String strMoney = numberFormat.format(totalMoney);
-
                 binding.tvTotalOder.setText(strMoney);
                 binding.tvTotalAmount.setText(strMoney);
                 binding.listProductOder.setAdapter(adapter);
@@ -229,9 +253,5 @@ public class DetailTableFragment extends BaseFragment {
     public void initView() {
 
     }
-
-
-
-
 
 }
