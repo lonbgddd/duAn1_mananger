@@ -63,24 +63,29 @@ public class OderAdapter extends RecyclerView.Adapter<OderAdapter.ViewHolder>{
             tvName.setText(product.getNameProduct());
             Locale locale = new Locale("en","EN");
             NumberFormat numberFormat = NumberFormat.getInstance(locale);
-            Double price = product.getPrice();
-            String strPrice = numberFormat.format(price);
-            tvPrice.setText(strPrice);
-
+             Double price = product.getPrice();
+             String strPrice = numberFormat.format(price);
+             tvPrice.setText(strPrice);
             icAscending.setOnClickListener(ic ->{
+                Double priceChange = product.getPrice();
                 int count= Integer.parseInt(String.valueOf(tvCountProduct.getText()));
                 count++;
+                priceChange *= count;
                 tvCountProduct.setText(String.valueOf(count));
-
+                String strPriceChange = numberFormat.format(priceChange);
+                tvPrice.setText(strPriceChange);
             });
             icDecrease.setOnClickListener(ic ->{
+                Double priceChange = product.getPrice();
                 int count= Integer.parseInt(String.valueOf(tvCountProduct.getText()));
                 if(count > 1){
                     count--;
+                    priceChange *= count;
                     tvCountProduct.setText(String.valueOf(count));
+                    String strPriceChange = numberFormat.format(priceChange);
+                    tvPrice.setText(strPriceChange);
                 }
             });
-
         }
 
 

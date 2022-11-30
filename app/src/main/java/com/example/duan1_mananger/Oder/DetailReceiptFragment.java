@@ -17,16 +17,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentAddOderBinding;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
+import com.example.duan1_mananger.databinding.FragmentOderDetailsBinding;
 import com.example.duan1_mananger.databinding.LayoutFullImageProductBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Receipt;
+import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.product.UpdateProductFragment;
+import com.example.duan1_mananger.table.TableViewModel;
+import com.example.duan1_mananger.table.adapter.OderAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -38,74 +44,107 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class DetailReceiptFragment extends BaseFragment {
-
-    private FragmentAddOderBinding binding = null;
-    private Receipt dataReceipt = null;
+    private FragmentOderDetailsBinding binding = null;
+    private TableViewModel model = null;
+    private  Receipt receipt;
+    private ArrayList<String> listIdProduct = null;
 
 
     public DetailReceiptFragment(Receipt receipt) {
-        this.dataReceipt = receipt;
-
+        this.receipt = receipt;
     }
 
     public DetailReceiptFragment() {
     }
 
     public DetailReceiptFragment newInstance() {
-        return new DetailReceiptFragment(dataReceipt);
+        return new DetailReceiptFragment(receipt);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentAddOderBinding.inflate(inflater, container, false);
+        binding = FragmentOderDetailsBinding.inflate(inflater, container, false);
+        model = new ViewModelProvider(this).get(TableViewModel.class);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Log.d("TAG", "newInstance222: "+dataProduct.getId());
         listening();
         initObSever();
     }
 
     @Override
     public void loadData() {
+        binding.tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
+        listIdProduct = (ArrayList<String>) receipt.getListIdProduct();
+        model.listLiveData(listIdProduct);
+        model.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
+                OderAdapter adapter = new OderAdapter(products);
+                binding.listProductOder.setAdapter(adapter);
+            }
+        });
+
+        if(receipt.getIdTable().length() > 0){
+           binding.tvStatusOder.setText("Thanh toán tại bàn");
+        }else {
+            binding.tvStatusOder.setText("Thanh toán đem về");
+        }
+
+        Locale locale = new Locale("en", "EN");
+        NumberFormat numberFormat = NumberFormat.getInstance(locale);
+        String strMoney = numberFormat.format(receipt.getMoney());
+        binding.tvTotalAmount.setText(strMoney);
+        binding.tvTotalAmount2.setText(strMoney);
+        binding.tvTotalAmount3.setText(strMoney);
+
+        binding.tvTime.setText(receipt.getTimeOder());
+        if(!receipt.getNoteOder().equals("")){
+            binding.tvNoteBill.setText(receipt.getNoteOder());
+        }
+
+
+
 
     }
+
     @Override
     public void listening() {
-        binding.constraintLayout.setVisibility(View.GONE);
         binding.icBack.setOnClickListener(v->{
             backStack();
+        });
+
+
+        binding.btnPrintOder.setOnClickListener(btn ->{
+            notificationErrInput(getContext(),"Chưa thiết lập máy in đơn!");
         });
     }
 
     @Override
     public void initObSever() {
-        showDetailProduct();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
 
     @Override
     public void initView() {
 
-    }
-    private void showDetailProduct() {
-        Locale locale = new Locale("en","EN");
-        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-        binding.tvAmountProduct.setText(dataReceipt.getListIdProduct().size()+"");
-        binding.tvNameBill.setText("POLY000"+dataReceipt.getIdReceipt().substring(16,20));
-        binding.edNoteOder.setText(dataReceipt.getNoteOder());
-        binding.edNoteOder.setEnabled(false);
-        Double Money =dataReceipt.getMoney();
-        String strMoney = numberFormat.format(Money);
-        binding.tvTotalAmount.setText(strMoney);
     }
 
 
