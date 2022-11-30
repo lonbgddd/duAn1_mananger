@@ -83,7 +83,6 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
         Window window = getActivity().getWindow();
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         window.setStatusBarColor(getActivity().getColor(R.color.white));
-        viewModel.getAllReceipt();
         listening();
         initObSever();
     }
@@ -96,6 +95,7 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
     @Override
     public void loadData() {
+        viewModel.getAllReceipt();
         viewModel.liveDateGetAllReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
             @Override
             public void onChanged(List<Receipt> receipts) {
