@@ -40,11 +40,10 @@ public class SettingViewModel extends ViewModel {
                     String day = receipt.getTimeOder().substring(0, receipt.getTimeOder().lastIndexOf(" "));
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     try {
-                        Log.d("TAG", "onDataChange: "+day);
                         Date dayOder = sdf.parse(day);
                         Date start = sdf.parse(startDate);
                         Date end = sdf.parse(endDate);
-                        if (start.before(dayOder) && end.after(dayOder)) {
+                        if (start.getTime() <= dayOder.getTime() && end.getTime() >= dayOder.getTime()) {
                             listData.add(receipt);
                         }
 
