@@ -21,9 +21,13 @@ import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
 import com.example.duan1_mananger.databinding.FragmentListOderBinding;
 import com.example.duan1_mananger.databinding.FragmentMaketBinding;
+import com.example.duan1_mananger.model.Table;
+import com.example.duan1_mananger.table.DetailTableFragment;
+import com.google.android.material.tabs.TabLayout;
 
 public class MarketFragment extends BaseFragment {
     private FragmentMaketBinding binding = null;
+    private Table table;
     public MarketFragment() {
         // Required empty public constructor
     }
@@ -77,6 +81,10 @@ public class MarketFragment extends BaseFragment {
         });
         binding.tvListOder.setOnClickListener(ic->{
             replaceFragment(ListOderFragment.newInstance());
+        });
+
+        binding.btnAddOder.setOnClickListener(v -> {
+            replaceFragment(DetailTableFragment.newInstance(table));
         });
 
     }
