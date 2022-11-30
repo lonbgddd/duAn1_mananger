@@ -83,7 +83,7 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
         Window window = getActivity().getWindow();
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         window.setStatusBarColor(getActivity().getColor(R.color.white));
-        loadData();
+        viewModel.getAllReceipt();
         listening();
         initObSever();
     }
@@ -96,6 +96,20 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
     @Override
     public void loadData() {
+        viewModel.liveDateGetAllReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                binding.tvOrderNumber.setText(receipts.size() + "");
+                Double money = 0.0;
+                for (Receipt receipt : receipts) {
+                    money += receipt.getMoney();
+                }
+                binding.tvTotalOderValue.setText(money + " Đ");
+                adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                binding.recVListOder.setAdapter(adapter);
+            }
+        });
+
         viewModel.liveDateGetReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
             @Override
             public void onChanged(List<Receipt> receipts) {
@@ -107,7 +121,6 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
                 binding.tvTotalOderValue.setText(money + " Đ");
                 adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
                 binding.recVListOder.setAdapter(adapter);
-
             }
         });
     }
@@ -125,7 +138,6 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
     @Override
     public void initView() {
-
     }
 
     private void dialogFunctionPickDate(Context context) {
@@ -181,6 +193,7 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
                 Toast.makeText(context, "Hẫy chọn ngày kết thúc", Toast.LENGTH_SHORT).show();
             }else {
                 viewModel.getReceiptByDate(bindingDialog.tvTimeStart.getText().toString(), bindingDialog.tvTimeEnd.getText().toString());
+                adapter.notifyDataSetChanged();
                 binding.tvFilterTime.setText(bindingDialog.tvTimeStart.getText().toString()+ " đến " +bindingDialog.tvTimeEnd.getText().toString());
                 dialog.cancel();
             }
