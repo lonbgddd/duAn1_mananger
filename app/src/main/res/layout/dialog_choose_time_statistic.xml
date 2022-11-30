@@ -15,21 +15,30 @@
         android:layout_gravity="bottom"
         android:paddingBottom="@dimen/dimen_15dp"
         android:paddingTop="@dimen/dimen_10dp">
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Điều chỉnh thời gian"
-            android:textColor="@color/black"
-            android:textSize="@dimen/dimen_21dp"
-            android:fontFamily="@font/poppins_medium"
-            android:layout_marginVertical="@dimen/dimen_5dp"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnFilter"
-            android:text="Lọc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="@dimen/dimen_30dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="Điều chỉnh thời gian"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dimen_21dp"
+                android:fontFamily="@font/poppins_medium"
+                android:layout_marginVertical="@dimen/dimen_5dp"/>
+            <ImageView
+                android:id="@+id/btnFilter"
+                android:layout_width="@dimen/dimen_30dp"
+                android:layout_height="@dimen/dimen_30dp"
+                android:src="@drawable/ic_check_type"/>
+
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -46,8 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:visibility="gone"
-                android:text="Chọn ngày bắt đầu"
+                android:text="Ngày bắt đầu"
                 android:textColor="@color/black"
                 android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_19dp"
@@ -58,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:text="22/11/2022"
                 android:textColor="@color/grey_150"
                 android:layout_marginStart="@dimen/dimen_15dp"
@@ -76,8 +84,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:visibility="gone"
-                android:text="Chọn ngày kết thúc"
+
+                android:text="Ngày kết thúc"
                 android:textColor="@color/black"
                 android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_19dp"
@@ -93,7 +101,7 @@
                 android:text="22/11/2022"
                 android:textColor="@color/grey_150"
                 android:textSize="@dimen/dimen_17dp"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </LinearLayout>
 
 

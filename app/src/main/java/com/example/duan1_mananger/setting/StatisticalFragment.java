@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
 import com.example.duan1_mananger.Oder.DetailReceiptFragment;
@@ -71,14 +72,18 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
         binding = FragmentOderStatisticsBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Window window = getActivity().getWindow();
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        window.setStatusBarColor(getActivity().getColor(R.color.white));
+        loadData();
         listening();
         initObSever();
     }
@@ -110,8 +115,7 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
     @Override
     public void listening() {
         binding.icBack.setOnClickListener(v -> backStack());
-        binding.tvNameTypeProduct.setOnClickListener(v -> dialogFunctionPickDate(requireContext()));
-
+        binding.tvFilterTime.setOnClickListener(v -> dialogFunctionPickDate(requireContext()));
     }
 
     @Override
@@ -139,21 +143,17 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
         bindingDialog.layoutChooserTimeStart.setOnClickListener(v -> {
             DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-
                 @Override
-                public void onDateSet(DatePicker view, int year,
-                                      int monthOfYear, int dayOfMonth) {
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
                     bindingDialog.tvTimeStart.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                    bindingDialog.tvTimeStart.setVisibility(View.VISIBLE);
                     lastSelectedYear = year;
                     lastSelectedMonth = monthOfYear;
                     lastSelectedDayOfMonth = dayOfMonth;
                 }
             };
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    dateSetListener,
-                    lastSelectedYear,
-                    lastSelectedMonth,
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), dateSetListener, lastSelectedYear, lastSelectedMonth,
                     lastSelectedDayOfMonth);
             datePickerDialog.show();
         });
@@ -161,27 +161,30 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
             DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
 
                 @Override
-                public void onDateSet(DatePicker view, int year,
-                                      int monthOfYear, int dayOfMonth) {
-
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     bindingDialog.tvTimeEnd.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                    bindingDialog.tvTimeEnd.setVisibility(View.VISIBLE);
                     lastSelectedYear = year;
                     lastSelectedMonth = monthOfYear;
                     lastSelectedDayOfMonth = dayOfMonth;
                 }
             };
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    dateSetListener,
-                    lastSelectedYear,
-                    lastSelectedMonth,
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), dateSetListener, lastSelectedYear, lastSelectedMonth,
                     lastSelectedDayOfMonth);
             datePickerDialog.show();
         });
+
         bindingDialog.btnFilter.setOnClickListener(v -> {
-            viewModel.getReceiptByDate(
-                    bindingDialog.tvTimeStart.getText().toString(),
-                    bindingDialog.tvTimeEnd.getText().toString());
-            dialog.cancel();
+            if (bindingDialog.tvTimeStart.getVisibility() == View.GONE){
+                Toast.makeText(context, "Hẫy chọn ngày bắt đầu", Toast.LENGTH_SHORT).show();
+            }else if(bindingDialog.tvTimeEnd.getVisibility() == View.GONE){
+                Toast.makeText(context, "Hẫy chọn ngày kết thúc", Toast.LENGTH_SHORT).show();
+            }else {
+                viewModel.getReceiptByDate(bindingDialog.tvTimeStart.getText().toString(), bindingDialog.tvTimeEnd.getText().toString());
+                binding.tvFilterTime.setText(bindingDialog.tvTimeStart.getText().toString()+ " đến " +bindingDialog.tvTimeEnd.getText().toString());
+                dialog.cancel();
+            }
+
         });
 
         dialog.show();

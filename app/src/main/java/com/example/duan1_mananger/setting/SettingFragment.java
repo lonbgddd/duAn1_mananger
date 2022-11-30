@@ -161,7 +161,7 @@ public class SettingFragment extends BaseFragment {
             signOut(getContext());
         });
 
-        binding.icOrderStatistics.setOnClickListener(v -> {
+        binding.tvOrderStatistics.setOnClickListener(v -> {
             replaceFragment(StatisticalFragment.newInstance());
         });
     }
