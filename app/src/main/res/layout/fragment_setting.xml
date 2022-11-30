@@ -185,7 +185,7 @@
                             android:textSize="@dimen/dimen_18dp"
 
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.05"
+                            app:layout_constraintHorizontal_bias="0.07"
                             app:layout_constraintStart_toEndOf="@+id/ic_sales_report"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -246,7 +246,7 @@
 
                             android:textSize="@dimen/dimen_18dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.047"
+                            app:layout_constraintHorizontal_bias="0.07"
                             app:layout_constraintStart_toEndOf="@+id/ic_order_statistics"
                             app:layout_constraintTop_toBottomOf="@+id/icLine1" />
 
@@ -309,10 +309,10 @@
                             android:textSize="@dimen/dimen_18dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.047"
+                            app:layout_constraintHorizontal_bias="0.07"
                             app:layout_constraintStart_toEndOf="@+id/ic_financial_overview"
                             app:layout_constraintTop_toBottomOf="@+id/icLine2"
-                            app:layout_constraintVertical_bias="0.9" />
+                            app:layout_constraintVertical_bias="0.8" />
 
                         <ImageView
                             android:id="@+id/ic_next_financial_overview"
