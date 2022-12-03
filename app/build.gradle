@@ -55,7 +55,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.0.3')
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     implementation 'com.google.firebase:firebase-storage'

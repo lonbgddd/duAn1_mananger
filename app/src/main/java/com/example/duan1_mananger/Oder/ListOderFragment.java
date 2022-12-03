@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
@@ -21,7 +23,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 public class ListOderFragment extends BaseFragment implements ListOderAdapter.OnClickListener {
@@ -62,8 +69,11 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
         listReceipt = new ArrayList<>();
         getReceipt();
         adapter= new ListOderAdapter(listReceipt,ListOderFragment.this,isChangedLayout);
+        LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        binding.recListBill.setLayoutManager(layoutManager);
         binding.recListBill.setAdapter(adapter);
-
 
     }
 
@@ -126,6 +136,8 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
 
     }
 
+
+
     private void getReceipt(){
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("PayReceipt");
         mRef.addValueEventListener(new ValueEventListener() {
@@ -162,6 +174,8 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
             binding.tvNumberOfOder.setText(filterReceipt.size() + " đơn");
         }
     }
+
+
 
     @Override
     public void onClickListener(Receipt receipt) {

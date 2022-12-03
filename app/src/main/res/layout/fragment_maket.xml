@@ -95,7 +95,7 @@
                 android:layout_marginTop="@dimen/dimen_15dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
-                android:text="Tạo đơn mới"
+                android:text="Tạo đơn đem về "
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen_20dp" />
         </LinearLayout>

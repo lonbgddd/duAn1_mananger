@@ -27,26 +27,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.2" />
 
-        <ImageView
-            android:id="@+id/icDecrease"
-            android:layout_width="@dimen/dimen_35dp"
-            android:layout_height="@dimen/dimen_30dp"
-            android:src="@drawable/ic_subtraction"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cardView3"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.56"
-            app:tint="@color/brown_130" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/dimen_5dp"
-            app:cardElevation="@dimen/dimen_2dp"
+            app:cardElevation="@dimen/dimen_3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.85"
@@ -56,31 +43,17 @@
 
             <TextView
                 android:id="@+id/tvCountProduct"
-                android:layout_width="@dimen/dimen_60dp"
-                android:layout_height="@dimen/dimen_23dp"
+                android:layout_width="@dimen/dimen_55dp"
+                android:layout_height="@dimen/dimen_25dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 android:text="1"
                 android:textColor="@color/black"
-                android:textSize="@dimen/dimen_16dp" />
+                android:textSize="@dimen/dimen_17dp" />
 
         </androidx.cardview.widget.CardView>
 
 
-        <ImageView
-            android:id="@+id/icAscending"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_add"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.7"
-            app:layout_constraintStart_toEndOf="@+id/cardView3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.55"
-            app:tint="@color/brown_130" />
 
         <TextView
             android:id="@+id/textView5"

@@ -3,7 +3,9 @@ package com.example.duan1_mananger.table.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.databinding.LayoutItemProductBinding;
 import com.example.duan1_mananger.model.Product;
+import com.example.duan1_mananger.product.Adapter.ProductAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,6 +29,7 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
     private ArrayList<Product> listProduct;
     private Context context;
 
+
     public ProductAdapterToOder(ArrayList<Product> listProduct) {
         this.listProduct = listProduct;
     }
@@ -33,8 +37,6 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
     public ProductAdapterToOder(ArrayList<Product> listProduct, Context context) {
         this.listProduct = listProduct;
         this.context = context;
-
-
 
     }
 
@@ -64,6 +66,7 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
 
     }
 
+
     @Override
     public int getItemCount() {
         return listProduct.size();
@@ -72,7 +75,7 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
 
     public class ViewHolderProduct extends RecyclerView.ViewHolder {
         ImageView imgProduct;
-        TextView tvName, tvDescribe, tvPrice;
+        TextView tvName, tvDescribe, tvPrice,tvCount;
         ConstraintLayout layoutItem;
 
 
@@ -82,6 +85,7 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
             tvName = binding.tvNameProduct;
             tvDescribe = binding.tvDescribeProduct;
             tvPrice = binding.tvPriceProduct;
+            tvCount = binding.tvCount;
             layoutItem = binding.layoutItem;
         }
 
@@ -103,15 +107,25 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
             String strPrice = numberFormat.format(price);
             tvPrice.setText(strPrice +"đ");
             tvDescribe.setText(product.getDescribe());
-           layoutItem.setBackgroundColor(product.isSelected() ? context.getColor(R.color.brown_70) : context.getColor(R.color.white));
-           layoutItem.setOnClickListener(v ->{
-               product.setSelected(!product.isSelected());
-               layoutItem.setBackgroundColor(product.isSelected() ? context.getColor(R.color.brown_70) : context.getColor(R.color.white));
-           });
+            tvCount.setVisibility(product.isSelected() ? View.VISIBLE : View.GONE);
+            if(!product.isSelected()){
+                tvCount.setText("0");
+           }
+            layoutItem.setOnClickListener(v ->{
+                tvCount.setVisibility(View.VISIBLE);
+                product.setSelected(true);
+                int mValueNumber = Integer.valueOf(tvCount.getText().toString());
+                int count = increasingTheNumber(mValueNumber);
+                tvCount.setText(count+"");
+                product.setIsClick(count);
+            });
 
         }
 
-
+        public  int increasingTheNumber(int count){
+            int mCount = count +1;
+            return  mCount;
+        }
 
 
     }

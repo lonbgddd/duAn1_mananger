@@ -6,16 +6,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import com.example.duan1_mananger.PushNotification.MyNotificator;
 import com.example.duan1_mananger.databinding.ActivityMainBinding;
 import com.example.duan1_mananger.home.HomeFragment;
 import com.example.duan1_mananger.maket.MarketFragment;
 import com.example.duan1_mananger.product.ProductFragment;
 import com.example.duan1_mananger.setting.SettingFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding = null;
@@ -57,6 +62,23 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Log.d("xxx",""+ token);
+
+                    }
+                });
+
+
     }
 
 

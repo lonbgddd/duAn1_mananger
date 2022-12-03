@@ -22,6 +22,8 @@ import java.util.List;
 public class SettingViewModel extends ViewModel {
     public MutableLiveData<List<Receipt>> liveDateGetReceipt = new MutableLiveData<>();
     public MutableLiveData<List<Receipt>> liveDateGetAllReceipt = new MutableLiveData<>();
+    public MutableLiveData<List<Receipt>> liveDateGetReceiptToDay = new MutableLiveData<>();
+    public MutableLiveData<List<Receipt>> liveDateGetSaveReceiptToDay = new MutableLiveData<>();
     private DatabaseReference reference;
 
     public LiveData<List<Receipt>> getReceiptByDate(String startDate, String endDate) {
@@ -52,7 +54,6 @@ public class SettingViewModel extends ViewModel {
                 liveDateGetReceipt.postValue(listData);
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -60,6 +61,79 @@ public class SettingViewModel extends ViewModel {
 
         return liveDateGetReceipt;
     }
+
+    public LiveData<List<Receipt>> getReceiptSavedByToDay (String date) {
+        reference = FirebaseDatabase.getInstance().getReference("OderSave");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Receipt> listData = new ArrayList<>();
+                listData.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Receipt receipt = dataSnapshot.getValue(Receipt.class);
+                    String strDay = receipt.getTimeOder().substring(0, receipt.getTimeOder().lastIndexOf(" "));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        Date dayOder = dateFormat.parse(strDay);
+                        Date toDay = dateFormat.parse(date);
+
+                        if (toDay.getTime() == dayOder.getTime()) {
+                            listData.add(receipt);
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                liveDateGetSaveReceiptToDay.postValue(listData);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return liveDateGetSaveReceiptToDay;
+    }
+    public LiveData<List<Receipt>> getReceiptByToDay(String date) {
+        reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Receipt> listData = new ArrayList<>();
+                listData.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Receipt receipt = dataSnapshot.getValue(Receipt.class);
+                    String strDay = receipt.getTimeOder().substring(0, receipt.getTimeOder().lastIndexOf(" "));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        Date dayOder = dateFormat.parse(strDay);
+                        Date toDay = dateFormat.parse(date);
+
+                        if (toDay.getTime() == dayOder.getTime()) {
+                            listData.add(receipt);
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                liveDateGetReceiptToDay.postValue(listData);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return liveDateGetReceiptToDay;
+    }
+
+
     public LiveData<List<Receipt>> getAllReceipt() {
         reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
         reference.addValueEventListener(new ValueEventListener() {

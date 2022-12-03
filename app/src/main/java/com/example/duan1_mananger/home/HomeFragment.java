@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,13 +14,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentHomeBinding;
+import com.example.duan1_mananger.model.Receipt;
 import com.example.duan1_mananger.model.User;
+import com.example.duan1_mananger.setting.DailySalesReportFragment;
+import com.example.duan1_mananger.setting.SettingViewModel;
+import com.example.duan1_mananger.setting.UpdateUserFragment;
 import com.example.duan1_mananger.table.FragmentListAllTables;
 import com.example.duan1_mananger.home.fragments.FragmentListEmptyTables;
 import com.example.duan1_mananger.home.fragments.FragmentListOpenTables;
+import com.example.duan1_mananger.table.TableViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,11 +37,23 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 public class HomeFragment extends BaseFragment {
    private FragmentHomeBinding binding;
    private User user;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private SettingViewModel viewModel;
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -57,6 +77,7 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater,container,false);
+        viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
         return binding.getRoot();
 
     }
@@ -104,6 +125,42 @@ public class HomeFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        Date toDay = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strToday = dateFormat.format(toDay);
+        viewModel.getReceiptByToDay(strToday);
+        viewModel.getReceiptSavedByToDay(strToday);
+        viewModel.liveDateGetSaveReceiptToDay.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                if(receipts.size() == 0){
+                    binding.tvOderNew.setText("0");
+                }else {
+                    binding.tvOderNew.setText(receipts.size() + "");
+                }
+            }
+        });
+
+        viewModel.liveDateGetReceiptToDay.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                if(receipts.size() == 0){
+                    binding.tvBillPaid.setText("0");
+                }else {
+                    binding.tvBillPaid.setText(receipts.size() + "");
+                    Double money = 0.0;
+                    for (Receipt receipt : receipts) {
+                        money += receipt.getMoney();
+                    }
+                    Locale locale = new Locale("en", "EN");
+                    NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                    String strMoney = numberFormat.format(money);
+                    binding.tvTotalMoneyToDay.setText(strMoney);
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -113,7 +170,12 @@ public class HomeFragment extends BaseFragment {
 
         });
         selectTabFragment();
-
+        binding.icUserSetting.setOnClickListener(ic ->{
+            replaceFragment(new UpdateUserFragment().newInstance(user));
+        });
+        binding.tvShowDetailsTurnover.setOnClickListener(tv ->{
+            replaceFragment(DailySalesReportFragment.newInstance());
+        });
     }
 
     @Override

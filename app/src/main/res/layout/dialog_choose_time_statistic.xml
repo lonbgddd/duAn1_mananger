@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginHorizontal="@dimen/dimen_30dp"
-            android:gravity="center">
+           >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dimen_10dp">
+            android:layout_marginTop="@dimen/dimen_15dp"
+            android:layout_marginBottom="@dimen/dimen_10dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

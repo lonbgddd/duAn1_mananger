@@ -43,7 +43,7 @@
     <string name="error_pass_1">Hãy nhập password!</string>
     <string name="error_pass_2">Password chưa trùng khớp!</string>
 
-    <string name="text_menu_nav_home">Trang chủ</string>
+    <string name="text_menu_nav_home">Tổng quan</string>
     <string name="text_menu_nav_cart">Đơn hàng</string>
     <string name="text_menu_nav_product">Sản phẩm</string>
     <string name="text_menu_nav_setting">Cài đặt</string>
