@@ -21,23 +21,7 @@
         app:layout_constraintVertical_bias="0"/>
 
     <TextView
-        android:id="@+id/tex1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semi_bold"
-        android:gravity="center"
-        android:text="@string/hello_screen_title_1"
-        android:textColor="@color/brown_200"
-        android:textSize="@dimen/dimen_26dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_1"
-        app:layout_constraintVertical_bias="1" />
-
-    <TextView
-        android:id="@+id/text2"
+        android:id="@+id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_screen_title_2"
@@ -46,13 +30,12 @@
         android:textStyle="bold"
         android:textSize="@dimen/dimen_35dp"
         android:gravity="center"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tex1"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintTop_toBottomOf="@+id/img_1"
+        app:layout_constraintVertical_bias="0" />
 
     <ImageView
         android:id="@+id/icLogo"
@@ -64,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text2"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
         app:layout_constraintVertical_bias="0.05" />
 
     <TextView

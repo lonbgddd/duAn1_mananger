@@ -9,6 +9,7 @@ public class Product {
     private String imgProduct;
     private String note;
     boolean isSelected = false;
+    int isClick;
 
     public Product() {
     }
@@ -21,7 +22,16 @@ public class Product {
         this.note = note;
         this.describe = describe;
         this.typeProduct = typeProduct;
+    }
 
+    public Product(String id, String nameProduct, String describe, TypeProduct typeProduct, double price, String note, int isClick) {
+        this.id = id;
+        this.nameProduct = nameProduct;
+        this.price = price;
+        this.note = note;
+        this.describe = describe;
+        this.typeProduct = typeProduct;
+        this.isClick = isClick;
     }
     public Product(String id, String nameProduct, String describe, TypeProduct typeProduct, double price, String note, boolean isSelected) {
         this.id = id;
@@ -31,6 +41,14 @@ public class Product {
         this.describe = describe;
         this.typeProduct = typeProduct;
         this.isSelected = isSelected;
+    }
+
+    public int getIsClick() {
+        return isClick;
+    }
+
+    public void setIsClick(int isClick) {
+        this.isClick = isClick;
     }
 
     public String getId() {

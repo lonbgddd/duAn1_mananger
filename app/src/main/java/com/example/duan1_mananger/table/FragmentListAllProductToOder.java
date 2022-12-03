@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-public class FragmentListAllProductToOder extends BaseFragment {
+public class FragmentListAllProductToOder extends BaseFragment{
     private FragmentAddProductToOderBinding binding;
     public ProductAdapterToOder productAdapterToOder = null;
     private Table table = null;
     private ArrayList<Product> listProduct;
     private ArrayList<Product> listProductSelect;
+    private ArrayList<String> listId;
+    private ArrayList<Integer> listCount;
 
 
     public FragmentListAllProductToOder() {
@@ -66,7 +67,9 @@ public class FragmentListAllProductToOder extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         binding.tvNameTypeProduct.setText(R.string.text_type_product_1);
         listProduct = new ArrayList<>();
+        listId = new ArrayList<>();
         listProductSelect = new ArrayList<>();
+        listCount = new ArrayList<>();
         getProduct();
         productAdapterToOder = new ProductAdapterToOder(listProduct,getContext());
         binding.listProductToOder.setAdapter(productAdapterToOder);
@@ -116,19 +119,30 @@ public class FragmentListAllProductToOder extends BaseFragment {
             for(Product product : listProduct){
                 if(product.isSelected()){
                     listProductSelect.add(product);
+                    listCount.add(product.getIsClick());
                 }
             }
-            ArrayList<String> listId = new ArrayList<>();
             for(Product product : listProductSelect){
                 listId.add(product.getId());
             }
-            if (table != null){
-                DetailTableFragment detailTableFragment = new DetailTableFragment(table);
-                Bundle bundle = new Bundle();
-                bundle.putStringArrayList("list_product_select",  listId);
-                bundle.putSerializable("table", table);
-                detailTableFragment.setArguments(bundle);
-                replaceFragment(detailTableFragment);
+
+            if(listId.size() == 0 && listProductSelect.size() == 0 && listCount.size() == 0){
+                notificationErrInput(getContext(),"Hãy chọn món!");
+            }else {
+                Log.d("zzz", "Số sản phẩm"+ listId.size());
+
+                for(int i = 0 ; i < listCount.size(); i++){
+                    Log.d("zzz", "Số lượng sp "+ i + listCount.get(i));
+                }
+                if (table != null){
+                    DetailTableFragment detailTableFragment = new DetailTableFragment(table);
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("list_product_select",  listId);
+                    bundle.putIntegerArrayList("list_count_product",  listCount);
+                    bundle.putSerializable("table", table);
+                    detailTableFragment.setArguments(bundle);
+                    replaceFragment(detailTableFragment);
+                }
             }
 
         });
@@ -137,6 +151,8 @@ public class FragmentListAllProductToOder extends BaseFragment {
                 product.setSelected(false);
             }
                 listProductSelect.clear();
+                listId.clear();
+                listCount.clear();
                 productAdapterToOder.notifyDataSetChanged();
         });
 
@@ -190,9 +206,6 @@ public class FragmentListAllProductToOder extends BaseFragment {
         }
 
     }
-
-
-
 
 
 

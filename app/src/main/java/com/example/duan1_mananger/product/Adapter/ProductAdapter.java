@@ -24,9 +24,7 @@ import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
-    private String text;
     OnClickItemListener mOnClickItemListener;
-
 
     public interface OnClickItemListener{
         void onClickItemProduct(Product product);

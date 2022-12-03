@@ -8,20 +8,25 @@ public class Receipt {
     private String timeOder;
     private Double money;
     private List<String> listIdProduct;
+    private List<Integer> listCountProduct;
     private String noteOder;
 
 
     public Receipt() {
     }
 
-    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct, String noteOder) {
+
+    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct, List<Integer> listCountProduct, String noteOder) {
         this.idReceipt = idReceipt;
         this.idTable = idTable;
         this.timeOder = timeOder;
         this.money = money;
         this.listIdProduct = listIdProduct;
+        this.listCountProduct = listCountProduct;
         this.noteOder = noteOder;
     }
+
+
 
     public String getIdReceipt() {
         return idReceipt;
@@ -63,6 +68,13 @@ public class Receipt {
         this.listIdProduct = listIdProduct;
     }
 
+    public List<Integer> getListCountProduct() {
+        return listCountProduct;
+    }
+
+    public void setListCountProduct(List<Integer> listCountProduct) {
+        this.listCountProduct = listCountProduct;
+    }
 
     public String getNoteOder() {
         return noteOder;

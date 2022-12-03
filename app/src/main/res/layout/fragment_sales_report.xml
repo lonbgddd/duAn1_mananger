@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_23dp"
-                android:text="Tổng doanh thu ngày"
+                android:text="Doanh thu ngày"
                 android:layout_marginStart="@dimen/dimen_10dp"
                 android:fontFamily="@font/poppins_regular"
                 android:textColor="@color/black"
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_23dp"
                 android:text=""
-                android:layout_marginStart="@dimen/dimen_10dp"
+                android:layout_marginStart="@dimen/dimen_4dp"
                 android:fontFamily="@font/poppins_regular"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen_16dp"/>
@@ -180,7 +180,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.45">
+        app:layout_constraintVertical_bias="0.6">
         <ImageView
             android:layout_width="@dimen/dimen_70dp"
             android:layout_height="@dimen/dimen_70dp"

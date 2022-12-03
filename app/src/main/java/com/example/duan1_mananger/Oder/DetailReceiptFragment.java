@@ -50,20 +50,20 @@ import java.util.Locale;
 
 public class DetailReceiptFragment extends BaseFragment {
     private FragmentOderDetailsBinding binding = null;
-    private TableViewModel model = null;
-    private  Receipt receipt;
-    private ArrayList<String> listIdProduct = null;
+    private TableViewModel tableModel = null;
+    private  Receipt receiptModel;
+    private  ArrayList<String> listIdProduct;
 
 
     public DetailReceiptFragment(Receipt receipt) {
-        this.receipt = receipt;
+        this.receiptModel = receipt;
     }
 
     public DetailReceiptFragment() {
     }
 
     public DetailReceiptFragment newInstance() {
-        return new DetailReceiptFragment(receipt);
+        return new DetailReceiptFragment(receiptModel);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DetailReceiptFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentOderDetailsBinding.inflate(inflater, container, false);
-        model = new ViewModelProvider(this).get(TableViewModel.class);
+        tableModel = new ViewModelProvider(this).get(TableViewModel.class);
         return binding.getRoot();
     }
 
@@ -84,34 +84,38 @@ public class DetailReceiptFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        binding.tvNameBill.setText("POLY000"+receipt.getIdReceipt().substring(16,20));
-        listIdProduct = (ArrayList<String>) receipt.getListIdProduct();
-        model.listLiveData(listIdProduct);
-        model.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        binding.tvNameBill.setText("POLY000"+receiptModel.getIdReceipt().substring(16,20));
+        listIdProduct = (ArrayList<String>) receiptModel.getListIdProduct();
+        tableModel.listLiveData(listIdProduct);
+        tableModel.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
+                for(int i = 0 ; i < products.size(); i ++){
+                    for(int k = i; k < receiptModel.getListCountProduct().size(); k++){
+                        products.get(k).setIsClick(receiptModel.getListCountProduct().get(k));
+                    }
+                }
                 OderAdapter adapter = new OderAdapter(products);
+                if(receiptModel.getIdTable().length() > 0){
+                    binding.tvStatusOder.setText("Thanh toán tại bàn");
+                }else {
+                    binding.tvStatusOder.setText("Thanh toán đem về");
+                }
+                Locale locale = new Locale("en", "EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                String strMoney = numberFormat.format(receiptModel.getMoney());
+                binding.tvTotalAmount.setText(strMoney);
+                binding.tvTotalAmount2.setText(strMoney);
+                binding.tvTotalAmount3.setText(strMoney);
+
+                binding.tvTime.setText(receiptModel.getTimeOder());
+                if(!receiptModel.getNoteOder().equals("")){
+                    binding.tvNoteBill.setText(receiptModel.getNoteOder());
+                }
                 binding.listProductOder.setAdapter(adapter);
             }
         });
 
-        if(receipt.getIdTable().length() > 0){
-           binding.tvStatusOder.setText("Thanh toán tại bàn");
-        }else {
-            binding.tvStatusOder.setText("Thanh toán đem về");
-        }
-
-        Locale locale = new Locale("en", "EN");
-        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-        String strMoney = numberFormat.format(receipt.getMoney());
-        binding.tvTotalAmount.setText(strMoney);
-        binding.tvTotalAmount2.setText(strMoney);
-        binding.tvTotalAmount3.setText(strMoney);
-
-        binding.tvTime.setText(receipt.getTimeOder());
-        if(!receipt.getNoteOder().equals("")){
-            binding.tvNoteBill.setText(receipt.getNoteOder());
-        }
 
 
 
@@ -123,7 +127,6 @@ public class DetailReceiptFragment extends BaseFragment {
         binding.icBack.setOnClickListener(v->{
             backStack();
         });
-
 
         binding.btnPrintOder.setOnClickListener(btn ->{
             notificationErrInput(getContext(),"Chưa thiết lập máy in đơn!");

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -35,10 +36,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class StatisticalFragment extends BaseFragment implements ListOderAdapter.OnClickListener {
     private FragmentOderStatisticsBinding binding = null;
@@ -104,8 +108,15 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
                 for (Receipt receipt : receipts) {
                     money += receipt.getMoney();
                 }
-                binding.tvTotalOderValue.setText(money + " Đ");
+                Locale locale = new Locale("en", "EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                String strMoney = numberFormat.format(money);
+                binding.tvTotalOderValue.setText(strMoney);
                 adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                layoutManager.setStackFromEnd(true);
+                layoutManager.setReverseLayout(true);
+                binding.recVListOder.setLayoutManager(layoutManager);
                 binding.recVListOder.setAdapter(adapter);
             }
         });
@@ -113,14 +124,35 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
         viewModel.liveDateGetReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
             @Override
             public void onChanged(List<Receipt> receipts) {
-                binding.tvOrderNumber.setText(receipts.size() + "");
-                Double money = 0.0;
-                for (Receipt receipt : receipts) {
-                    money += receipt.getMoney();
+                if(receipts.size() == 0){
+                    binding.layoutNotificationNullData.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText("0");
+                    binding.tvTotalOderValue.setText("0");
+                    binding.viewHeader.setVisibility(View.GONE);
+                    binding.recVListOder.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    binding.layoutNotificationNullData.setVisibility(View.GONE);
+                    binding.viewHeader.setVisibility(View.VISIBLE);
+                    binding.recVListOder.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText(receipts.size() + "");
+                    Double money = 0.0;
+                    for (Receipt receipt : receipts) {
+                        money += receipt.getMoney();
+                    }
+                    Locale locale = new Locale("en", "EN");
+                    NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                    String strMoney = numberFormat.format(money);
+
+                    binding.tvTotalOderValue.setText(strMoney);
+                    adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                    LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                    layoutManager.setStackFromEnd(true);
+                    layoutManager.setReverseLayout(true);
+                    binding.recVListOder.setLayoutManager(layoutManager);
+                    binding.recVListOder.setAdapter(adapter);
                 }
-                binding.tvTotalOderValue.setText(money + " Đ");
-                adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
-                binding.recVListOder.setAdapter(adapter);
+
             }
         });
     }
@@ -129,6 +161,8 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
     public void listening() {
         binding.icBack.setOnClickListener(v -> backStack());
         binding.tvFilterTime.setOnClickListener(v -> dialogFunctionPickDate(requireContext()));
+
+
     }
 
     @Override
