@@ -117,7 +117,7 @@ public class FragmentListAllProductToOder extends BaseFragment{
 
         binding.btnAddOder.setOnClickListener(btn ->{
             for(Product product : listProduct){
-                if(product.isSelected()){
+                if(product.isSelected() ){
                     listProductSelect.add(product);
                     listCount.add(product.getIsClick());
                 }
@@ -125,15 +125,9 @@ public class FragmentListAllProductToOder extends BaseFragment{
             for(Product product : listProductSelect){
                 listId.add(product.getId());
             }
-
             if(listId.size() == 0 && listProductSelect.size() == 0 && listCount.size() == 0){
                 notificationErrInput(getContext(),"Hãy chọn món!");
             }else {
-                Log.d("zzz", "Số sản phẩm"+ listId.size());
-
-                for(int i = 0 ; i < listCount.size(); i++){
-                    Log.d("zzz", "Số lượng sp "+ i + listCount.get(i));
-                }
                 if (table != null){
                     DetailTableFragment detailTableFragment = new DetailTableFragment(table);
                     Bundle bundle = new Bundle();
@@ -177,7 +171,10 @@ public class FragmentListAllProductToOder extends BaseFragment{
                 listProduct.clear();
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
                     Product product = datasnapshot.getValue(Product.class);
-                    listProduct.add(product);
+                    if(product.isHidden()){
+                        listProduct.add(product);
+                    }
+
                 }
                 productAdapterToOder.notifyDataSetChanged();
             }

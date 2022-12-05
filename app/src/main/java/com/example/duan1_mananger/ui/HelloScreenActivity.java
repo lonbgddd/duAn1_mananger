@@ -55,8 +55,5 @@ public class HelloScreenActivity extends AppCompatActivity {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view,ani,values);
         animator.setDuration(1700);
         animator.start();
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(binding.activityHelloScreen,"alpha", 0f, 1f);
-        animator2.setDuration(1100);
-        animator2.start();
     }
 }

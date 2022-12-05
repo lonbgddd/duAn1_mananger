@@ -95,7 +95,10 @@ public class HomeFragment extends BaseFragment {
                 if (files.getName().equals(firebaseUser.getUid())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
                         Log.d("TAG", "initView: "+uri);
-                        Glide.with(getContext()).load(uri).into(binding.icUserSetting);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.icUserSetting);
+                        }
+
                     });
                 }
             }
@@ -128,8 +131,10 @@ public class HomeFragment extends BaseFragment {
         Date toDay = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strToday = dateFormat.format(toDay);
+
         viewModel.getReceiptByToDay(strToday);
         viewModel.getReceiptSavedByToDay(strToday);
+        viewModel.getReceiptCancelByToDay(strToday);
         viewModel.liveDateGetSaveReceiptToDay.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
             @Override
             public void onChanged(List<Receipt> receipts) {
@@ -160,6 +165,17 @@ public class HomeFragment extends BaseFragment {
                 }
             }
         });
+        viewModel.liveDateGetCancelReceiptToDay.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                if(receipts.size() == 0){
+                    binding.tvOderCancel.setText("0");
+                }else {
+                    binding.tvOderCancel.setText(receipts.size() + "");
+                }
+            }
+        });
+
 
     }
 

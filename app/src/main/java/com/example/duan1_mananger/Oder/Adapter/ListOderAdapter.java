@@ -1,5 +1,6 @@
 package com.example.duan1_mananger.Oder.Adapter;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.databinding.LayoutItemReceiptHorizontalBinding;
 import com.example.duan1_mananger.databinding.LayoutItemReceiptVerticalBinding;
 import com.example.duan1_mananger.model.Product;
@@ -30,6 +32,7 @@ import java.util.Locale;
 public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<Receipt> listReceipt;
     OnClickListener mOnClickListener;
+
     private int typeLayout;
     public static final int TYPE_HORIZONTAL = 0;
     public static final int TYPE_VERTICAL = 1;
@@ -42,6 +45,7 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.listReceipt = listReceipt;
         this.mOnClickListener = mOnClickListener;
         this.typeLayout= typeLayout;
+
     }
 
     public void setFilterList(ArrayList<Receipt> filterList) {
@@ -89,7 +93,7 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public  class ViewHolderListOderHorizontal extends RecyclerView.ViewHolder {
-        TextView tvNameBill,tvTotalMoney,tvTimeOder;
+        TextView tvNameBill,tvTotalMoney,tvTimeOder, tvStatus;
         ConstraintLayout layoutItem;
 
         public ViewHolderListOderHorizontal(LayoutItemReceiptHorizontalBinding binding) {
@@ -97,6 +101,7 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvNameBill=binding.tvNameBill;
             tvTotalMoney=binding.tvTotalMoney;
             tvTimeOder=binding.tvTimeOder;
+            tvStatus= binding.tvStatus;
             layoutItem= binding.layoutItem;
         }
         void initData(Receipt receipt){
@@ -107,6 +112,8 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Double Money =receipt.getMoney();
             String strMoney = numberFormat.format(Money);
             tvTotalMoney.setText(strMoney);
+            tvStatus.setText(receipt.isStatusOder() ? "Đã thanh toán" : "Đơn hủy");
+
 
             layoutItem.setOnClickListener(v->{
                 mOnClickListener.onClickListener(receipt);
@@ -140,8 +147,14 @@ public class ListOderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(!receipt.getNoteOder().equals("")){
                 tvNoteBill.setText(receipt.getNoteOder());
             }
+            tvStatus.setText(receipt.isStatusOder() ? "Đã thanh toán" : "Đơn hủy");
             layoutOderPrint.setOnClickListener(layout ->{
-                Toast.makeText(itemView.getContext(), "Chưa thiết lập máy in!", Toast.LENGTH_SHORT).show();
+                if(receipt.isStatusOder()){
+                    Toast.makeText(itemView.getContext(), "Chưa thiết lập máy in!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(itemView.getContext(), "Đơn đã bị hủy. Không thể in!", Toast.LENGTH_SHORT).show();
+                }
+
             });
 
             layoutItem.setOnClickListener(v->{

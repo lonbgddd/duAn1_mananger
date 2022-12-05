@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class TypeProduct implements Serializable {
     private String id;
     private String nameType;
+    private  boolean isHidden;
 
     public TypeProduct() {
     }
@@ -12,6 +13,12 @@ public class TypeProduct implements Serializable {
     public TypeProduct(String id, String nameType) {
         this.id = id;
         this.nameType = nameType;
+    }
+
+    public TypeProduct(String id, String nameType, boolean isHidden) {
+        this.id = id;
+        this.nameType = nameType;
+        this.isHidden = isHidden;
     }
 
     public TypeProduct(String name_type) {
@@ -32,5 +39,13 @@ public class TypeProduct implements Serializable {
 
     public void setNameType(String nameType) {
         this.nameType = nameType;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }

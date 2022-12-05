@@ -7,6 +7,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/dimen_10dp">
 
+
+
     <TextView
         android:id="@+id/tvNameType"
         android:layout_width="wrap_content"

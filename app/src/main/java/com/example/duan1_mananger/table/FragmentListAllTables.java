@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ public class FragmentListAllTables extends BaseFragment implements OnclickOption
     FirebaseDatabase database;
     private RecyclerView recyclerView;
     private List<Table> listTable;
+
     public FragmentListAllTables() {
         // Required empty public constructor
     }
@@ -61,6 +63,7 @@ public class FragmentListAllTables extends BaseFragment implements OnclickOption
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         listening();
         initObSever();
     }
@@ -73,8 +76,7 @@ public class FragmentListAllTables extends BaseFragment implements OnclickOption
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listTable.clear();
-                for (DataSnapshot snapshot1: snapshot.getChildren()
-                     ) {
+                for (DataSnapshot snapshot1: snapshot.getChildren()) {
                     Table table = snapshot1.getValue(Table.class);
                     listTable.add(table);
                 }

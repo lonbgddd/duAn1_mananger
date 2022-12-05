@@ -1,6 +1,7 @@
 package com.example.duan1_mananger.product.Adapter;
 
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.Locale;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> {
     private ArrayList<Product> listProduct;
     OnClickItemListener mOnClickItemListener;
+    Context context;
 
     public interface OnClickItemListener{
         void onClickItemProduct(Product product);
@@ -35,9 +37,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         this.listProduct = listProduct;
     }
 
-    public ProductAdapter(ArrayList<Product> listProduct, OnClickItemListener mOnClickItemListener) {
+    public ProductAdapter(ArrayList<Product> listProduct, OnClickItemListener mOnClickItemListener, Context context) {
         this.listProduct = listProduct;
         this.mOnClickItemListener = mOnClickItemListener;
+        this.context = context;
     }
 
     public void setFilterList(ArrayList<Product> filterList) {
@@ -57,7 +60,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (product == null) {
             return;
         } else {
-            holder.initData(product);
+            holder.initData(product, context);
         }
     }
 
@@ -81,13 +84,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             layoutItem = binding.layoutItem;
         }
 
-        void initData(Product product) {
+        void initData(Product product, Context context) {
             StorageReference reference = FirebaseStorage.getInstance().getReference().child("imgProducts");
             reference.listAll().addOnSuccessListener(listResult -> {
                 for (StorageReference files: listResult.getItems()){
                     if(files.getName().equals(product.getId())){
                         files.getDownloadUrl().addOnSuccessListener(uri -> {
-                            Glide.with(itemView).load(uri).into(imgProduct);
+                            Glide.with(context).load(uri).into(imgProduct);
                         });
                     }
                 }

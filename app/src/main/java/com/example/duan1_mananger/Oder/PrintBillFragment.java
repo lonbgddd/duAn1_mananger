@@ -1,76 +1,60 @@
 package com.example.duan1_mananger.Oder;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
-import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
-import com.example.duan1_mananger.databinding.FragmentAddOderBinding;
-import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.databinding.FragmentOderDetailsBinding;
-import com.example.duan1_mananger.databinding.LayoutFullImageProductBinding;
+import com.example.duan1_mananger.databinding.FragmentPrintBillBinding;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Receipt;
-import com.example.duan1_mananger.model.Table;
-import com.example.duan1_mananger.product.UpdateProductFragment;
+import com.example.duan1_mananger.model.User;
 import com.example.duan1_mananger.table.TableViewModel;
 import com.example.duan1_mananger.table.adapter.OderAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DetailReceiptFragment extends BaseFragment {
-    private FragmentOderDetailsBinding binding = null;
+public class PrintBillFragment extends BaseFragment {
+    private FragmentPrintBillBinding binding = null;
     private TableViewModel tableModel = null;
     private  Receipt receiptModel;
     private  ArrayList<String> listIdProduct;
+    private User user;
 
 
-    public DetailReceiptFragment(Receipt receipt) {
+    public PrintBillFragment(Receipt receipt) {
         this.receiptModel = receipt;
     }
 
-    public DetailReceiptFragment() {
+    public PrintBillFragment() {
     }
 
-    public DetailReceiptFragment newInstance() {
-        return new DetailReceiptFragment(receiptModel);
+    public PrintBillFragment newInstance() {
+        return new PrintBillFragment(receiptModel);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentOderDetailsBinding.inflate(inflater, container, false);
+        binding = FragmentPrintBillBinding.inflate(inflater, container, false);
         tableModel = new ViewModelProvider(this).get(TableViewModel.class);
         return binding.getRoot();
     }
@@ -84,18 +68,31 @@ public class DetailReceiptFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        binding.tvNameBill.setText("POLY000"+receiptModel.getIdReceipt().substring(16,20));
-        if(receiptModel.isStatusOder()){
-            binding.cavPrintOder.setVisibility(View.VISIBLE);
-            binding.tvStatusOder2.setText("Đã thanh toán");
-            binding.tvPaySuccess.setText("Đã thanh toán toàn bộ");
+        user = new User();
+        String userID = FirebaseAuth.getInstance().getUid();
+        binding.tvIdUser.setText("Id: "+"P000"+userID.substring(24,28));
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("users").child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(User.class);
+                if (FirebaseAuth.getInstance().getUid() != null) {
+                    binding.tvNameUser.setText(user.getName_user());
+                }
+            }
 
-        }else {
-            binding.cavPrintOder.setVisibility(View.GONE);
-            binding.tvStatusOder2.setText("Đơn hủy");
-            binding.tvPaySuccess.setText("Đơn đã hủy");
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
+        binding.tvIdBill.setText("ACCOUNT NO: "+receiptModel.getIdReceipt());
+        binding.tvTime.setText(receiptModel.getTimeOder());
+        int amountProduct = 0;
+        for(int i = 0; i < receiptModel.getListCountProduct().size(); i++){
+            amountProduct += receiptModel.getListCountProduct().get(i);
         }
+        binding.tvAmountProduct.setText(amountProduct+"");
 
         listIdProduct = (ArrayList<String>) receiptModel.getListIdProduct();
         tableModel.listLiveData(listIdProduct);
@@ -107,27 +104,17 @@ public class DetailReceiptFragment extends BaseFragment {
                         products.get(k).setIsClick(receiptModel.getListCountProduct().get(k));
                     }
                 }
-                OderAdapter adapter = new OderAdapter(products,0,getActivity());
-                if(receiptModel.getIdTable().length() > 0){
-                    binding.tvStatusOder.setText("Thanh toán tại bàn");
-                }else {
-                    binding.tvStatusOder.setText("Thanh toán đem về");
-                }
+
+                OderAdapter adapter = new OderAdapter(products,1,getActivity());
                 Locale locale = new Locale("en", "EN");
                 NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                String strMoney = numberFormat.format(receiptModel.getMoney());
-                binding.tvTotalAmount.setText(strMoney);
-                binding.tvTotalAmount2.setText(strMoney);
-                binding.tvTotalAmount3.setText(strMoney);
-                binding.tvTime.setText(receiptModel.getTimeOder());
+                String strMoney = numberFormat.format(receiptModel.getMoney());;
+                binding.tvTotalBill.setText(strMoney);
 
-                if(!receiptModel.getNoteOder().equals("")){
-                    binding.tvNoteBill.setText(receiptModel.getNoteOder());
-                }
-                binding.listProductOder.setAdapter(adapter);
+
+                binding.recListItemsBill.setAdapter(adapter);
             }
         });
-
 
 
 
@@ -139,10 +126,11 @@ public class DetailReceiptFragment extends BaseFragment {
         binding.icBack.setOnClickListener(v->{
             backStack();
         });
-
-        binding.btnPrintOder.setOnClickListener(btn ->{
-            replaceFragment(new PrintBillFragment(receiptModel));
+        binding.icPrint.setOnClickListener(ic ->{
+            notificationErrInput(getContext(),"Chưa thiết lập máy in đơn.");
         });
+
+
     }
 
     @Override

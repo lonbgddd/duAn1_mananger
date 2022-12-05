@@ -24,6 +24,11 @@ public class SettingViewModel extends ViewModel {
     public MutableLiveData<List<Receipt>> liveDateGetAllReceipt = new MutableLiveData<>();
     public MutableLiveData<List<Receipt>> liveDateGetReceiptToDay = new MutableLiveData<>();
     public MutableLiveData<List<Receipt>> liveDateGetSaveReceiptToDay = new MutableLiveData<>();
+
+    public MutableLiveData<List<Receipt>> liveDateGetCancelReceipt = new MutableLiveData<>();
+    public MutableLiveData<List<Receipt>> liveDateGetAllCancelReceipt = new MutableLiveData<>();
+    public MutableLiveData<List<Receipt>> liveDateGetCancelReceiptToDay = new MutableLiveData<>();
+
     private DatabaseReference reference;
 
     public LiveData<List<Receipt>> getReceiptByDate(String startDate, String endDate) {
@@ -62,6 +67,43 @@ public class SettingViewModel extends ViewModel {
         return liveDateGetReceipt;
     }
 
+    public LiveData<List<Receipt>> getReceiptCancelByDate(String startDate, String endDate) {
+        reference = FirebaseDatabase.getInstance().getReference("CancelReceipt");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Receipt> listData = new ArrayList<>();
+                listData.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Receipt receipt = dataSnapshot.getValue(Receipt.class);
+                    String day = receipt.getTimeOder().substring(0, receipt.getTimeOder().lastIndexOf(" "));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        Date dayOder = sdf.parse(day);
+                        Date start = sdf.parse(startDate);
+                        Date end = sdf.parse(endDate);
+                        if (start.getTime() <= dayOder.getTime() && end.getTime() >= dayOder.getTime()) {
+                            listData.add(receipt);
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                liveDateGetCancelReceipt.postValue(listData);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return liveDateGetCancelReceipt;
+    }
+
+
     public LiveData<List<Receipt>> getReceiptSavedByToDay (String date) {
         reference = FirebaseDatabase.getInstance().getReference("OderSave");
         reference.addValueEventListener(new ValueEventListener() {
@@ -97,6 +139,8 @@ public class SettingViewModel extends ViewModel {
 
         return liveDateGetSaveReceiptToDay;
     }
+
+
     public LiveData<List<Receipt>> getReceiptByToDay(String date) {
         reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
         reference.addValueEventListener(new ValueEventListener() {
@@ -134,6 +178,43 @@ public class SettingViewModel extends ViewModel {
     }
 
 
+    public LiveData<List<Receipt>> getReceiptCancelByToDay(String date) {
+        reference = FirebaseDatabase.getInstance().getReference("CancelReceipt");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Receipt> listData = new ArrayList<>();
+                listData.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Receipt receipt = dataSnapshot.getValue(Receipt.class);
+                    String strDay = receipt.getTimeOder().substring(0, receipt.getTimeOder().lastIndexOf(" "));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        Date dayOder = dateFormat.parse(strDay);
+                        Date toDay = dateFormat.parse(date);
+
+                        if (toDay.getTime() == dayOder.getTime()) {
+                            listData.add(receipt);
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                liveDateGetCancelReceiptToDay.postValue(listData);
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return liveDateGetCancelReceiptToDay;
+    }
+
+
     public LiveData<List<Receipt>> getAllReceipt() {
         reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
         reference.addValueEventListener(new ValueEventListener() {
@@ -158,4 +239,32 @@ public class SettingViewModel extends ViewModel {
 
         return liveDateGetAllReceipt;
     }
+
+
+    public LiveData<List<Receipt>> getAllCancelReceipt() {
+        reference = FirebaseDatabase.getInstance().getReference("CancelReceipt");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Receipt> listData = new ArrayList<>();
+                listData.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Receipt receipt = dataSnapshot.getValue(Receipt.class);
+                    listData.add(receipt);
+                }
+                liveDateGetAllCancelReceipt.postValue(listData);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        return liveDateGetAllCancelReceipt;
+    }
+
+
 }

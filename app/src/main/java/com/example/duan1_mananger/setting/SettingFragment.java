@@ -102,8 +102,10 @@ public class SettingFragment extends BaseFragment {
             ) {
                 if (files.getName().equals(firebaseUser.getUid())) {
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Log.d("TAG", "initView: " + uri);
-                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgAvatar);
+                        }
+
                     });
                 }
 
@@ -141,7 +143,10 @@ public class SettingFragment extends BaseFragment {
             ) {
                 if (files.getName().equals(userID)) {
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getContext()).load(uri).into(binding.imgAvatar);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgAvatar);
+                        }
+
                     });
                 }
 

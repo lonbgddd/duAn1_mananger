@@ -22,8 +22,12 @@ import java.util.List;
 public class TableViewModel extends ViewModel {
     public MutableLiveData<List<Product>> listProductOder = new MutableLiveData<>();
     public MutableLiveData<String> oderTableStatus = new MutableLiveData<>();
+
     public MutableLiveData<Receipt> liveDataGetReceipt = new MutableLiveData<>();
     public MutableLiveData<String> liveDataPayReceipt = new MutableLiveData<>();
+
+    public MutableLiveData<Receipt> liveDataGetCancelReceipt = new MutableLiveData<>();
+    public MutableLiveData<String> liveDataCancelReceipt = new MutableLiveData<>();
     private DatabaseReference reference;
 
     public LiveData<List<Product>> listLiveData(List<String> listIdProduct) {
@@ -60,6 +64,7 @@ public class TableViewModel extends ViewModel {
          oderTableStatus.postValue(status);
         return oderTableStatus;
     }
+
     public LiveData<Receipt> liveDataGetReceipt(String idTable){
         reference = FirebaseDatabase.getInstance().getReference("OderSave");
         reference.addValueEventListener(new ValueEventListener() {
@@ -82,6 +87,40 @@ public class TableViewModel extends ViewModel {
 
         return liveDataGetReceipt;
     }
+    public LiveData<Receipt> liveDataGetCancelReceipt(String idTable){
+        reference = FirebaseDatabase.getInstance().getReference("CancelReceipt");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()
+                ) {
+                    Receipt receipt1 =dataSnapshot.getValue(Receipt.class);
+                    if (receipt1.getIdTable().equals(idTable)){
+                        liveDataGetCancelReceipt.postValue(receipt1);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return liveDataGetCancelReceipt;
+    }
+
+    public LiveData<String> liveDataCancelReceipt(Receipt receipt){
+        reference = FirebaseDatabase.getInstance().getReference("CancelReceipt");
+        reference.child(receipt.getIdReceipt()).setValue(receipt);
+        liveDataDeleteReceipt(receipt);
+        liveDataCancelReceipt.postValue("cancel");
+        return liveDataCancelReceipt;
+    }
+
+
+
+
 
     public LiveData<String> liveDataPayReceipt(Receipt receipt){
         reference = FirebaseDatabase.getInstance().getReference("PayReceipt");
@@ -90,6 +129,8 @@ public class TableViewModel extends ViewModel {
         liveDataPayReceipt.postValue("success");
         return liveDataPayReceipt;
     }
+
+
     public LiveData<Receipt> liveDataDeleteReceipt(Receipt receipt){
         reference = FirebaseDatabase.getInstance().getReference("OderSave");
         Query query = reference.orderByChild("idReceipt").equalTo(receipt.getIdReceipt());

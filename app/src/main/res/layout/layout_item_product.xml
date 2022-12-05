@@ -51,7 +51,7 @@
                 android:fontFamily="@font/poppins_semi_bold"
                 android:text="Cappuccino"
                 android:textColor="@color/black"
-                android:textSize="@dimen/dimen_20dp"
+                android:textSize="@dimen/dimen_19dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.081"

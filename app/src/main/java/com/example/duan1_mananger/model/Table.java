@@ -7,6 +7,15 @@ public class Table implements Serializable {
     private String name_table;
     private String status = "false";
 
+    public Table() {
+    }
+
+    public Table(int id_table, String name_table, String status) {
+        this.id_table = id_table;
+        this.name_table = name_table;
+        this.status = status;
+    }
+
     public int getId_table() {
         return id_table;
     }
