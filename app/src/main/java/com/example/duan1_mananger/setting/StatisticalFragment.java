@@ -28,8 +28,8 @@ import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
 import com.example.duan1_mananger.Oder.DetailReceiptFragment;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.databinding.DialogChooseFunctionFilterStatisticBinding;
 import com.example.duan1_mananger.databinding.DialogChooseTimeStatisticBinding;
-import com.example.duan1_mananger.databinding.DialogFunctionImageProductBinding;
 import com.example.duan1_mananger.databinding.FragmentOderStatisticsBinding;
 import com.example.duan1_mananger.model.Receipt;
 import com.google.firebase.database.DatabaseReference;
@@ -99,62 +99,8 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
     @Override
     public void loadData() {
-        viewModel.getAllReceipt();
-        viewModel.liveDateGetAllReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
-            @Override
-            public void onChanged(List<Receipt> receipts) {
-                binding.tvOrderNumber.setText(receipts.size() + "");
-                Double money = 0.0;
-                for (Receipt receipt : receipts) {
-                    money += receipt.getMoney();
-                }
-                Locale locale = new Locale("en", "EN");
-                NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                String strMoney = numberFormat.format(money);
-                binding.tvTotalOderValue.setText(strMoney);
-                adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
-                LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
-                layoutManager.setStackFromEnd(true);
-                layoutManager.setReverseLayout(true);
-                binding.recVListOder.setLayoutManager(layoutManager);
-                binding.recVListOder.setAdapter(adapter);
-            }
-        });
+        getPaidOder();
 
-        viewModel.liveDateGetReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
-            @Override
-            public void onChanged(List<Receipt> receipts) {
-                if(receipts.size() == 0){
-                    binding.layoutNotificationNullData.setVisibility(View.VISIBLE);
-                    binding.tvOrderNumber.setText("0");
-                    binding.tvTotalOderValue.setText("0");
-                    binding.viewHeader.setVisibility(View.GONE);
-                    binding.recVListOder.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
-                }else {
-                    binding.layoutNotificationNullData.setVisibility(View.GONE);
-                    binding.viewHeader.setVisibility(View.VISIBLE);
-                    binding.recVListOder.setVisibility(View.VISIBLE);
-                    binding.tvOrderNumber.setText(receipts.size() + "");
-                    Double money = 0.0;
-                    for (Receipt receipt : receipts) {
-                        money += receipt.getMoney();
-                    }
-                    Locale locale = new Locale("en", "EN");
-                    NumberFormat numberFormat = NumberFormat.getInstance(locale);
-                    String strMoney = numberFormat.format(money);
-
-                    binding.tvTotalOderValue.setText(strMoney);
-                    adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
-                    LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
-                    layoutManager.setStackFromEnd(true);
-                    layoutManager.setReverseLayout(true);
-                    binding.recVListOder.setLayoutManager(layoutManager);
-                    binding.recVListOder.setAdapter(adapter);
-                }
-
-            }
-        });
     }
 
     @Override
@@ -163,16 +109,65 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
         binding.tvFilterTime.setOnClickListener(v -> dialogFunctionPickDate(requireContext()));
 
 
+        binding.tvFilterFunction.setOnClickListener(v ->{
+            dialogFunctionFilterOder(getContext());
+        });
+
     }
+
 
     @Override
     public void initObSever() {
+
 
     }
 
     @Override
     public void initView() {
     }
+
+
+
+    private void dialogFunctionFilterOder(Context context) {
+        final Dialog dialog = new Dialog(context);
+        DialogChooseFunctionFilterStatisticBinding bindingDialog = DialogChooseFunctionFilterStatisticBinding.inflate(LayoutInflater.from(context));
+        dialog.setContentView(bindingDialog.getRoot());
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        window.setAttributes(layoutParams);
+        bindingDialog.dialogChooserFunction.setTranslationY(150);
+        bindingDialog.dialogChooserFunction.animate().translationYBy(-150).setDuration(400);
+        if( binding.tvFilterFunction.getText().toString().equals("Theo ngày hoàn thành")){
+            bindingDialog.icFilter1.setVisibility(View.VISIBLE);
+            bindingDialog.icFilter2.setVisibility(View.GONE);
+        }else {
+            bindingDialog.icFilter1.setVisibility(View.GONE);
+            bindingDialog.icFilter2.setVisibility(View.VISIBLE);
+        }
+
+        bindingDialog.layoutFilterCompleteOder.setOnClickListener(ic ->{
+            binding.tvFilterFunction.setText("Theo ngày hoàn thành");
+            binding.tvFilterTime.setText("Tất cả");
+            getPaidOder();
+
+            dialog.cancel();
+        });
+        bindingDialog.layoutFilterCancelOder.setOnClickListener(ic ->{
+            binding.tvFilterFunction.setText("Theo ngày hủy");
+            binding.tvFilterTime.setText("Tất cả");
+            getCancelOder();
+            dialog.cancel();
+        });
+
+
+
+        dialog.show();
+
+    }
+
 
     private void dialogFunctionPickDate(Context context) {
         final Dialog dialog = new Dialog(context);
@@ -226,8 +221,13 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
             }else if(bindingDialog.tvTimeEnd.getVisibility() == View.GONE){
                 Toast.makeText(context, "Hẫy chọn ngày kết thúc", Toast.LENGTH_SHORT).show();
             }else {
-                viewModel.getReceiptByDate(bindingDialog.tvTimeStart.getText().toString(), bindingDialog.tvTimeEnd.getText().toString());
-                adapter.notifyDataSetChanged();
+                if( binding.tvFilterFunction.getText().toString().equals("Theo ngày hoàn thành")){
+                    viewModel.getReceiptByDate(bindingDialog.tvTimeStart.getText().toString(), bindingDialog.tvTimeEnd.getText().toString());
+                    adapter.notifyDataSetChanged();
+                }else {
+                    viewModel.getReceiptCancelByDate(bindingDialog.tvTimeStart.getText().toString(), bindingDialog.tvTimeEnd.getText().toString());
+                    adapter.notifyDataSetChanged();
+                }
                 binding.tvFilterTime.setText(bindingDialog.tvTimeStart.getText().toString()+ " đến " +bindingDialog.tvTimeEnd.getText().toString());
                 dialog.cancel();
             }
@@ -236,6 +236,126 @@ public class StatisticalFragment extends BaseFragment implements ListOderAdapter
 
         dialog.show();
     }
+
+    public void getPaidOder(){
+        viewModel.getAllReceipt();
+        viewModel.liveDateGetAllReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                binding.tvOrderNumber.setText(receipts.size() + "");
+                Double money = 0.0;
+                for (Receipt receipt : receipts) {
+                    money += receipt.getMoney();
+                }
+                Locale locale = new Locale("en", "EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                String strMoney = numberFormat.format(money);
+                binding.tvTotalOderValue.setText(strMoney);
+                adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                layoutManager.setStackFromEnd(true);
+                layoutManager.setReverseLayout(true);
+                binding.recVListOder.setLayoutManager(layoutManager);
+                binding.recVListOder.setAdapter(adapter);
+            }
+        });
+
+        viewModel.liveDateGetReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                if(receipts.size() == 0){
+                    binding.layoutNotificationNullData.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText("0");
+                    binding.tvTotalOderValue.setText("0");
+                    binding.viewHeader.setVisibility(View.GONE);
+                    binding.recVListOder.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    binding.layoutNotificationNullData.setVisibility(View.GONE);
+                    binding.viewHeader.setVisibility(View.VISIBLE);
+                    binding.recVListOder.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText(receipts.size() + "");
+                    Double money = 0.0;
+                    for (Receipt receipt : receipts) {
+                        money += receipt.getMoney();
+                    }
+                    Locale locale = new Locale("en", "EN");
+                    NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                    String strMoney = numberFormat.format(money);
+
+                    binding.tvTotalOderValue.setText(strMoney);
+                    adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                    LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                    layoutManager.setStackFromEnd(true);
+                    layoutManager.setReverseLayout(true);
+                    binding.recVListOder.setLayoutManager(layoutManager);
+                    binding.recVListOder.setAdapter(adapter);
+                }
+            }
+        });
+
+
+    }
+    public void getCancelOder(){
+        adapter.notifyDataSetChanged();
+        viewModel.getAllCancelReceipt();
+        viewModel.liveDateGetAllCancelReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                binding.tvOrderNumber.setText(receipts.size() + "");
+                Double money = 0.0;
+                for (Receipt receipt : receipts) {
+                    money += receipt.getMoney();
+                }
+                Locale locale = new Locale("en", "EN");
+                NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                String strMoney = numberFormat.format(money);
+                binding.tvTotalOderValue.setText(strMoney);
+                adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                layoutManager.setStackFromEnd(true);
+                layoutManager.setReverseLayout(true);
+                binding.recVListOder.setLayoutManager(layoutManager);
+                binding.recVListOder.setAdapter(adapter);
+            }
+        });
+
+        viewModel.liveDateGetCancelReceipt.observe(getViewLifecycleOwner(), new Observer<List<Receipt>>() {
+            @Override
+            public void onChanged(List<Receipt> receipts) {
+                if(receipts.size() == 0){
+                    binding.layoutNotificationNullData.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText("0");
+                    binding.tvTotalOderValue.setText("0");
+                    binding.viewHeader.setVisibility(View.GONE);
+                    binding.recVListOder.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    binding.layoutNotificationNullData.setVisibility(View.GONE);
+                    binding.viewHeader.setVisibility(View.VISIBLE);
+                    binding.recVListOder.setVisibility(View.VISIBLE);
+                    binding.tvOrderNumber.setText(receipts.size() + "");
+                    Double money = 0.0;
+                    for (Receipt receipt : receipts) {
+                        money += receipt.getMoney();
+                    }
+                    Locale locale = new Locale("en", "EN");
+                    NumberFormat numberFormat = NumberFormat.getInstance(locale);
+                    String strMoney = numberFormat.format(money);
+
+                    binding.tvTotalOderValue.setText(strMoney);
+                    adapter = new ListOderAdapter((ArrayList<Receipt>) receipts,StatisticalFragment.this,0);
+                    LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+                    layoutManager.setStackFromEnd(true);
+                    layoutManager.setReverseLayout(true);
+                    binding.recVListOder.setLayoutManager(layoutManager);
+                    binding.recVListOder.setAdapter(adapter);
+                }
+            }
+        });
+    }
+
+
 
     @Override
     public void onClickListener(Receipt receipt) {

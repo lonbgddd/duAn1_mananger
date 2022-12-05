@@ -80,7 +80,7 @@
     <string name="text_button_table_home_all">Tất cả bàn</string>
     <string name="text_button_table_home_empty">Bàn trống</string>
     <string name="text_button_table_home_open">Bàn đang mở</string>
-
+    <string name="notification_cancel_oder">Đơn hàng sẽ bị hủy và bạn có thể khôi phục nó trong lịch sử thống kê đơn hàng.</string>
     <string name="content_add_img_product">(<font color='red'>*</font>Thêm ảnh minh họa)</string>
 
 </resources>

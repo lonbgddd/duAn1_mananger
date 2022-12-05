@@ -84,7 +84,7 @@ public class ProductFragment extends BaseFragment implements  ProductAdapter.OnC
             listProduct = new ArrayList<>();
             getFilterProduct();
         }
-        productAdapter = new ProductAdapter(listProduct, ProductFragment.this);
+        productAdapter = new ProductAdapter(listProduct, ProductFragment.this,getActivity());
         bindProduct.listProduct.setAdapter(productAdapter);
         listening();
         initObSever();
@@ -152,7 +152,9 @@ public class ProductFragment extends BaseFragment implements  ProductAdapter.OnC
                 listProduct.clear();
                 for (DataSnapshot datasnapshot : snapshot.getChildren()) {
                     Product product = datasnapshot.getValue(Product.class);
-                    listProduct.add(product);
+                    if(product.isHidden()){
+                        listProduct.add(product);
+                    }
                 }
                 bindProduct.tvCountProduct.setText("Có " + listProduct.size() + " sản phẩm");
                 productAdapter.notifyDataSetChanged();

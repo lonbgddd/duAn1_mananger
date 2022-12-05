@@ -1,5 +1,7 @@
 package com.example.duan1_mananger.table;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,11 +9,15 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.duan1_mananger.PushNotification.MyNotificator;
+import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.FragmentAddOderBinding;
 import com.example.duan1_mananger.home.HomeFragment;
@@ -48,6 +54,7 @@ public class DetailTableFragment extends BaseFragment {
     private ArrayList<String> listIdProduct;
     private ArrayList<Integer>listCountProduct = null;
     private MyNotificator myNotificator;
+
 
     public DetailTableFragment(Table table) {
         this.table = table;
@@ -137,7 +144,7 @@ public class DetailTableFragment extends BaseFragment {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String strDate = dateFormat.format(date);
 
-                receiptModel = new Receipt(key, idTable, strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString());
+                receiptModel = new Receipt(key, idTable, strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString(), true);
                 reference.child(key).setValue(receiptModel);
                 model.setStatusTable(idTable, "true");
                 replaceFragment(HomeFragment.newInstance());
@@ -145,7 +152,7 @@ public class DetailTableFragment extends BaseFragment {
         });
         if (statusTable.equals("true")) {
             model.liveDataGetReceipt(idTable);
-
+            model.liveDataGetCancelReceipt(idTable);
         }
         if (table.getName_table() != null) {
             model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
@@ -153,9 +160,9 @@ public class DetailTableFragment extends BaseFragment {
                 public void onChanged(Receipt receipt) {
                     binding.btnSaveOder.setVisibility(View.GONE);
                     binding.btnPayOder.setVisibility(View.VISIBLE);
+                    binding.cavCancelOder.setVisibility(View.VISIBLE);
                     receiptModel = receipt;
                     model.listLiveData(receipt.getListIdProduct());
-
 
                     model.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
@@ -166,7 +173,7 @@ public class DetailTableFragment extends BaseFragment {
                             }
                         }
 
-                        OderAdapter adapter = new OderAdapter(products);
+                        OderAdapter adapter = new OderAdapter(products,0,getActivity());
                         int totalProduct = 0;
                         for(int i = 0; i < receipt.getListCountProduct().size(); i++){
                             totalProduct += receipt.getListCountProduct().get(i);
@@ -189,7 +196,39 @@ public class DetailTableFragment extends BaseFragment {
                     binding.edNoteOder.setText(receipt.getNoteOder() + "");
                 }
             });
+
+            binding.btnCancelOder.setOnClickListener(btn ->{
+                if (receiptModel != null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Xác nhận hủy đơn hàng");
+                    builder.setIcon(getContext().getDrawable(R.drawable.ic_cancelled));
+                    builder.setMessage(getString( R.string.notification_cancel_oder));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            receiptModel.setStatusOder(false);
+                            model.setStatusTable(idTable, "false");
+                            model.liveDataCancelReceipt(receiptModel);
+                            backStack();
+                        }
+                    });
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getContext(),"Đã hủy !",Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog sh = builder.create();
+                    sh.show();
+
+                }
+            });
         }
+
+
         binding.btnPayOder.setOnClickListener(btn -> {
             if (binding.listProductOder.getVisibility() == View.GONE) {
                 notificationErrInput(getContext(), "Hãy chọn món !");
@@ -204,12 +243,17 @@ public class DetailTableFragment extends BaseFragment {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String strDate = dateFormat.format(date);
                 String key = reference.push().getKey();
-                Receipt receipt = new Receipt(key, "", strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString());
+                Receipt receipt = new Receipt(key, "", strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString(), true);
                 reference.child(key).setValue(receipt);
+
+
                 notificationSuccessInput(getContext(), "Thanh toán thành công!");
                 replaceFragment(MarketFragment.newInstance());
             }
         });
+
+
+
 
         model.liveDataGetReceipt.observe(getViewLifecycleOwner(), new Observer<Receipt>() {
             @Override
@@ -231,6 +275,20 @@ public class DetailTableFragment extends BaseFragment {
                 }
             }
         });
+
+        model.liveDataCancelReceipt.observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s.equals("cancel")) {
+                    notificationSuccessInput(getContext(), "Đã hủy đơn!");
+                } else {
+                    notificationSuccessInput(getContext(), "Hủy đơn thất bại!");
+                }
+            }
+        });
+
+
+
 
 
     }
@@ -265,7 +323,7 @@ public class DetailTableFragment extends BaseFragment {
                     }
                 }
 
-                OderAdapter adapter = new OderAdapter(products);
+                OderAdapter adapter = new OderAdapter(products,0,getActivity());
                 int totalProduct = 0;
                 for(int i = 0; i < listCountProduct.size(); i++){
                     totalProduct += listCountProduct.get(i);

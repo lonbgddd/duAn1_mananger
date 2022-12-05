@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,16 +28,24 @@ public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.
     private ArrayList<TypeProduct> listType;
     private Context context;
     private OnClickItemListener mOnClickItemListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
+
     public interface OnClickItemListener{
-        public void onClickItemProduct(TypeProduct typeProduct);
+         void onClickItemProduct(TypeProduct typeProduct);
     }
+    public interface OnItemLongClickListener{
+         void onLongClickItemProduct(TypeProduct typeProduct);
+    }
+
 
     public TypeProductAdapter(ArrayList<TypeProduct> listType) {
         this.listType = listType;
     }
-    public TypeProductAdapter(ArrayList<TypeProduct> listType,OnClickItemListener mOnClickItemListener) {
+
+    public TypeProductAdapter(ArrayList<TypeProduct> listType,OnClickItemListener mOnClickItemListener, OnItemLongClickListener mOnItemLongClickListener) {
         this.listType = listType;
         this.mOnClickItemListener = mOnClickItemListener;
+        this.mOnItemLongClickListener = mOnItemLongClickListener;
     }
 
 
@@ -84,6 +93,11 @@ public class TypeProductAdapter extends RecyclerView.Adapter<TypeProductAdapter.
             tvNameType.setText(typeProduct.getNameType());
             layoutItem.setOnClickListener(ic ->{
                 mOnClickItemListener.onClickItemProduct(typeProduct);
+            });
+
+            layoutItem.setOnLongClickListener(ic ->{
+                mOnItemLongClickListener.onLongClickItemProduct(typeProduct);
+                return true;
             });
         }
     }

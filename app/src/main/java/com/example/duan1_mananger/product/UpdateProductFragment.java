@@ -35,7 +35,7 @@ import com.bumptech.glide.Glide;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogEvaluateBinding;
-import com.example.duan1_mananger.databinding.DialogFunctionImageProductBinding;
+import com.example.duan1_mananger.databinding.DialogFunctionProductBinding;
 import com.example.duan1_mananger.databinding.FragmentDetailsProductBinding;
 import com.example.duan1_mananger.databinding.FragmentEditProductBinding;
 import com.example.duan1_mananger.databinding.LayoutFullImageProductBinding;
@@ -156,10 +156,12 @@ public class UpdateProductFragment extends BaseFragment {
                 Toast.makeText(requireContext(), "Cập nhật ảnh sản phẩm thất bại", Toast.LENGTH_SHORT).show();
             });
         }
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
         TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
+
         Product product = new Product(dataProduct.getId(),binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
-                Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
+                Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim(),dataProduct.isHidden());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Cập nhật thông tin "+dataProduct.getNameProduct());
@@ -197,7 +199,7 @@ public class UpdateProductFragment extends BaseFragment {
 
     private void dialogFunctionImage(Context context) {
         final Dialog dialog = new Dialog(context);
-        DialogFunctionImageProductBinding bindingDialog = DialogFunctionImageProductBinding.inflate(LayoutInflater.from(context));
+        DialogFunctionProductBinding bindingDialog = DialogFunctionProductBinding.inflate(LayoutInflater.from(context));
         dialog.setContentView(bindingDialog.getRoot());
         Window window = dialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
@@ -208,11 +210,11 @@ public class UpdateProductFragment extends BaseFragment {
         bindingDialog.dialogChooserFunction.setTranslationY(150);
         bindingDialog.dialogChooserFunction.animate().translationYBy(-150).setDuration(400);
 
-        bindingDialog.tvEditImgProduct.setOnClickListener(v->{
-            dialog.cancel();
+        bindingDialog.tvFun1.setOnClickListener(v->{
             requestPermission();
+            dialog.cancel();
         });
-        bindingDialog.tvFullImg.setOnClickListener(tv ->{
+        bindingDialog.tvFun2.setOnClickListener(tv ->{
             dialogFullImg(getContext(),binding.layoutChangeProduct);
             dialog.cancel();
         });
@@ -238,8 +240,6 @@ public class UpdateProductFragment extends BaseFragment {
     }
 
     private void showDetailProduct(){
-
-
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
         reference2.child("list_product").child(dataProduct.getId()).addValueEventListener(new ValueEventListener() {
 
@@ -288,7 +288,10 @@ public class UpdateProductFragment extends BaseFragment {
             for (StorageReference files: listResult.getItems()){
                 if(files.getName().equals(dataProduct.getId())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getView()).load(uri).into(binding.imgProduct);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgProduct);
+                        }
+
                     });
                 }
             }
@@ -314,7 +317,10 @@ public class UpdateProductFragment extends BaseFragment {
             for (StorageReference files: listResult.getItems()){
                 if(files.getName().equals(dataProduct.getId())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getView()).load(uri).into(binding.imgFullProduct);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgFullProduct);
+                        }
+
                     });
                 }
             }

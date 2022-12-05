@@ -10,13 +10,14 @@ public class Receipt {
     private List<String> listIdProduct;
     private List<Integer> listCountProduct;
     private String noteOder;
+    private boolean statusOder;
 
 
     public Receipt() {
     }
 
 
-    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct, List<Integer> listCountProduct, String noteOder) {
+    public Receipt(String idReceipt, String idTable, String timeOder, Double money, List<String> listIdProduct, List<Integer> listCountProduct, String noteOder,boolean statusOder) {
         this.idReceipt = idReceipt;
         this.idTable = idTable;
         this.timeOder = timeOder;
@@ -24,6 +25,7 @@ public class Receipt {
         this.listIdProduct = listIdProduct;
         this.listCountProduct = listCountProduct;
         this.noteOder = noteOder;
+        this.statusOder = statusOder;
     }
 
 
@@ -82,5 +84,13 @@ public class Receipt {
 
     public void setNoteOder(String noteOder) {
         this.noteOder = noteOder;
+    }
+
+    public boolean isStatusOder() {
+        return statusOder;
+    }
+
+    public void setStatusOder(boolean statusOder) {
+        this.statusOder = statusOder;
     }
 }

@@ -22,7 +22,7 @@
             android:gravity="center"
             android:text="Chọn thao tác"
             android:textColor="@color/black"
-            android:textSize="@dimen/dimen_21dp"
+            android:textSize="@dimen/dimen_20dp"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginVertical="@dimen/dimen_5dp"/>
         <View
@@ -32,14 +32,14 @@
 
             />
         <TextView
-            android:id="@+id/tvEditImgProduct"
+            android:id="@+id/tvFun1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:text="Thay đổi ảnh sản phẩm"
             android:textColor="@color/grey_300"
             android:layout_marginStart="@dimen/dimen_15dp"
-            android:textSize="@dimen/dimen_18dp"
+            android:textSize="@dimen/dimen_16dp"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginVertical="@dimen/dimen_10dp"/>
         <View
@@ -49,14 +49,14 @@
 
             />
         <TextView
-            android:id="@+id/tvFullImg"
+            android:id="@+id/tvFun2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:text="Xem ảnh"
             android:textColor="@color/grey_300"
             android:layout_marginStart="@dimen/dimen_15dp"
-            android:textSize="@dimen/dimen_18dp"
+            android:textSize="@dimen/dimen_16dp"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginVertical="@dimen/dimen_10dp"/>
 

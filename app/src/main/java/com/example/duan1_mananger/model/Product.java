@@ -10,6 +10,8 @@ public class Product {
     private String note;
     boolean isSelected = false;
     int isClick;
+    boolean isHidden;
+
 
     public Product() {
     }
@@ -33,14 +35,14 @@ public class Product {
         this.typeProduct = typeProduct;
         this.isClick = isClick;
     }
-    public Product(String id, String nameProduct, String describe, TypeProduct typeProduct, double price, String note, boolean isSelected) {
+    public Product(String id, String nameProduct, String describe, TypeProduct typeProduct, double price, String note, boolean isHidden) {
         this.id = id;
         this.nameProduct = nameProduct;
         this.price = price;
         this.note = note;
         this.describe = describe;
         this.typeProduct = typeProduct;
-        this.isSelected = isSelected;
+        this.isHidden = isHidden;
     }
 
     public int getIsClick() {
@@ -113,5 +115,13 @@ public class Product {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }

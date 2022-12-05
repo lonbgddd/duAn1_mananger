@@ -123,30 +123,22 @@ public class DetailProductFragment extends BaseFragment {
         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // xóa ảnh trên firebase
-                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                storageReference.child("imgProducts/"+dataProduct.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "FAIL", Toast.LENGTH_SHORT).show();     
-                    }
-                });
-                // xóa trên realtime
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("list_product");
-                reference.child(dataProduct.getId()).removeValue(new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                // ẩn sản phẩm chứ k xóa trên readtime
+                dataProduct.setHidden(false);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_product");
+                reference.child(dataProduct.getId()).setValue(dataProduct).addOnCompleteListener(task->{
+                    if (task.isSuccessful()){
+                        notificationSuccessInput(getContext(),"Đã xóa sản phẩm!");
                         backStack();
-                        Toast.makeText(context, "Đã xóa ", Toast.LENGTH_SHORT).show();
+                    }else {
+                        notificationSuccessInput(getContext(),"Xóa không thành công!");
+
                     }
                 });
             }
         });
+
+
         builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -166,7 +158,10 @@ public class DetailProductFragment extends BaseFragment {
             for (StorageReference files: listResult.getItems()){
                 if(files.getName().equals(dataProduct.getId())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getView()).load(uri).into(binding.imgProduct);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgProduct);
+                        }
+
                     });
                 }
             }
@@ -213,7 +208,10 @@ public class DetailProductFragment extends BaseFragment {
             for (StorageReference files: listResult.getItems()){
                 if(files.getName().equals(dataProduct.getId())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Glide.with(getView()).load(uri).into(binding.imgFullProduct);
+                        if(getActivity() != null){
+                            Glide.with(getActivity()).load(uri).into(binding.imgFullProduct);
+                        }
+
                     });
                 }
             }

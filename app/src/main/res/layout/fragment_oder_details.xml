@@ -385,20 +385,19 @@
                         app:layout_constraintTop_toBottomOf="@id/tvLogoTable" />
 
                     <TextView
-                        android:id="@+id/tvContent5"
+                        android:id="@+id/tvStatusOder2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:fontFamily="@font/poppins_regular"
                         android:text="Đã thanh toán"
                         android:textColor="@color/grey_100"
                         android:textSize="@dimen/dimen_16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/imageView7"
-                        app:layout_constraintHorizontal_bias="0.96"
+                        app:layout_constraintHorizontal_bias="0.99"
                         app:layout_constraintStart_toEndOf="@+id/tvLogoTable"
                         app:layout_constraintTop_toBottomOf="@+id/line2"
-                        app:layout_constraintVertical_bias="0.56" />
+                        app:layout_constraintVertical_bias="0.59" />
 
                     <ImageView
                         android:id="@+id/imageView7"
@@ -420,7 +419,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_20dp"
                 android:background="@color/white"
-                app:cardElevation="@dimen/dimen_5dp">
+                app:cardElevation="@dimen/dimen_5dp"
+                android:layout_marginBottom="@dimen/dimen_30dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -456,9 +456,10 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cavPrintOder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_20dp"
+
                 android:layout_marginBottom="@dimen/dimen_40dp"
                 android:layout_marginHorizontal="@dimen/dimen_70dp"
                 app:cardBackgroundColor="@color/white"

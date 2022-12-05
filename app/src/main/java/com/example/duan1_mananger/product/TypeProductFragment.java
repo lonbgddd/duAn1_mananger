@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogAddTypeProductBinding;
+import com.example.duan1_mananger.databinding.DialogFunctionProductBinding;
 import com.example.duan1_mananger.databinding.FragmentTypeProductBinding;
 import com.example.duan1_mananger.model.TypeProduct;
 import com.example.duan1_mananger.product.Adapter.TypeProductAdapter;
@@ -32,7 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-public class TypeProductFragment extends BaseFragment {
+public class TypeProductFragment extends BaseFragment implements  TypeProductAdapter.OnClickItemListener, TypeProductAdapter.OnItemLongClickListener{
     private FragmentTypeProductBinding binding = null;
     public ArrayList<TypeProduct> listType;
     private TypeProductAdapter typeAdapter;
@@ -66,7 +68,7 @@ public class TypeProductFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         listType = new ArrayList<>();
-        typeAdapter = new TypeProductAdapter(listType);
+        typeAdapter = new TypeProductAdapter(listType, TypeProductFragment.this,TypeProductFragment.this);
         binding.listsTypeProduct.setAdapter(typeAdapter);
         listening();
         loadData();
@@ -114,6 +116,7 @@ public class TypeProductFragment extends BaseFragment {
         binding.tvAllProduct.setOnClickListener(tv ->{
             replaceFragment(new ProductFragment().newInstance());
         });
+
         binding.icAddType.setOnClickListener(ic ->{
             dialogAddTypeProduct(getContext());
         });
@@ -150,10 +153,11 @@ public class TypeProductFragment extends BaseFragment {
             FirebaseDatabase data = FirebaseDatabase.getInstance();
             DatabaseReference mRef = data.getReference("list_type_product");
             String key = mRef.push().getKey();
+
             if(TextUtils.isEmpty(binding.edNameType.getText().toString())){
                 Toast.makeText(context, "Hãy nhập tên loại !"  , Toast.LENGTH_SHORT).show();
             }else {
-                TypeProduct typeProduct = new TypeProduct(key,binding.edNameType.getText().toString().trim());
+                TypeProduct typeProduct = new TypeProduct(key,binding.edNameType.getText().toString().trim(),true);
                 mRef.child(key).setValue(typeProduct).addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
                         Toast.makeText(getContext(), "Thêm loại thành công", Toast.LENGTH_SHORT).show();
@@ -177,7 +181,10 @@ public class TypeProductFragment extends BaseFragment {
                 listType.clear();
                 for(DataSnapshot datasnapshot : snapshot.getChildren()){
                     TypeProduct type = datasnapshot.getValue(TypeProduct.class);
-                    listType.add(type);
+                    if(type.isHidden()){
+                        listType.add(type);
+                    }
+
                 }
                 typeAdapter.notifyDataSetChanged();
             }
@@ -185,12 +192,7 @@ public class TypeProductFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        typeAdapter = new TypeProductAdapter(listType, new TypeProductAdapter.OnClickItemListener() {
-            @Override
-            public void onClickItemProduct(TypeProduct typeProduct) {
-                replaceFragment(new ProductFragment(typeProduct));
-            }
-        });
+
         binding.listsTypeProduct.setAdapter(typeAdapter);
 
 
@@ -210,7 +212,91 @@ public class TypeProductFragment extends BaseFragment {
         }
     }
 
+    private void dialogFunctionProduct(Context context, TypeProduct typeProduct) {
+        final Dialog dialogFunction = new Dialog(context);
+        DialogFunctionProductBinding bindingDialog = DialogFunctionProductBinding.inflate(LayoutInflater.from(context));
+        dialogFunction.setContentView(bindingDialog.getRoot());
+        Window window = dialogFunction.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        window.setAttributes(layoutParams);
+        bindingDialog.dialogChooserFunction.setTranslationY(150);
+        bindingDialog.dialogChooserFunction.animate().translationYBy(-150).setDuration(400);
+
+        bindingDialog.tvFun1.setText("Sửa thông tin loại sản phẩm");
+        bindingDialog.tvFun2.setText("Xóa loại sản phẩm");
 
 
+        bindingDialog.tvFun1.setOnClickListener(tv ->{
+            final Dialog dialogChange = new Dialog(context);
+            DialogAddTypeProductBinding bindingChange = DialogAddTypeProductBinding.inflate(LayoutInflater.from(context));
+            dialogChange.setContentView(bindingChange.getRoot());
+            dialogChange.setCancelable(false);
+            Window window2 = dialogChange.getWindow();
+            window2.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window2.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            bindingChange.tvTitle.setText("Sửa thông tin");
+            bindingChange.tvAdd.setText("Lưu");
+            bindingChange.edNameType.setText(typeProduct.getNameType());
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_type_product");
 
+            bindingChange.tvAdd.setOnClickListener(tv2 ->{
+                if(TextUtils.isEmpty(bindingChange.edNameType.getText().toString())){
+                    Toast.makeText(context, "Hãy nhập tên loại !"  , Toast.LENGTH_SHORT).show();
+                }else {
+                    TypeProduct typeProduct1 = new TypeProduct(typeProduct.getId(), bindingChange.edNameType.getText().toString(), true);
+                    reference.child(typeProduct.getId()).setValue(typeProduct1).addOnCompleteListener(task->{
+                        if (task.isSuccessful()){
+                            Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                            dialogChange.cancel();
+                        }else {
+                            Toast.makeText(context, "Cập nhật không thành công!", Toast.LENGTH_SHORT).show();
+                            dialogChange.cancel();
+                        }
+                    });
+                }
+
+            });
+
+            bindingChange.tvCancel.setOnClickListener(tv2 ->{
+                dialogChange.dismiss();
+            });
+
+            dialogChange.show();
+            dialogFunction.cancel();
+        });
+
+        bindingDialog.tvFun2.setOnClickListener(v->{
+            typeProduct.setHidden(false);
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("list_type_product");
+            reference.child(typeProduct.getId()).setValue(typeProduct).addOnCompleteListener(task->{
+                if (task.isSuccessful()){
+                    Toast.makeText(context, "Đã xóa", Toast.LENGTH_SHORT).show();
+                    dialogFunction.cancel();
+                }else {
+                    Toast.makeText(context, "Xóa không thành công!", Toast.LENGTH_SHORT).show();
+                    dialogFunction.cancel();
+                }
+            });
+            typeAdapter.notifyDataSetChanged();
+
+            dialogFunction.cancel();
+
+        });
+        dialogFunction.show();
+
+    }
+
+
+    @Override
+    public void onClickItemProduct(TypeProduct typeProduct) {
+        replaceFragment( new ProductFragment(typeProduct));
+    }
+
+    @Override
+    public void onLongClickItemProduct(TypeProduct typeProduct) {
+        dialogFunctionProduct(getContext(),typeProduct);
+    }
 }

@@ -26,16 +26,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_weight="1"
-                android:text="Điều chỉnh thời gian"
+                android:text="Chọn báo cáo"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen_19dp"
                 android:fontFamily="@font/poppins_medium"
                 android:layout_marginVertical="@dimen/dimen_5dp"/>
-            <ImageView
-                android:id="@+id/btnFilter"
-                android:layout_width="@dimen/dimen_27dp"
-                android:layout_height="@dimen/dimen_27dp"
-                android:src="@drawable/ic_check_type"/>
+
 
         </LinearLayout>
 
@@ -46,33 +42,28 @@
             />
 
         <LinearLayout
-            android:id="@+id/layoutChooserTimeStart"
+            android:id="@+id/layoutFilterCompleteOder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginTop="@dimen/dimen_10dp">
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="left"
-                android:text="Ngày bắt đầu"
-                android:textColor="@color/black"
-                android:layout_marginStart="@dimen/dimen_15dp"
-                android:textSize="@dimen/dimen_18dp"
-                android:fontFamily="@font/poppins_medium"
-               />
-            <TextView
-                android:id="@+id/tvTimeStart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:visibility="gone"
-                android:text="22/11/2022"
+                android:text="Thống kê theo ngày hoàn thành đơn"
                 android:textColor="@color/grey_150"
                 android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_16dp"
-                android:fontFamily="@font/poppins_regular"
-                />
+                android:fontFamily="@font/poppins_medium"
+               />
+            <ImageView
+                android:id="@+id/icFilter1"
+                android:layout_width="@dimen/dimen_22dp"
+                android:layout_height="@dimen/dimen_22dp"
+                android:layout_marginEnd="@dimen/dimen_20dp"
+                android:src="@drawable/ic_check_type"/>
         </LinearLayout>
         <View
             android:layout_width="match_parent"
@@ -81,38 +72,31 @@
             android:layout_marginVertical="@dimen/dimen_8dp"
             />
         <LinearLayout
-            android:id="@+id/layoutChooserTimeEnd"
+            android:id="@+id/layoutFilterCancelOder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-
-            android:layout_marginBottom="@dimen/dimen_10dp">
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/dimen_15dp"
+            >
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="left"
-
-                android:text="Ngày kết thúc"
-                android:textColor="@color/black"
-                android:layout_marginStart="@dimen/dimen_15dp"
-                android:textSize="@dimen/dimen_18dp"
-                android:fontFamily="@font/poppins_medium" />
-
-            <TextView
-                android:id="@+id/tvTimeEnd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_15dp"
-                android:fontFamily="@font/poppins_regular"
-                android:gravity="left"
-                android:text="22/11/2022"
+                android:text="Thống kê theo ngày hủy đơn"
                 android:textColor="@color/grey_150"
+                android:layout_marginStart="@dimen/dimen_15dp"
                 android:textSize="@dimen/dimen_16dp"
-                android:visibility="gone" />
+                android:fontFamily="@font/poppins_medium"
+                />
+            <ImageView
+                android:id="@+id/icFilter2"
+                android:layout_width="@dimen/dimen_22dp"
+                android:layout_height="@dimen/dimen_22dp"
+                android:visibility="gone"
+                android:layout_marginEnd="@dimen/dimen_20dp"
+                android:src="@drawable/ic_check_type"/>
         </LinearLayout>
-
-
-
     </LinearLayout>
 
 

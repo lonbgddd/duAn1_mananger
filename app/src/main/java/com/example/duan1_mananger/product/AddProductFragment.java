@@ -152,7 +152,7 @@ public class AddProductFragment extends BaseFragment {
             String key = reference.push().getKey();
             TypeProduct typeProduct = (TypeProduct) binding.spinnerType.getSelectedItem();
             Product product = new Product(key,binding.edNameProduct.getText().toString().trim(),binding.edDescribe.getText().toString().trim(),typeProduct,
-                    Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim());
+                    Double.parseDouble(binding.edPrice.getText().toString().trim()), binding.edNote.getText().toString().trim(),true);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Thêm sản phẩm");
             builder.setMessage("Bạn chắc chắn muốn thêm " + binding.edNameProduct.getText().toString().trim() + " vào menu");
@@ -169,7 +169,6 @@ public class AddProductFragment extends BaseFragment {
                             notificationErrInput(getContext(),"Thêm thất bại");
                         }
                     });
-
                 if(imgProduct != null){
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference("imgProducts/"+product.getId());
                     storageReference.putFile(imgProduct).addOnSuccessListener(taskSnapshot -> {
@@ -218,7 +217,10 @@ public class AddProductFragment extends BaseFragment {
         binding.edPrice.setText("");
         binding.edNote.setText("");
         binding.tvAddImgProduct.setVisibility(View.VISIBLE);
-        Glide.with(getContext()).load(R.drawable.ic_product).into(binding.imgProduct);
+        if(getActivity() != null){
+            Glide.with(getActivity()).load(R.drawable.ic_product).into(binding.imgProduct);
+        }
+
     }
 
     private void requestPermission() {
@@ -256,7 +258,6 @@ public class AddProductFragment extends BaseFragment {
                 if(imgProduct != null){
                     binding.tvAddImgProduct.setVisibility(View.INVISIBLE);
                 }
-                Log.d("TAG", "onActivityResult: "+data.getData());
 
             }
         }
