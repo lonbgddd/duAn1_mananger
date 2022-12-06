@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -85,6 +86,10 @@ public class ProductFragment extends BaseFragment implements  ProductAdapter.OnC
             getFilterProduct();
         }
         productAdapter = new ProductAdapter(listProduct, ProductFragment.this,getActivity());
+        LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        bindProduct.listProduct.setLayoutManager(layoutManager);
         bindProduct.listProduct.setAdapter(productAdapter);
         listening();
         initObSever();

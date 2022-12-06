@@ -1,9 +1,11 @@
 package com.example.duan1_mananger.table.adapter;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,12 +63,14 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
         private ConstraintLayout layoutHeaderTable,layoutBodyTable ;
         private ImageView logo;
 
+
         public ViewHolderTable(LayoutItemTableBinding binding) {
             super(binding.getRoot());
             tv_name = binding.tvNameTable;
             logo = binding.icLogoTable;
             tvStatusOff = binding.tvStatusEmpty;
             tvStatusOn = binding.tvLogoTable;
+
             layoutHeaderTable = binding.layoutHeaderTable;
             layoutBodyTable = binding.layoutBodyTable;
         }
@@ -80,6 +84,8 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
                 logo.setVisibility(View.VISIBLE);
                 tvStatusOff.setVisibility(View.GONE);
                 tvStatusOn.setVisibility(View.VISIBLE);
+
+
                 layoutHeaderTable.setBackgroundColor(context.getColor(R.color.orange_200) );
                 layoutBodyTable.setBackgroundColor(context.getColor(R.color.grey_10) );
             } else {
@@ -89,8 +95,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
                 layoutHeaderTable.setBackgroundColor(context.getColor(R.color.grey_65) );
                 layoutBodyTable.setBackgroundColor(context.getColor(R.color.grey_55) );
             }
-
-
         }
+
     }
 }
