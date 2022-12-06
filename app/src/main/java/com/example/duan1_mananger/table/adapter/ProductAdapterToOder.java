@@ -95,7 +95,7 @@ public class ProductAdapterToOder extends RecyclerView.Adapter<ProductAdapterToO
                 for (StorageReference files: listResult.getItems()){
                     if(files.getName().equals(product.getId())){
                         files.getDownloadUrl().addOnSuccessListener(uri -> {
-                            Glide.with(itemView).load(uri).into(imgProduct);
+                            Glide.with(context).load(uri).into(imgProduct);
                         });
                     }
                 }

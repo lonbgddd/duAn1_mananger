@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -69,6 +70,10 @@ public class TypeProductFragment extends BaseFragment implements  TypeProductAda
 
         listType = new ArrayList<>();
         typeAdapter = new TypeProductAdapter(listType, TypeProductFragment.this,TypeProductFragment.this);
+        LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        binding.listsTypeProduct.setLayoutManager(layoutManager);
         binding.listsTypeProduct.setAdapter(typeAdapter);
         listening();
         loadData();

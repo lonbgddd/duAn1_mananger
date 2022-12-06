@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.duan1_mananger.R;
@@ -71,7 +72,11 @@ public class FragmentListAllProductToOder extends BaseFragment{
         listProductSelect = new ArrayList<>();
         listCount = new ArrayList<>();
         getProduct();
-        productAdapterToOder = new ProductAdapterToOder(listProduct,getContext());
+        productAdapterToOder = new ProductAdapterToOder(listProduct,getActivity());
+        LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        binding.listProductToOder.setLayoutManager(layoutManager);
         binding.listProductToOder.setAdapter(productAdapterToOder);
         listening();
         initObSever();

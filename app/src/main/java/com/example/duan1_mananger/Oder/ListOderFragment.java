@@ -178,9 +178,6 @@ public class ListOderFragment extends BaseFragment implements ListOderAdapter.On
             }
         });
 
-
-
-
     }
 
     private void filterReceipt(String text){

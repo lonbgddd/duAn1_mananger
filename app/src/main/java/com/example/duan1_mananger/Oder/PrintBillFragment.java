@@ -99,9 +99,11 @@ public class PrintBillFragment extends BaseFragment {
         tableModel.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
-                for(int i = 0 ; i < products.size(); i ++){
-                    for(int k = i; k < receiptModel.getListCountProduct().size(); k++){
-                        products.get(k).setIsClick(receiptModel.getListCountProduct().get(k));
+                if(products.size() != 0){
+                    for(int i = 0; i < receiptModel.getListCountProduct().size(); i++){
+                        for(int k = 0 ; k < products.size(); k++) {
+                            products.get(k).setIsClick(receiptModel.getListCountProduct().get(k));
+                        }
                     }
                 }
 
