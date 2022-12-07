@@ -18,6 +18,8 @@ import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.LayoutItemTableBinding;
 import com.example.duan1_mananger.model.Receipt;
 import com.example.duan1_mananger.model.Table;
+import com.example.duan1_mananger.model.TypeProduct;
+import com.example.duan1_mananger.product.Adapter.TypeProductAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,24 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
     private List<Table> list;
     private OnclickOptionMenu onclickOptionMenu;
     private Context context;
-    public TableAdapter(List<Table> list, OnclickOptionMenu onclickOptionMenu, Context context) {
+    private OnItemLongClickListener mOnItemLongClickListener;
+
+    public interface OnItemLongClickListener{
+        void onLongClickTable(Table table);
+    }
+
+    public TableAdapter(List<Table> list, OnclickOptionMenu onclickOptionMenu,OnItemLongClickListener mOnItemLongClickListener,Context context) {
+        this.list = list;
+        this.onclickOptionMenu = onclickOptionMenu;
+        this.mOnItemLongClickListener = mOnItemLongClickListener;
+        this.context = context;
+
+    }
+    public TableAdapter(List<Table> list, OnclickOptionMenu onclickOptionMenu,Context context) {
         this.list = list;
         this.onclickOptionMenu = onclickOptionMenu;
         this.context = context;
+
     }
     public void setFilterList(ArrayList<Table> list) {
         this.list = list;
@@ -80,6 +96,11 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolderTa
             itemView.setOnClickListener(v -> {
                 onclickOptionMenu.onClick(table);
             });
+            itemView.setOnLongClickListener(v ->{
+                mOnItemLongClickListener.onLongClickTable(table);
+                return true;
+            });
+
             if (table.getStatus().equals("true")){
                 logo.setVisibility(View.VISIBLE);
                 tvStatusOff.setVisibility(View.GONE);

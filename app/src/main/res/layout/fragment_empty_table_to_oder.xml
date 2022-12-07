@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -62,48 +63,68 @@
                 app:queryHint="@string/text_hint_search_table"
                 app:submitBackground="@null" />
 
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/layoutFilterTable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tất cả bàn trống"
-                android:layout_marginStart="@dimen/dimen_10dp"
-                android:layout_marginTop="@dimen/dimen_10dp"
-                android:fontFamily="@font/poppins_medium"
-                android:textColor="@color/brown_300"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-            <View
-                android:layout_width="@dimen/dimen_150dp"
-                android:layout_height="2dp"
-                android:background="@color/brown_300"
-                android:layout_gravity="left"
-               />
-
+                    <TextView
+                        android:id="@+id/tvFilterTable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimen_10dp"
+                        android:layout_marginTop="@dimen/dimen_10dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Tất cả bàn "
+                        android:textColor="@color/brown_300"
+                        android:textSize="@dimen/dimen_16dp" />
+                    <ImageView
+                        android:layout_width="@dimen/dimen_25dp"
+                        android:layout_height="@dimen/dimen_25dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_arrow_down"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="@dimen/dimen_3dp"
+                        app:tint="@color/brown_300" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    android:background="@color/brown_300"
+                    android:layout_gravity="left"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+
+
         <TextView
             android:id="@+id/tvNumberOfTable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Số lượng bàn"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="@dimen/dimen_18dp"
+            android:textSize="@dimen/dimen_17dp"
             android:layout_marginVertical="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_20dp"/>
-        <androidx.cardview.widget.CardView
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white">
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:cardElevation="@dimen/dimen_3dp"
-            app:cardBackgroundColor="@color/white">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swiperRefreshLayout"
                 android:layout_width="match_parent"
@@ -118,11 +139,27 @@
                     android:paddingHorizontal="@dimen/dimen_5dp"
                     />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.core.widget.NestedScrollView>
 
-        </androidx.cardview.widget.CardView>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_25dp"
+            android:layout_marginBottom="@dimen/dimen_20dp"
+            android:background="@color/brown_150"
+            android:backgroundTint="@color/brown_150"
+            android:clickable="true"
+            android:elevation="@dimen/dimen_10dp"
+            android:focusable="true"
+            android:src="@drawable/ic_add"
+            app:fabCustomSize="@dimen/dimen_55dp"
+            app:layout_anchor="@id/recViewTableEmpty"
+            app:layout_anchorGravity="bottom|end"
+            app:maxImageSize="@dimen/dimen_35dp"
+            app:shapeAppearanceOverlay="@style/FabShapeStyle2"
+             />
 
-    </LinearLayout>
-
-
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>
