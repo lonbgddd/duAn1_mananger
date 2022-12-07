@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
 import com.example.duan1_mananger.databinding.DialogAddTypeProductBinding;
 import com.example.duan1_mananger.databinding.DialogFunctionProductBinding;
@@ -153,6 +154,7 @@ public class TypeProductFragment extends BaseFragment implements  TypeProductAda
         binding.tvCancel.setOnClickListener(tv ->{
             dialog.dismiss();
         });
+        binding.edNameType.setHint( context.getString(R.string.text_hint_search_type_product));
 
         binding.tvAdd.setOnClickListener(add->{
             FirebaseDatabase data = FirebaseDatabase.getInstance();
@@ -286,7 +288,6 @@ public class TypeProductFragment extends BaseFragment implements  TypeProductAda
                 }
             });
             typeAdapter.notifyDataSetChanged();
-
             dialogFunction.cancel();
 
         });

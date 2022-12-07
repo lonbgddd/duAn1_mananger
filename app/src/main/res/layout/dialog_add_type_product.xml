@@ -66,7 +66,6 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/grey_150"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="@string/text_hint_search_type_product"
                     android:inputType="text"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:textColor="@color/black"
@@ -100,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:text="Thêm"
                     android:textColor="@color/brown_250"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="@dimen/dimen_17dp"/>
 
             </LinearLayout>

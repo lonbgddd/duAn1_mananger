@@ -7,26 +7,24 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.duan1_mananger.Oder.Adapter.ListOderAdapter;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
+import com.example.duan1_mananger.base.OnclickOptionMenu;
 import com.example.duan1_mananger.databinding.FragmentHomeBinding;
 import com.example.duan1_mananger.model.Receipt;
+import com.example.duan1_mananger.model.Table;
 import com.example.duan1_mananger.model.User;
 import com.example.duan1_mananger.setting.DailySalesReportFragment;
 import com.example.duan1_mananger.setting.SettingViewModel;
 import com.example.duan1_mananger.setting.UpdateUserFragment;
-import com.example.duan1_mananger.table.FragmentListAllTables;
-import com.example.duan1_mananger.home.fragments.FragmentListEmptyTables;
-import com.example.duan1_mananger.home.fragments.FragmentListOpenTables;
-import com.example.duan1_mananger.table.TableViewModel;
+import com.example.duan1_mananger.table.DetailTableFragment;
+import com.example.duan1_mananger.table.adapter.TableAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,13 +44,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements OnclickOptionMenu{
    private FragmentHomeBinding binding;
    private User user;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private SettingViewModel viewModel;
-
+    private TableAdapter adapter = null;
+    private FirebaseDatabase database;
+    private List<Table> listTable;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -78,6 +78,7 @@ public class HomeFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater,container,false);
         viewModel = new ViewModelProvider(this).get(SettingViewModel.class);
+        listTable = new ArrayList<>();
         return binding.getRoot();
 
     }
@@ -94,7 +95,6 @@ public class HomeFragment extends BaseFragment {
             ) {
                 if (files.getName().equals(firebaseUser.getUid())){
                     files.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Log.d("TAG", "initView: "+uri);
                         if(getActivity() != null){
                             Glide.with(getActivity()).load(uri).into(binding.icUserSetting);
                         }
@@ -202,39 +202,99 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void initView() {
         binding.tvTitleAll.setBackgroundColor(getContext().getColor(R.color.red_100));
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentListAllTables()).commit();
+        getAllTable();
     }
+
+
 
     private void selectTabFragment(){
         binding.btnAllTable.setOnClickListener(btn ->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentListAllTables()).commit();
             changeBgColorTextView(binding.tvTitleAll,getContext().getColor(R.color.red_100));
             changeBgColorTextView(binding.tvTitleEmpty,getContext().getColor(R.color.grey_55));
             changeBgColorTextView(binding.tvTitleOpen,getContext().getColor(R.color.grey_55));
-
+            getAllTable();
         });
         binding.btnTableEmpty.setOnClickListener(btn ->{
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentListEmptyTables()).commit();
             changeBgColorTextView(binding.tvTitleAll,getContext().getColor(R.color.grey_55));
             changeBgColorTextView(binding.tvTitleEmpty,getContext().getColor(R.color.red_100));
             changeBgColorTextView(binding.tvTitleOpen,getContext().getColor(R.color.grey_55));
-
+            getTable("false");
         });
 
         binding.btnTableOpen.setOnClickListener(btn ->{
             changeBgColorTextView(binding.tvTitleAll,getContext().getColor(R.color.grey_55));
             changeBgColorTextView(binding.tvTitleEmpty,getContext().getColor(R.color.grey_55));
             changeBgColorTextView(binding.tvTitleOpen,getContext().getColor(R.color.red_100));
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentListOpenTables()).commit();
+            getTable("true");
+
         });
     }
+
 
     private void changeBgColorTextView( TextView tv ,int idColor){
         tv.setBackgroundColor(idColor);
     }
 
+    private void getTable(String statusTable){
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("tables");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listTable.clear();
+                for (DataSnapshot snapshot1: snapshot.getChildren()) {
+                    Table table = snapshot1.getValue(Table.class);
+                    if(table.isHidden() && table.getStatus().equals(statusTable)){
+                        listTable.add(table);
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        adapter = new TableAdapter(listTable, HomeFragment.this,getContext());
+        binding.revListTable.setAdapter(adapter);
+
+    }
+    private void getAllTable(){
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("tables");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listTable.clear();
+                for (DataSnapshot snapshot1: snapshot.getChildren()) {
+                    Table table = snapshot1.getValue(Table.class);
+                    if(table.isHidden()){
+                        listTable.add(table);
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        adapter = new TableAdapter(listTable, HomeFragment.this,getContext());
+        binding.revListTable.setAdapter(adapter);
+
+    }
 
 
+
+
+    @Override
+    public void onClick(Table table) {
+        replaceFragment(DetailTableFragment.newInstance(table));
+    }
 
 
 }

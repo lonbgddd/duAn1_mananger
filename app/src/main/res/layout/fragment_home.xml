@@ -514,10 +514,13 @@
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
             </HorizontalScrollView>
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_container"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/revListTable"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                android:paddingHorizontal="@dimen/dimen_5dp"/>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
