@@ -9,13 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.text.Html;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.duan1_mananger.PushNotification.FMC;
 import com.example.duan1_mananger.PushNotification.MyNotificator;
 import com.example.duan1_mananger.R;
 import com.example.duan1_mananger.base.BaseFragment;
@@ -25,11 +24,10 @@ import com.example.duan1_mananger.maket.MarketFragment;
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Receipt;
 import com.example.duan1_mananger.model.Table;
+import com.example.duan1_mananger.model.Token;
 import com.example.duan1_mananger.table.adapter.OderAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -56,6 +54,7 @@ public class DetailTableFragment extends BaseFragment {
     private MyNotificator myNotificator;
 
 
+    List<String> listTk = new ArrayList<>();
     public DetailTableFragment(Table table) {
         this.table = table;
     }
@@ -108,6 +107,7 @@ public class DetailTableFragment extends BaseFragment {
 
     @Override
     public void loadData() {
+        model.liveDataGetAllToken();
         if (getArguments() != null) {
             if (getArguments().getSerializable("table") != null) {
                 table = (Table) getArguments().getSerializable("table");
@@ -146,6 +146,8 @@ public class DetailTableFragment extends BaseFragment {
 
                 receiptModel = new Receipt(key, idTable, strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString(), true);
                 reference.child(key).setValue(receiptModel);
+
+                pushMessage("Poly Thông Báo", table.getName_table()+" đang có khách ngồi");
                 model.setStatusTable(idTable, "true");
                 replaceFragment(HomeFragment.newInstance());
             }
@@ -163,6 +165,7 @@ public class DetailTableFragment extends BaseFragment {
                     binding.cavCancelOder.setVisibility(View.VISIBLE);
                     receiptModel = receipt;
                     model.listLiveData(receipt.getListIdProduct());
+
 
                     model.listProductOder.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
@@ -237,6 +240,7 @@ public class DetailTableFragment extends BaseFragment {
                 notificationErrInput(getContext(), "Hãy chọn món !");
             } else if (receiptModel != null) {
                 model.setStatusTable(idTable, "false");
+                pushMessage("Thông Báo Bàn Trống",table.getName_table()+" đang trống");
                 model.liveDataPayReceipt(receiptModel);
                 backStack();
             } else {
@@ -248,8 +252,6 @@ public class DetailTableFragment extends BaseFragment {
                 String key = reference.push().getKey();
                 Receipt receipt = new Receipt(key, "", strDate, totalMoney, listIdProduct,listCountProduct, binding.edNoteOder.getText().toString(), true);
                 reference.child(key).setValue(receipt);
-
-
                 notificationSuccessInput(getContext(), "Thanh toán thành công!");
                 replaceFragment(MarketFragment.newInstance());
             }
@@ -327,8 +329,6 @@ public class DetailTableFragment extends BaseFragment {
                         }
                     }
                 }
-
-
                 OderAdapter adapter = new OderAdapter(products,0,getActivity());
                 int totalProduct = 0;
                 for(int i = 0; i < listCountProduct.size(); i++){
@@ -367,5 +367,15 @@ public class DetailTableFragment extends BaseFragment {
     public void initView() {
 
     }
-
+    public void pushMessage(String title, String message){
+        model.liveDataListToken.observe(getViewLifecycleOwner(), new Observer<List<Token>>() {
+            @Override
+            public void onChanged(List<Token> tokens) {
+                for (Token token: tokens
+                     ) {
+                    FMC.pushNotification(requireContext(),token.getToken(),title, message);
+                }
+            }
+        });
+    }
 }
