@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.duan1_mananger.model.Product;
 import com.example.duan1_mananger.model.Receipt;
+import com.example.duan1_mananger.model.Token;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,13 +20,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class TableViewModel extends ViewModel {
+
     public MutableLiveData<List<Product>> listProductOder = new MutableLiveData<>();
     public MutableLiveData<String> oderTableStatus = new MutableLiveData<>();
 
     public MutableLiveData<Receipt> liveDataGetReceipt = new MutableLiveData<>();
     public MutableLiveData<String> liveDataPayReceipt = new MutableLiveData<>();
-
+    public MutableLiveData<List<Token>> liveDataListToken = new MutableLiveData<>();
     public MutableLiveData<Receipt> liveDataGetCancelReceipt = new MutableLiveData<>();
     public MutableLiveData<String> liveDataCancelReceipt = new MutableLiveData<>();
     private DatabaseReference reference;
@@ -150,7 +157,28 @@ public class TableViewModel extends ViewModel {
         });
         return  null;
     }
+    public LiveData<List<Token>> liveDataGetAllToken(){
+        ArrayList<Token> tokenList = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("Tokens").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()
+                     ) {
+                    Token token = dataSnapshot.getValue(Token.class);
+                    Log.d("TAG", "onDataChange: "+token.getToken());
+                    tokenList.add(token);
+                }
+                liveDataListToken.postValue(tokenList);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return liveDataListToken;
+    }
 
 
 }
